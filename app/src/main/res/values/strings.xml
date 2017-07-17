@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">AnotherLayout</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_select_layout">选择一个布局</string>
+    <string name="title_activity_process">ProcessActivity</string>
+    <string name="edit">编辑</string>
+    <string name="title_activity_crop">CropActivity</string>
+    <string name="all_photo">所有照片</string>
+    <string name="album">相册</string>
+
+    <string name="prompt_save">保存</string>
+    <string name="prompt_edit">编辑</string>
+    <string name="prompt_replace">替换</string>
+    <string name="prompt_rotate">旋转</string>
+    <string name="prompt_flip_horizontal">镜像</string>
+    <string name="prompt_flip_vertical">翻转</string>
+    <string name="prompt_border">边框</string>
+    <string name="prompt_share_failed">分享失败</string>
+    <string name="prompt_share">分享</string>
+    <string name="prompt_save_success">保存成功</string>
+    <string name="prompt_save_failed">保存失败</string>
+    <string name="prompt_corner">圆角</string>
+</resources>

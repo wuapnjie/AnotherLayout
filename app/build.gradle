@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 26
+  buildToolsVersion "26.0.0"
+  defaultConfig {
+    applicationId "com.xiaopo.flying.anotherlayout"
+    minSdkVersion 17
+    targetSdkVersion 26
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+  implementation "com.android.support:appcompat-v7:$support_version"
+  implementation "com.android.support:design:$support_version"
+  implementation "com.squareup.picasso:picasso:$picasso_version"
+  implementation "com.jakewharton:butterknife:8.5.1"
+  annotationProcessor "com.jakewharton:butterknife-compiler:8.5.1"
+  implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
+  implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+  implementation "com.yanzhenjie:permission:$and_permission_version"
+  implementation "me.drakeet.multitype:multitype:$multi_type_version"
+  testCompile "junit:junit:4.12"
+  implementation project(':pixelcrop')
+  implementation project(':puzzle')
+  implementation project(':poiphoto')
+}
