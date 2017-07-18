@@ -9,8 +9,8 @@
 
     <View
         android:id="@+id/selected"
-        android:background="@color/black"
+        android:background="@color/selected_color"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="10dp"/>
+        android:layout_height="5dp"/>
 </FrameLayout>

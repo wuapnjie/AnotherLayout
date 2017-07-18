@@ -8,11 +8,12 @@ import android.view.View;
  */
 public class HandleItem {
   @DrawableRes private final int icon;
-  private View handleView;
+  private final View handleView;
   private boolean isUsing;
 
-  public HandleItem(int icon) {
+  public HandleItem(int icon, View handleView) {
     this.icon = icon;
+    this.handleView = handleView;
   }
 
   public int getIcon() {
@@ -29,9 +30,5 @@ public class HandleItem {
 
   public View getHandleView() {
     return handleView;
-  }
-
-  public void setHandleView(View handleView) {
-    this.handleView = handleView;
   }
 }

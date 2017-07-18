@@ -42,12 +42,9 @@ public class HandleItemBinder extends ItemViewBinder<HandleItem, HandleItemBinde
     holder.itemView.setLayoutParams(layoutParams);
     holder.icon.setImageResource(item.getIcon());
     holder.icon.setNeedDrawArrow(item.isUsing());
-    holder.itemView.setOnClickListener(new DebouncedOnClickListener() {
-      @Override
-      public void doClick(View var1) {
-        if (onItemClickListener != null) {
-          onItemClickListener.onItemClick(holder.icon, item, getPosition(holder));
-        }
+    holder.itemView.setOnClickListener(view -> {
+      if (onItemClickListener != null) {
+        onItemClickListener.onItemClick(holder.icon, item, getPosition(holder));
       }
     });
   }

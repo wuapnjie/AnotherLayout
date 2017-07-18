@@ -11,11 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.kits.Colors;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
@@ -173,43 +175,50 @@ public class ProcessActivity extends AppCompatActivity {
   private void addHandleItems() {
     handleItems.clear();
 
+    HandleItem color = new HandleItem(R.drawable.ic_palette_black_24dp, colorView());
+    handleItems.add(color);
+
+    HandleItem ratio = new HandleItem(R.drawable.ic_image_aspect_ratio_black_24dp, ratioView());
+    handleItems.add(ratio);
+
+    HandleItem transform = new HandleItem(R.drawable.ic_transform_black_24dp, transformView());
+    handleItems.add(transform);
+
+    HandleItem border = new HandleItem(R.drawable.ic_border_style_black_24dp, borderView());
+    handleItems.add(border);
+
+    HandleItem round = new HandleItem(R.drawable.ic_rounded_corner_black_24dp, roundView());
+    handleItems.add(round);
+  }
+
+  // TODO Handle detail view
+  private View roundView() {
+    return null;
+  }
+
+  private View borderView() {
+    return null;
+  }
+
+  private View transformView() {
+    return null;
+  }
+
+  private View ratioView() {
+    return null;
+  }
+
+  private View colorView() {
     RecyclerView colorView =
         (RecyclerView) LayoutInflater.from(this).inflate(R.layout.handle_item_color, null);
-    List<ColorItem> allColors = fetchColors();
+    List<ColorItem> allColors = Colors.all();
+    allColors.get(0).setSelected(true);
     MultiTypeAdapter adapter = new MultiTypeAdapter(allColors);
     adapter.register(ColorItem.class, new ColorItemBinder(colorView, allColors));
     colorView.setAdapter(adapter);
     colorView.setLayoutManager(
         new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-    HandleItem color = new HandleItem(R.drawable.ic_palette_black_24dp);
-    color.setHandleView(colorView);
-    handleItems.add(color);
 
-    HandleItem ratio = new HandleItem(R.drawable.ic_image_aspect_ratio_black_24dp);
-    handleItems.add(ratio);
-
-    HandleItem transform = new HandleItem(R.drawable.ic_transform_black_24dp);
-    handleItems.add(transform);
-
-    HandleItem border = new HandleItem(R.drawable.ic_border_style_black_24dp);
-    handleItems.add(border);
-
-    HandleItem round = new HandleItem(R.drawable.ic_rounded_corner_black_24dp);
-    handleItems.add(round);
-  }
-
-  private List<ColorItem> fetchColors() {
-    List<ColorItem> colorItems = new ArrayList<>();
-    colorItems.add(new ColorItem(Color.WHITE));
-    colorItems.add(new ColorItem(Color.RED));
-    colorItems.add(new ColorItem(Color.BLUE));
-    colorItems.add(new ColorItem(Color.GRAY));
-    colorItems.add(new ColorItem(Color.GREEN));
-    colorItems.add(new ColorItem(Color.CYAN));
-    colorItems.add(new ColorItem(Color.DKGRAY));
-    colorItems.add(new ColorItem(Color.LTGRAY));
-    colorItems.add(new ColorItem(Color.MAGENTA));
-    colorItems.add(new ColorItem(Color.YELLOW));
-    return colorItems;
+    return colorView;
   }
 }

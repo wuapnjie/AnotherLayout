@@ -18,4 +18,6 @@
     <color name="textColorPrimaryLite">#a5abb5</color>
     <color name="textColorPrimaryDark">#000000</color>
     <color name="textColorPrimaryLight">#de6c6969</color>
+
+    <color name="selected_color">#4E86EC</color>
 </resources>
