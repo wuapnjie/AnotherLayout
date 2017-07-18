@@ -31,6 +31,7 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
   private MultiTypeAdapter handleAdapter;
   @NonNull private List<HandleItem> handleItems = new ArrayList<>();
   private HandleItem currentUsing;
+  private boolean isAnimateRunning;
 
   public HandleContainer(Context context) {
     this(context, null);
@@ -66,8 +67,8 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
     handleAdapter.notifyDataSetChanged();
   }
 
-  @Override
-  public void onItemClick(HandleImageView icon, HandleItem item, int position) {
+  @Override public void onItemClick(HandleImageView icon, HandleItem item, int position) {
+    if (isAnimateRunning) return;
     if (currentUsing == null) {
       currentUsing = item;
       showHandleDetail(item, icon, position);
@@ -97,7 +98,9 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
 
     handleContentLayout.setVisibility(View.VISIBLE);
     handleContentLayout.removeAllViews();
-    handleContentLayout.addView(item.getHandleView());
+    if (item.getHandleView() != null) {
+      handleContentLayout.addView(item.getHandleView());
+    }
     handleContentLayout.setScaleX(0);
     handleContentLayout.setScaleY(0);
     handleContentLayout.animate()
@@ -106,16 +109,21 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
         .setDuration(300)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationStart(Animator animation) {
-            super.onAnimationStart(animation);
+          @Override public void onAnimationStart(Animator animation) {
+            isAnimateRunning = true;
             icon.setNeedDrawArrow(true);
+          }
+
+          @Override public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            isAnimateRunning = false;
           }
         })
         .start();
   }
 
-  private void dismissHandleDetail(HandleItem item, final HandleImageView icon, final int position) {
+  private void dismissHandleDetail(HandleItem item, final HandleImageView icon,
+      final int position) {
     final int width = DipPixelKit.getDeviceWidth(getContext()) / handleItems.size();
     handleContentLayout.setPivotX(width / 2 + position * width);
     handleContentLayout.setPivotY(handleContentLayout.getHeight());
@@ -126,11 +134,14 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
         .setDuration(300)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
+          @Override public void onAnimationStart(Animator animation) {
+            isAnimateRunning = true;
+          }
+
+          @Override public void onAnimationEnd(Animator animation) {
             handleContentLayout.setVisibility(View.INVISIBLE);
             icon.setNeedDrawArrow(false);
+            isAnimateRunning = false;
           }
         })
         .start();

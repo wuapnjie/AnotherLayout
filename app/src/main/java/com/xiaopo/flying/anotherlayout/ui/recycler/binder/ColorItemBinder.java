@@ -19,7 +19,7 @@ import me.drakeet.multitype.ItemViewBinder;
  */
 public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.ViewHolder> {
   private OnColorSelectedListener onColorSelectedListener;
-  private int currentPosition;
+  private int selectedPosition;
   private final RecyclerView recyclerView;
   private final List<ColorItem> allColors;
 
@@ -40,7 +40,6 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
     return new ViewHolder(itemView);
   }
 
-  // TODO 单选
   @Override
   protected void onBindViewHolder(@NonNull final ViewHolder holder, @NonNull final ColorItem item) {
     holder.color.setBackgroundColor(item.getColor());
@@ -51,22 +50,36 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
     }
 
     holder.color.setOnClickListener(view -> {
-      if (currentPosition == getPosition(holder)) return;
       ViewHolder viewHolder =
-          (ViewHolder) recyclerView.findViewHolderForLayoutPosition(currentPosition);
+          (ViewHolder) recyclerView.findViewHolderForLayoutPosition(selectedPosition);
       if (viewHolder != null) {
         viewHolder.selected.setVisibility(View.GONE);
+      }else {
+        getAdapter().notifyItemChanged(selectedPosition);
       }
-      allColors.get(currentPosition).setSelected(false);
+      allColors.get(selectedPosition).setSelected(false);
 
       holder.selected.setVisibility(View.VISIBLE);
       item.setSelected(true);
-      currentPosition = getPosition(holder);
+      selectedPosition = getPosition(holder);
 
       if (onColorSelectedListener != null) {
         onColorSelectedListener.onColorSelected(item.getColor());
       }
     });
+  }
+
+  @Override protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull ColorItem item,
+      @NonNull List<Object> payloads) {
+    if (payloads.isEmpty()){
+      onBindViewHolder(holder, item);
+    }else {
+      if (item.isSelected()) {
+        holder.selected.setVisibility(View.VISIBLE);
+      } else {
+        holder.selected.setVisibility(View.GONE);
+      }
+    }
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
