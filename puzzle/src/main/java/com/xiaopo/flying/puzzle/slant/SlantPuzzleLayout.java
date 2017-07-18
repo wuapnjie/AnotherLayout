@@ -174,15 +174,15 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     return lines;
   }
 
-  protected List<SlantArea> addLine(int position, Line.Direction direction, float radio) {
-    return addLine(position, direction, radio, radio);
+  protected List<SlantArea> addLine(int position, Line.Direction direction, float ratio) {
+    return addLine(position, direction, ratio, ratio);
   }
 
-  protected List<SlantArea> addLine(int position, Line.Direction direction, float startRadio,
-      float endRadio) {
+  protected List<SlantArea> addLine(int position, Line.Direction direction, float startRatio,
+      float endRatio) {
     SlantArea area = areas.get(position);
     areas.remove(area);
-    SlantLine line = createLine(area, direction, startRadio, endRadio);
+    SlantLine line = createLine(area, direction, startRatio, endRatio);
     lines.add(line);
 
     List<SlantArea> increasedAreas = cutAreaWith(area, line);
@@ -195,13 +195,13 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     return increasedAreas;
   }
 
-  protected List<SlantArea> addCross(int position, float startRadio1, float endRadio1,
-      float startRadio2, float endRadio2) {
+  protected List<SlantArea> addCross(int position, float startRatio1, float endRatio1,
+      float startRatio2, float endRatio2) {
     SlantArea area = areas.get(position);
     areas.remove(area);
 
-    SlantLine horizontal = createLine(area, Line.Direction.HORIZONTAL, startRadio1, endRadio1);
-    SlantLine vertical = createLine(area, Line.Direction.VERTICAL, startRadio2, endRadio2);
+    SlantLine horizontal = createLine(area, Line.Direction.HORIZONTAL, startRatio1, endRatio1);
+    SlantLine vertical = createLine(area, Line.Direction.VERTICAL, startRatio2, endRatio2);
     lines.add(horizontal);
     lines.add(vertical);
 

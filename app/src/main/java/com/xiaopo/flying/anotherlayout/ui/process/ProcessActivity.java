@@ -5,48 +5,55 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.LayoutInflater;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
-import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
+import com.xiaopo.flying.anotherlayout.model.ColorItem;
+import com.xiaopo.flying.anotherlayout.model.HandleItem;
+import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ColorItemBinder;
+import com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer;
 import com.xiaopo.flying.poiphoto.Define;
 import com.xiaopo.flying.poiphoto.PhotoPicker;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.PuzzleView;
-import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.puzzle.SquarePuzzleView;
 import java.util.ArrayList;
 import java.util.List;
+import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * @author wupanjie
  */
-public class ProcessActivity extends AppCompatActivity implements View.OnClickListener {
-  private static final int FLAG_CONTROL_LINE_SIZE = 1;
-  private static final int FLAG_CONTROL_CORNER = 1 << 1;
+public class ProcessActivity extends AppCompatActivity {
   public static final String INTENT_KEY_PATHS = "photo_path";
   public static final String INTENT_KEY_SIZE = "piece_size";
   public static final String INTENT_KEY_THEME = "theme_id";
   public static final String INTENT_KEY_TYPE = "piece_type";
 
+  @BindView(R.id.toolbar) Toolbar toolbar;
+  @BindView(R.id.puzzle_view) SquarePuzzleView puzzleView;
+  @BindView(R.id.handle_container) HandleContainer handleContainer;
+
   private PuzzleLayout puzzleLayout;
   private List<String> bitmapPaint;
-  private PuzzleView puzzleView;
-  private DegreeSeekBar degreeSeekBar;
 
   private List<Target> targets = new ArrayList<>();
   private int deviceWidth = 0;
+  private List<HandleItem> handleItems = new ArrayList<>(5);
 
-  private int controlFlag;
-
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_process);
+    ButterKnife.bind(this);
 
     deviceWidth = getResources().getDisplayMetrics().widthPixels;
 
@@ -61,7 +68,8 @@ public class ProcessActivity extends AppCompatActivity implements View.OnClickLi
     puzzleView.post(this::loadPhoto);
   }
 
-  @Override protected void onResume() {
+  @Override
+  protected void onResume() {
     super.onResume();
   }
 
@@ -73,7 +81,8 @@ public class ProcessActivity extends AppCompatActivity implements View.OnClickLi
 
     for (int i = 0; i < count; i++) {
       final Target target = new Target() {
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
           pieces.add(bitmap);
           if (pieces.size() == count) {
             if (bitmapPaint.size() < puzzleLayout.getAreaCount()) {
@@ -87,11 +96,13 @@ public class ProcessActivity extends AppCompatActivity implements View.OnClickLi
           targets.remove(this);
         }
 
-        @Override public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
 
         }
 
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
         }
       };
@@ -112,131 +123,39 @@ public class ProcessActivity extends AppCompatActivity implements View.OnClickLi
     Toolbar toolbar = findViewById(R.id.toolbar);
     toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-    FloatingActionButton fab = findViewById(R.id.fab);
-    fab.setOnClickListener(view -> share());
-
-    puzzleView = findViewById(R.id.puzzle_view);
-    degreeSeekBar = findViewById(R.id.degree_seek_bar);
-
     puzzleView.setPuzzleLayout(puzzleLayout);
     puzzleView.setTouchEnable(true);
-    puzzleView.setNeedDrawLine(false);
-    puzzleView.setNeedDrawOuterLine(false);
-    puzzleView.setLineSize(4);
-    puzzleView.setLineColor(Color.BLACK);
-    puzzleView.setSelectedLineColor(Color.BLACK);
-    puzzleView.setHandleBarColor(Color.BLACK);
-    puzzleView.setAnimateDuration(300);
-    //puzzleView.setOnPieceSelectedListener(
-    //    (piece, position) -> Snackbar.make(puzzleView, "Piece " + position + " selected",
-    //        Snackbar.LENGTH_SHORT).show());
+    puzzleView.setPiecePadding(20);
 
-    // currently the SlantPuzzleLayout do not support padding
-    puzzleView.setPiecePadding(10);
+    addHandleItems();
 
-    ImageView btnReplace = findViewById(R.id.btn_replace);
-    ImageView btnRotate = findViewById(R.id.btn_rotate);
-    ImageView btnFlipHorizontal = findViewById(R.id.btn_flip_horizontal);
-    ImageView btnFlipVertical = findViewById(R.id.btn_flip_vertical);
-    ImageView btnBorder = findViewById(R.id.btn_border);
-    ImageView btnCorner = findViewById(R.id.btn_corner);
-
-    btnReplace.setOnClickListener(this);
-    btnRotate.setOnClickListener(this);
-    btnFlipHorizontal.setOnClickListener(this);
-    btnFlipVertical.setOnClickListener(this);
-    btnBorder.setOnClickListener(this);
-    btnCorner.setOnClickListener(this);
-
-    degreeSeekBar.setPointColor(Color.BLACK);
-    degreeSeekBar.setCenterTextColor(Color.BLACK);
-    degreeSeekBar.setTextColor(Color.BLACK);
-    degreeSeekBar.setCurrentDegrees(puzzleView.getLineSize());
-    degreeSeekBar.setDegreeRange(0, 30);
-    degreeSeekBar.setScrollingListener(new DegreeSeekBar.ScrollingListener() {
-      @Override public void onScrollStart() {
-
-      }
-
-      @Override public void onScroll(int currentDegrees) {
-        switch (controlFlag) {
-          case FLAG_CONTROL_LINE_SIZE:
-            puzzleView.setLineSize(currentDegrees);
-            break;
-          case FLAG_CONTROL_CORNER:
-            puzzleView.setPieceRadian(currentDegrees);
-            break;
-        }
-      }
-
-      @Override public void onScrollEnd() {
-
-      }
-    });
-  }
-
-  private void share() {
-    // TODO
-  }
-
-  @Override public void onClick(View view) {
-    switch (view.getId()) {
-      case R.id.btn_replace:
-        showSelectedPhotoDialog();
-        break;
-      case R.id.btn_rotate:
-        puzzleView.rotate(90f);
-        break;
-      case R.id.btn_flip_horizontal:
-        puzzleView.flipHorizontally();
-        break;
-      case R.id.btn_flip_vertical:
-        puzzleView.flipVertically();
-        break;
-      case R.id.btn_border:
-        controlFlag = FLAG_CONTROL_LINE_SIZE;
-        puzzleView.setNeedDrawLine(!puzzleView.isNeedDrawLine());
-        if (puzzleView.isNeedDrawLine()) {
-          degreeSeekBar.setVisibility(View.VISIBLE);
-          degreeSeekBar.setCurrentDegrees(puzzleView.getLineSize());
-          degreeSeekBar.setDegreeRange(0,30);
-        } else {
-          degreeSeekBar.setVisibility(View.INVISIBLE);
-        }
-        break;
-      case R.id.btn_corner:
-        if (controlFlag == FLAG_CONTROL_CORNER && degreeSeekBar.getVisibility() == View.VISIBLE){
-          degreeSeekBar.setVisibility(View.INVISIBLE);
-          return;
-        }
-        degreeSeekBar.setCurrentDegrees((int) puzzleView.getPieceRadian());
-        controlFlag = FLAG_CONTROL_CORNER;
-        degreeSeekBar.setVisibility(View.VISIBLE);
-        degreeSeekBar.setDegreeRange(0,100);
-        break;
-    }
+    handleContainer.setHandleItems(handleItems);
   }
 
   private void showSelectedPhotoDialog() {
     PhotoPicker.newInstance().setMaxCount(1).pick(this);
   }
 
-  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == Define.DEFAULT_REQUEST_CODE && resultCode == RESULT_OK) {
       List<String> paths = data.getStringArrayListExtra(Define.PATHS);
       String path = paths.get(0);
 
       final Target target = new Target() {
-        @Override public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
           puzzleView.replace(bitmap);
         }
 
-        @Override public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
           Snackbar.make(puzzleView, "Replace Failed!", Snackbar.LENGTH_SHORT).show();
         }
 
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
         }
       };
@@ -249,5 +168,48 @@ public class ProcessActivity extends AppCompatActivity implements View.OnClickLi
           .config(Bitmap.Config.RGB_565)
           .into(target);
     }
+  }
+
+  private void addHandleItems() {
+    handleItems.clear();
+
+    RecyclerView colorView =
+        (RecyclerView) LayoutInflater.from(this).inflate(R.layout.handle_item_color, null);
+    List<ColorItem> allColors = fetchColors();
+    MultiTypeAdapter adapter = new MultiTypeAdapter(allColors);
+    adapter.register(ColorItem.class, new ColorItemBinder(colorView, allColors));
+    colorView.setAdapter(adapter);
+    colorView.setLayoutManager(
+        new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    HandleItem color = new HandleItem(R.drawable.ic_palette_black_24dp);
+    color.setHandleView(colorView);
+    handleItems.add(color);
+
+    HandleItem ratio = new HandleItem(R.drawable.ic_image_aspect_ratio_black_24dp);
+    handleItems.add(ratio);
+
+    HandleItem transform = new HandleItem(R.drawable.ic_transform_black_24dp);
+    handleItems.add(transform);
+
+    HandleItem border = new HandleItem(R.drawable.ic_border_style_black_24dp);
+    handleItems.add(border);
+
+    HandleItem round = new HandleItem(R.drawable.ic_rounded_corner_black_24dp);
+    handleItems.add(round);
+  }
+
+  private List<ColorItem> fetchColors() {
+    List<ColorItem> colorItems = new ArrayList<>();
+    colorItems.add(new ColorItem(Color.WHITE));
+    colorItems.add(new ColorItem(Color.RED));
+    colorItems.add(new ColorItem(Color.BLUE));
+    colorItems.add(new ColorItem(Color.GRAY));
+    colorItems.add(new ColorItem(Color.GREEN));
+    colorItems.add(new ColorItem(Color.CYAN));
+    colorItems.add(new ColorItem(Color.DKGRAY));
+    colorItems.add(new ColorItem(Color.LTGRAY));
+    colorItems.add(new ColorItem(Color.MAGENTA));
+    colorItems.add(new ColorItem(Color.YELLOW));
+    return colorItems;
   }
 }

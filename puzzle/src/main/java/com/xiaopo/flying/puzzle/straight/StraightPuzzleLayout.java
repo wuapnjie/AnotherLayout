@@ -123,15 +123,15 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     }
   }
 
-  protected List<StraightArea> addCross(int position, float radio) {
-    return addCross(position, radio, radio);
+  protected List<StraightArea> addCross(int position, float ratio) {
+    return addCross(position, ratio, ratio);
   }
 
-  protected List<StraightArea> addCross(int position, float horizontalRadio, float verticalRadio) {
+  protected List<StraightArea> addCross(int position, float horizontalRatio, float verticalRatio) {
     StraightArea area = areas.get(position);
     areas.remove(area);
-    StraightLine horizontal = createLine(area, Line.Direction.HORIZONTAL, horizontalRadio);
-    StraightLine vertical = createLine(area, Line.Direction.VERTICAL, verticalRadio);
+    StraightLine horizontal = createLine(area, Line.Direction.HORIZONTAL, horizontalRatio);
+    StraightLine vertical = createLine(area, Line.Direction.VERTICAL, verticalRatio);
     lines.add(horizontal);
     lines.add(vertical);
 
