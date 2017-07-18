@@ -1,14 +1,19 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+  maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
-  compileSdkVersion 26
-  buildToolsVersion "26.0.0"
+  compileSdkVersion COMPILE_SDK_VERSION.toInteger()
+  buildToolsVersion BUILD_TOOLS_VERSION
   defaultConfig {
-    applicationId "com.xiaopo.flying.anotherlayout"
-    minSdkVersion 17
-    targetSdkVersion 26
-    versionCode 1
-    versionName "1.0"
+    applicationId APPLICATION_ID
+    minSdkVersion MIN_SDK_VERSION.toInteger()
+    targetSdkVersion TARGET_SDK_VERSION.toInteger()
+    versionCode VERSION_CODE.toInteger()
+    versionName VERSION_NAME
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
   buildTypes {
@@ -25,20 +30,42 @@ android {
 
 dependencies {
   compile fileTree(include: ['*.jar'], dir: 'libs')
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  })
+
+  // fabric crash
+  compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    transitive = true;
+  }
+
+  // support library
   implementation "com.android.support:appcompat-v7:$support_version"
   implementation "com.android.support:design:$support_version"
+
+  // picasso
   implementation "com.squareup.picasso:picasso:$picasso_version"
-  implementation "com.jakewharton:butterknife:8.5.1"
-  annotationProcessor "com.jakewharton:butterknife-compiler:8.5.1"
+
+  // reactive
   implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
   implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+
+  // permission
   implementation "com.yanzhenjie:permission:$and_permission_version"
+
+  // multi type adapter
   implementation "me.drakeet.multitype:multitype:$multi_type_version"
-  testCompile "junit:junit:4.12"
+
+  // butter knife
+  implementation "com.jakewharton:butterknife:$butter_knife_version"
+  annotationProcessor "com.jakewharton:butterknife-compiler:$butter_knife_version"
+
+  // module
   implementation project(':pixelcrop')
   implementation project(':puzzle')
   implementation project(':poiphoto')
+
+  // for test
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+  testCompile "junit:junit:4.12"
+
 }

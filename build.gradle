@@ -8,17 +8,21 @@ buildscript {
     rxandroid_version = '2.0.1'
     and_permission_version = '1.0.8'
     multi_type_version = '3.1.0'
+    butter_knife_version = '8.5.1'
   }
 
   repositories {
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:3.0.0-alpha6'
+    classpath 'io.fabric.tools:gradle:1.23.0'
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
   }
 }
+
 
 allprojects {
   repositories {

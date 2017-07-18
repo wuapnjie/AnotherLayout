@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * @author wupanjie
  */
-
 public class PhotoManager {
   private final String TAG = PhotoManager.class.getSimpleName();
   private ContentResolver contentResolver;
@@ -103,7 +102,7 @@ public class PhotoManager {
     return path;
   }
 
-  public List<Photo> getAllPhoto() {
+  public List<Photo> getAllPhotos() {
     List<Photo> photos = new ArrayList<>();
 
     String projects[] = new String[] {
