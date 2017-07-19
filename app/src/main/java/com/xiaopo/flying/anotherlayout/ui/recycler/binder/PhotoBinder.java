@@ -1,5 +1,6 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.poiphoto.datatype.Photo;
 import com.xiaopo.flying.anotherlayout.R;
 import java.util.Set;
@@ -21,6 +23,7 @@ import me.drakeet.multitype.ItemViewBinder;
 public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
   private final Set<Integer> selectedPositions;
   private OnPhotoSelectedListener onPhotoSelectedListener;
+  private int resize;
 
   public PhotoBinder(Set<Integer> selectedPositions) {
     this.selectedPositions = selectedPositions;
@@ -34,11 +37,20 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
   }
 
   @Override public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Photo cellData) {
-    holder.bindCellData(cellData);
+    holder.bindCellData(cellData, imageResizeWidth(holder.itemView.getContext()));
   }
 
   public void setOnPhotoSelectedListener(OnPhotoSelectedListener onPhotoSelectedListener) {
     this.onPhotoSelectedListener = onPhotoSelectedListener;
+  }
+
+  private int imageResizeWidth(Context context) {
+    if (resize == 0) {
+      final int screenWidth = DipPixelKit.getDeviceWidth(context);
+      final int availableWidth = screenWidth - 3 * DipPixelKit.dip2px(context, 2);
+      resize = availableWidth / 4;
+    }
+    return resize;
   }
 
   class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,11 +62,9 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
       ButterKnife.bind(this, itemView);
     }
 
-    void bindCellData(Photo data) {
+    void bindCellData(Photo data, int resize) {
       Picasso.with(itemView.getContext())
-          .load("file:///" + data.getPath())
-          .fit()
-          .centerInside()
+          .load("file:///" + data.getPath()).resize(resize, resize).centerCrop()
           .into(ivPhoto);
       itemView.setOnClickListener(v -> {
         if (data.isSelected()) {
