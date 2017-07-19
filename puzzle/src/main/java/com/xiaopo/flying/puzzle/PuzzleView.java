@@ -44,12 +44,12 @@ public class PuzzleView extends View {
   private PuzzlePiece handlingPiece;
   private PuzzlePiece replacePiece;
   private PuzzlePiece previousHandlingPiece;
-  private Paint linePaint;
 
+  private Paint linePaint;
   private Paint selectedAreaPaint;
   private Paint handleBarPaint;
-  private float downX;
 
+  private float downX;
   private float downY;
   private float previousDistance;
   private PointF midPoint;
@@ -585,6 +585,7 @@ public class PuzzleView extends View {
   public void addPiece(Bitmap bitmap) {
     BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),bitmap);
     bitmapDrawable.setAntiAlias(true);
+    bitmapDrawable.setFilterBitmap(true);
 
     addPiece(bitmapDrawable);
   }
