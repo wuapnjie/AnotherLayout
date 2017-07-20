@@ -2,7 +2,6 @@ package com.xiaopo.flying.anotherlayout.ui.process;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -214,7 +213,9 @@ public class ProcessActivity extends AppCompatActivity {
     List<ColorItem> allColors = Colors.all();
     allColors.get(0).setSelected(true);
     MultiTypeAdapter adapter = new MultiTypeAdapter(allColors);
-    adapter.register(ColorItem.class, new ColorItemBinder(colorView, allColors));
+    ColorItemBinder colorItemBinder = new ColorItemBinder(colorView, allColors);
+    colorItemBinder.setOnColorSelectedListener(color -> puzzleView.setBackgroundColor(color));
+    adapter.register(ColorItem.class, colorItemBinder);
     colorView.setAdapter(adapter);
     colorView.setLayoutManager(
         new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

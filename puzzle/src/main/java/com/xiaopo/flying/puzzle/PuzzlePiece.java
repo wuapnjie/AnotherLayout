@@ -26,6 +26,8 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
  * @author wupanjie
  */
 @SuppressWarnings("WeakerAccess") public class PuzzlePiece {
+  private static Xfermode SRC_IN = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+
   private Drawable drawable;
   private Matrix matrix;
   private Matrix previousMatrix;
@@ -75,7 +77,6 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
   }
 
   private void draw(Canvas canvas, int alpha, boolean needClip) {
-    //canvas.save();
     if (drawable instanceof BitmapDrawable){
       int saved = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
 
@@ -83,14 +84,17 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
       Paint paint= ((BitmapDrawable) drawable).getPaint();
 
       paint.setColor(Color.WHITE);
-      Xfermode srcIn = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
-      canvas.drawPath(area.getAreaPath(),paint);
-      paint.setXfermode(srcIn);
+      paint.setAlpha(alpha);
+      if (needClip) {
+        canvas.drawPath(area.getAreaPath(), paint);
+        paint.setXfermode(SRC_IN);
+      }
       canvas.drawBitmap(bitmap,matrix,paint);
       paint.setXfermode(null);
 
       canvas.restoreToCount(saved);
     }else {
+      canvas.save();
       if (needClip) {
         canvas.clipPath(area.getAreaPath());
       }
