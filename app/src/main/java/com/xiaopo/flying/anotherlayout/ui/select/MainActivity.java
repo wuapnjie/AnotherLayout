@@ -68,6 +68,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener, WeakHandler.IHandler {
   private static final String TAG = MainActivity.class.getSimpleName();
+  private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
 
   @BindView(R.id.puzzle_list) RecyclerView puzzleList;
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity
     //about photo list
     photoList = new RecyclerView(this);
     photoAdapter = new MultiTypeAdapter();
-    PhotoBinder photoBinder = new PhotoBinder(selectedPositions);
+    PhotoBinder photoBinder = new PhotoBinder(selectedPositions, MAX_PHOTO_COUNT);
     photoBinder.setOnPhotoSelectedListener((photo, position) -> {
       int pos = allPhotosWithAlbum.indexOf(photo);
       albumAdapter.notifyItemChanged(pos);
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity
 
     albumList = new RecyclerView(this);
     albumAdapter = new MultiTypeAdapter();
-    PhotoBinder allPhotosWithAlbumBinder = new PhotoBinder(selectedPositions);
+    PhotoBinder allPhotosWithAlbumBinder = new PhotoBinder(selectedPositions, MAX_PHOTO_COUNT);
     allPhotosWithAlbumBinder.setOnPhotoSelectedListener((photo, position) -> {
       int pos = allPhotos.indexOf(photo);
       photoAdapter.notifyItemChanged(pos);
@@ -254,7 +255,6 @@ public class MainActivity extends AppCompatActivity
       }
     };
 
-    //noinspection SuspiciousNameCombination
     Picasso.with(this)
         .load("file:///" + path)
         .resize(deviceWidth, deviceWidth)

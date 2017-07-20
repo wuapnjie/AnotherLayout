@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/handle_detail_height"
+    android:orientation="horizontal"
+    tools:background="@color/black"
+    >
+    <ImageView
+        android:id="@+id/btn_flip_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_flip_horizontal_white_24dp"
+        />
+
+    <ImageView
+        android:id="@+id/btn_flip_horizontal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_flip_white_vertical_24dp"
+        />
+
+    <ImageView
+        android:id="@+id/btn_rotate_left"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_rotate_left_white_24dp"
+        />
+
+    <ImageView
+        android:id="@+id/btn_rotate_right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_weight="1"
+        android:scaleType="centerInside"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_rotate_right_white_24dp"
+        />
+
+</LinearLayout>

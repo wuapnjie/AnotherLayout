@@ -200,7 +200,34 @@ public class ProcessActivity extends AppCompatActivity {
   }
 
   private View transformView() {
-    return null;
+    View transformView = LayoutInflater.from(this).inflate(R.layout.handle_item_transform, null);
+    View flipHorizontal = transformView.findViewById(R.id.btn_flip_horizontal);
+    View flipVertical = transformView.findViewById(R.id.btn_flip_vertical);
+    View rotateLeft = transformView.findViewById(R.id.btn_rotate_left);
+    View rotateRight = transformView.findViewById(R.id.btn_rotate_right);
+
+    View.OnClickListener listener = view -> {
+      switch (view.getId()) {
+        case R.id.btn_flip_horizontal:
+          puzzleView.flipHorizontally();
+          break;
+        case R.id.btn_flip_vertical:
+          puzzleView.flipVertically();
+          break;
+        case R.id.btn_rotate_left:
+          puzzleView.rotate(-90f);
+          break;
+        case R.id.btn_rotate_right:
+          puzzleView.rotate(90f);
+          break;
+      }
+    };
+
+    flipVertical.setOnClickListener(listener);
+    flipHorizontal.setOnClickListener(listener);
+    rotateLeft.setOnClickListener(listener);
+    rotateRight.setOnClickListener(listener);
+    return transformView;
   }
 
   private View ratioView() {

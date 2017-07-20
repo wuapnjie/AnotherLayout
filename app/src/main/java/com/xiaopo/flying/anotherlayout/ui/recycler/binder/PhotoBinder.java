@@ -23,10 +23,13 @@ import me.drakeet.multitype.ItemViewBinder;
 public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
   private final Set<Integer> selectedPositions;
   private OnPhotoSelectedListener onPhotoSelectedListener;
+  private OnPhotoMaxCountListener onPhotoMaxCountListener;
   private int resize;
+  private final int maxCount;
 
-  public PhotoBinder(Set<Integer> selectedPositions) {
+  public PhotoBinder(Set<Integer> selectedPositions, int maxCount) {
     this.selectedPositions = selectedPositions;
+    this.maxCount = maxCount;
   }
 
   @NonNull @Override
@@ -42,6 +45,10 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
 
   public void setOnPhotoSelectedListener(OnPhotoSelectedListener onPhotoSelectedListener) {
     this.onPhotoSelectedListener = onPhotoSelectedListener;
+  }
+
+  public void setOnPhotoMaxCountListener(OnPhotoMaxCountListener onPhotoMaxCountListener) {
+    this.onPhotoMaxCountListener = onPhotoMaxCountListener;
   }
 
   private int imageResizeWidth(Context context) {
@@ -72,6 +79,12 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
           data.setSelected(false);
           selectedPositions.remove(position());
         } else {
+          if (selectedPositions.size() >= maxCount) {
+            if (onPhotoMaxCountListener != null) {
+              onPhotoMaxCountListener.onPhotoMaxCount();
+            }
+            return;
+          }
           shadow.setVisibility(View.VISIBLE);
           data.setSelected(true);
           selectedPositions.add(position());
@@ -96,5 +109,9 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
 
   public interface OnPhotoSelectedListener {
     void onPhotoSelected(Photo photo, int position);
+  }
+
+  public interface OnPhotoMaxCountListener {
+    void onPhotoMaxCount();
   }
 }
