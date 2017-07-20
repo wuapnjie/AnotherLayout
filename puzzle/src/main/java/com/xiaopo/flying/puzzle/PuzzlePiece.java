@@ -1,11 +1,18 @@
 package com.xiaopo.flying.puzzle;
 
 import android.animation.ValueAnimator;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Xfermode;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -68,17 +75,32 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
   }
 
   private void draw(Canvas canvas, int alpha, boolean needClip) {
-    canvas.save();
+    //canvas.save();
+    if (drawable instanceof BitmapDrawable){
+      int saved = canvas.saveLayer(null, null, Canvas.ALL_SAVE_FLAG);
 
-    if (needClip) {
-      canvas.clipPath(area.getAreaPath());
+      Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+      Paint paint= ((BitmapDrawable) drawable).getPaint();
+
+      paint.setColor(Color.WHITE);
+      Xfermode srcIn = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+      canvas.drawPath(area.getAreaPath(),paint);
+      paint.setXfermode(srcIn);
+      canvas.drawBitmap(bitmap,matrix,paint);
+      paint.setXfermode(null);
+
+      canvas.restoreToCount(saved);
+    }else {
+      if (needClip) {
+        canvas.clipPath(area.getAreaPath());
+      }
+      canvas.concat(matrix);
+      drawable.setBounds(drawableBounds);
+      drawable.setAlpha(alpha);
+      drawable.draw(canvas);
+
+      canvas.restore();
     }
-    canvas.concat(matrix);
-    drawable.setBounds(drawableBounds);
-    drawable.setAlpha(alpha);
-    drawable.draw(canvas);
-
-    canvas.restore();
   }
 
   public Area getArea() {
