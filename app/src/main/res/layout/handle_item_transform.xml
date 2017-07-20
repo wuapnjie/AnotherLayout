@@ -7,7 +7,7 @@
     tools:background="@color/black"
     >
     <ImageView
-        android:id="@+id/btn_flip_vertical"
+        android:id="@+id/btn_flip_horizontal"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_weight="1"
         android:scaleType="centerInside"
@@ -17,7 +17,7 @@
         />
 
     <ImageView
-        android:id="@+id/btn_flip_horizontal"
+        android:id="@+id/btn_flip_vertical"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_weight="1"
         android:scaleType="centerInside"

@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        app:radian="30"
+        app:radian="0"
         app:animation_duration="300"
         app:handle_bar_color="@color/black"
         app:line_color="@color/black"

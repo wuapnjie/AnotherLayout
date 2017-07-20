@@ -341,5 +341,16 @@ public class DegreeSeekBar extends View {
 
     void onScrollEnd();
   }
+
+  public static abstract class SimpleScrollingListener implements ScrollingListener {
+    @Override public void onScrollStart() {
+    }
+
+    @Override public void onScroll(int currentDegrees) {
+    }
+
+    @Override public void onScrollEnd() {
+    }
+  }
 }
 
