@@ -20,11 +20,14 @@ import static com.xiaopo.flying.puzzle.slant.SlantUtils.cutAreaWith;
  * @author wupanjie
  */
 public abstract class SlantPuzzleLayout implements PuzzleLayout {
+  private RectF bounds;
   private SlantArea outerArea;
 
   private List<Line> outerLines = new ArrayList<>(4);
   private List<SlantArea> areas = new ArrayList<>();
   private List<Line> lines = new ArrayList<>();
+
+  private float padding;
 
   private Comparator<SlantArea> areaComparator = new SlantArea.AreaComparator();
 
@@ -32,13 +35,15 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
 
   }
 
-  @Override public void setOuterBounds(RectF baseRect) {
+  @Override public void setOuterBounds(RectF bounds) {
     reset();
 
-    CrossoverPointF leftTop = new CrossoverPointF(baseRect.left, baseRect.top);
-    CrossoverPointF rightTop = new CrossoverPointF(baseRect.right, baseRect.top);
-    CrossoverPointF leftBottom = new CrossoverPointF(baseRect.left, baseRect.bottom);
-    CrossoverPointF rightBottom = new CrossoverPointF(baseRect.right, baseRect.bottom);
+    this.bounds = bounds;
+
+    CrossoverPointF leftTop = new CrossoverPointF(bounds.left, bounds.top);
+    CrossoverPointF rightTop = new CrossoverPointF(bounds.right, bounds.top);
+    CrossoverPointF leftBottom = new CrossoverPointF(bounds.left, bounds.bottom);
+    CrossoverPointF rightBottom = new CrossoverPointF(bounds.right, bounds.bottom);
 
     SlantLine lineLeft = new SlantLine(leftTop, leftBottom, Line.Direction.VERTICAL);
     SlantLine lineTop = new SlantLine(leftTop, rightTop, Line.Direction.HORIZONTAL);
@@ -172,6 +177,25 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
 
   @Override public List<Line> getLines() {
     return lines;
+  }
+
+  @Override
+  public void setPadding(float padding) {
+    this.padding = padding;
+
+    outerArea.lineLeft.startPoint().set(bounds.left + padding, bounds.top + padding);
+    outerArea.lineLeft.endPoint().set(bounds.left + padding, bounds.bottom - padding);
+
+    outerArea.lineRight.startPoint().set(bounds.right - padding, bounds.top + padding);
+    outerArea.lineRight.endPoint().set(bounds.right - padding, bounds.bottom - padding);
+
+    outerArea.updateCornerPoints();
+    update();
+  }
+
+  @Override
+  public float getPadding() {
+    return padding;
   }
 
   protected List<SlantArea> addLine(int position, Line.Direction direction, float ratio) {

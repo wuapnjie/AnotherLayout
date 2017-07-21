@@ -28,6 +28,7 @@ public class PuzzleView extends View {
   private enum ActionMode {
     NONE, DRAG, ZOOM, MOVE, SWAP
   }
+
   private ActionMode currentMode = ActionMode.NONE;
 
   private List<PuzzlePiece> puzzlePieces = new ArrayList<>();
@@ -67,7 +68,8 @@ public class PuzzleView extends View {
   private OnPieceSelectedListener onPieceSelectedListener;
 
   private Runnable switchToSwapAction = new Runnable() {
-    @Override public void run() {
+    @Override
+    public void run() {
       currentMode = ActionMode.SWAP;
       invalidate();
     }
@@ -90,8 +92,10 @@ public class PuzzleView extends View {
     TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PuzzleView);
     lineSize = ta.getInt(R.styleable.PuzzleView_line_size, 4);
     lineColor = ta.getColor(R.styleable.PuzzleView_line_color, Color.WHITE);
-    selectedLineColor = ta.getColor(R.styleable.PuzzleView_selected_line_color, Color.parseColor("#99BBFB"));
-    handleBarColor = ta.getColor(R.styleable.PuzzleView_handle_bar_color, Color.parseColor("#99BBFB"));
+    selectedLineColor =
+        ta.getColor(R.styleable.PuzzleView_selected_line_color, Color.parseColor("#99BBFB"));
+    handleBarColor =
+        ta.getColor(R.styleable.PuzzleView_handle_bar_color, Color.parseColor("#99BBFB"));
     piecePadding = ta.getDimensionPixelSize(R.styleable.PuzzleView_piece_padding, 0);
     needDrawLine = ta.getBoolean(R.styleable.PuzzleView_need_draw_line, false);
     needDrawOuterLine = ta.getBoolean(R.styleable.PuzzleView_need_draw_outer_line, false);
@@ -127,18 +131,10 @@ public class PuzzleView extends View {
     midPoint = new PointF();
   }
 
-  @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+  @Override
+  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
-    bounds.left = getPaddingLeft() + piecePadding;
-    bounds.top = getPaddingTop() + piecePadding;
-    bounds.right = w - getPaddingRight() - piecePadding;
-    bounds.bottom = h - getPaddingBottom() - piecePadding;
-
-    if (puzzleLayout != null) {
-      puzzleLayout.reset();
-      puzzleLayout.setOuterBounds(bounds);
-      puzzleLayout.layout();
-    }
+    resetPuzzleBounds();
 
     if (puzzlePieces.size() != 0) {
       for (int i = 0; i < puzzlePieces.size(); i++) {
@@ -150,7 +146,21 @@ public class PuzzleView extends View {
     invalidate();
   }
 
-  @Override protected void onDraw(Canvas canvas) {
+  private void resetPuzzleBounds() {
+    bounds.left = getPaddingLeft();
+    bounds.top = getPaddingTop();
+    bounds.right = getWidth() - getPaddingRight();
+    bounds.bottom = getHeight() - getPaddingBottom();
+
+    if (puzzleLayout != null) {
+      puzzleLayout.reset();
+      puzzleLayout.setOuterBounds(bounds);
+      puzzleLayout.layout();
+    }
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
     if (puzzleLayout == null) {
@@ -226,13 +236,8 @@ public class PuzzleView extends View {
   }
 
   private void drawLine(Canvas canvas, Line line) {
-    if (line.direction() == Line.Direction.HORIZONTAL) {
-      canvas.drawLine(line.startPoint().x - piecePadding, line.startPoint().y, line.endPoint().x + piecePadding,
-          line.endPoint().y, linePaint);
-    } else {
-      canvas.drawLine(line.startPoint().x, line.startPoint().y - piecePadding, line.endPoint().x,
-          line.endPoint().y + piecePadding, linePaint);
-    }
+    canvas.drawLine(line.startPoint().x, line.startPoint().y, line.endPoint().x, line.endPoint().y,
+        linePaint);
   }
 
   public void setPuzzleLayout(PuzzleLayout puzzleLayout) {
@@ -246,7 +251,8 @@ public class PuzzleView extends View {
     invalidate();
   }
 
-  @SuppressLint("ClickableViewAccessibility") @Override
+  @SuppressLint("ClickableViewAccessibility")
+  @Override
   public boolean onTouchEvent(MotionEvent event) {
     if (!touchEnable) {
       return super.onTouchEvent(event);
@@ -326,7 +332,8 @@ public class PuzzleView extends View {
   }
 
   // 执行Action前的准备工作
-  @SuppressWarnings("unused") private void prepareAction(MotionEvent event) {
+  @SuppressWarnings("unused")
+  private void prepareAction(MotionEvent event) {
     switch (currentMode) {
       case NONE:
         break;
@@ -460,7 +467,8 @@ public class PuzzleView extends View {
 
   public void replace(final Drawable bitmapDrawable) {
     post(new Runnable() {
-      @Override public void run() {
+      @Override
+      public void run() {
         if (handlingPiece == null) {
           return;
         }
@@ -583,7 +591,7 @@ public class PuzzleView extends View {
   }
 
   public void addPiece(Bitmap bitmap) {
-    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),bitmap);
+    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
     bitmapDrawable.setAntiAlias(true);
     bitmapDrawable.setFilterBitmap(true);
 
@@ -702,8 +710,14 @@ public class PuzzleView extends View {
 
   public void setPiecePadding(float padding) {
     this.piecePadding = padding;
-    for (PuzzlePiece piece : puzzlePieces) {
+    if (puzzleLayout != null) {
+      puzzleLayout.setPadding(padding);
+    }
+
+    for (int i = 0; i < puzzlePieces.size(); i++) {
+      PuzzlePiece piece = puzzlePieces.get(i);
       piece.getArea().setPadding(padding);
+      piece.fillArea(this, false);
     }
 
     invalidate();
@@ -711,7 +725,8 @@ public class PuzzleView extends View {
 
   public void setPieceRadian(float radian) {
     this.pieceRadian = radian;
-    for (PuzzlePiece piece : puzzlePieces) {
+    for (int i = 0; i < puzzlePieces.size(); i++) {
+      PuzzlePiece piece = puzzlePieces.get(i);
       piece.getArea().setRadian(radian);
     }
 

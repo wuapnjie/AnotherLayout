@@ -28,4 +28,8 @@ public interface PuzzleLayout {
   float width();
 
   float height();
+
+  void setPadding(float padding);
+
+  float getPadding();
 }

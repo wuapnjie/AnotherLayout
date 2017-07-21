@@ -19,11 +19,14 @@ import static com.xiaopo.flying.puzzle.straight.StraightUtils.cutAreaSpiral;
  * @author wupanjie
  */
 public abstract class StraightPuzzleLayout implements PuzzleLayout {
+  private RectF bounds;
   private StraightArea outerArea;
 
   private List<StraightArea> areas = new ArrayList<>();
   private List<Line> lines = new ArrayList<>();
   private List<Line> outerLines = new ArrayList<>(4);
+
+  private float padding;
 
   private Comparator<StraightArea> areaComparator = new StraightArea.AreaComparator();
 
@@ -32,6 +35,10 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
   }
 
   @Override public void setOuterBounds(RectF bounds) {
+    reset();
+
+    this.bounds = bounds;
+
     PointF one = new PointF(bounds.left, bounds.top);
     PointF two = new PointF(bounds.right, bounds.top);
     PointF three = new PointF(bounds.left, bounds.bottom);
@@ -49,7 +56,11 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     outerLines.add(lineRight);
     outerLines.add(lineBottom);
 
-    outerArea = new StraightArea(bounds);
+    outerArea = new StraightArea();
+    outerArea.lineLeft = lineLeft;
+    outerArea.lineTop = lineTop;
+    outerArea.lineRight = lineRight;
+    outerArea.lineBottom = lineBottom;
 
     areas.clear();
     areas.add(outerArea);
@@ -95,6 +106,24 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
 
   @Override public StraightArea getOuterArea() {
     return outerArea;
+  }
+
+  @Override
+  public void setPadding(float padding) {
+    this.padding = padding;
+
+    outerArea.lineLeft.startPoint().set(bounds.left + padding, bounds.top + padding);
+    outerArea.lineLeft.endPoint().set(bounds.left + padding, bounds.bottom - padding);
+
+    outerArea.lineRight.startPoint().set(bounds.right - padding, bounds.top + padding);
+    outerArea.lineRight.endPoint().set(bounds.right - padding, bounds.bottom - padding);
+
+    update();
+  }
+
+  @Override
+  public float getPadding() {
+    return padding;
   }
 
   protected List<StraightArea> addLine(int position, Line.Direction direction, float ratio) {
