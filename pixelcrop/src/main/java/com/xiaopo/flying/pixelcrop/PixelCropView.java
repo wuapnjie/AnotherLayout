@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -217,7 +216,7 @@ public class PixelCropView extends View {
 
   @Override public boolean onTouchEvent(MotionEvent event) {
     if (mCropWrapper == null) return super.onTouchEvent(event);
-    final int action = MotionEventCompat.getActionMasked(event);
+    final int action =event.getAction();
     switch (action) {
       case MotionEvent.ACTION_DOWN:
         mDownX = event.getX();

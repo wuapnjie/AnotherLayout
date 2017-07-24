@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
@@ -26,7 +27,7 @@ import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
 import com.xiaopo.flying.poiphoto.Define;
 import com.xiaopo.flying.poiphoto.PhotoPicker;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.SquarePuzzleView;
+import com.xiaopo.flying.puzzle.PuzzleView;
 import java.util.ArrayList;
 import java.util.List;
 import me.drakeet.multitype.MultiTypeAdapter;
@@ -41,14 +42,14 @@ public class ProcessActivity extends AppCompatActivity {
   public static final String INTENT_KEY_TYPE = "piece_type";
 
   @BindView(R.id.toolbar) Toolbar toolbar;
-  @BindView(R.id.puzzle_view) SquarePuzzleView puzzleView;
+  @BindView(R.id.puzzle_view) PuzzleView puzzleView;
   @BindView(R.id.handle_container) HandleContainer handleContainer;
 
   private PuzzleLayout puzzleLayout;
   private List<String> bitmapPaint;
 
   private List<Target> targets = new ArrayList<>();
-  private int deviceWidth = 0;
+  private int deviceSize = 0;
   private List<HandleItem> handleItems = new ArrayList<>(5);
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class ProcessActivity extends AppCompatActivity {
     setContentView(R.layout.activity_process);
     ButterKnife.bind(this);
 
-    deviceWidth = getResources().getDisplayMetrics().widthPixels;
+    deviceSize = getResources().getDisplayMetrics().widthPixels;
 
     int type = getIntent().getIntExtra(INTENT_KEY_TYPE, 0);
     int pieceSize = getIntent().getIntExtra(INTENT_KEY_SIZE, 0);
@@ -105,9 +106,7 @@ public class ProcessActivity extends AppCompatActivity {
       };
 
       //noinspection SuspiciousNameCombination
-      Picasso.with(this)
-          .load("file:///" + bitmapPaint.get(i))
-          .resize(deviceWidth, deviceWidth)
+      Picasso.with(this).load("file:///" + bitmapPaint.get(i)).resize(deviceSize, deviceSize)
           .centerInside()
           .config(Bitmap.Config.RGB_565)
           .into(target);
@@ -120,6 +119,10 @@ public class ProcessActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.toolbar);
     toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
+    ViewGroup.LayoutParams params = puzzleView.getLayoutParams();
+    params.width = deviceSize;
+    params.height = deviceSize;
+    puzzleView.setLayoutParams(params);
     puzzleView.setPuzzleLayout(puzzleLayout);
     puzzleView.setTouchEnable(true);
     //puzzleView.setPiecePadding(20);
@@ -154,9 +157,7 @@ public class ProcessActivity extends AppCompatActivity {
       };
 
       //noinspection SuspiciousNameCombination
-      Picasso.with(this)
-          .load("file:///" + path)
-          .resize(deviceWidth, deviceWidth)
+      Picasso.with(this).load("file:///" + path).resize(deviceSize, deviceSize)
           .centerInside()
           .config(Bitmap.Config.RGB_565)
           .into(target);
@@ -241,7 +242,36 @@ public class ProcessActivity extends AppCompatActivity {
   }
 
   private View ratioView() {
-    return null;
+    View ratioView = LayoutInflater.from(this).inflate(R.layout.handle_item_crop, null);
+    View ratio_1_1 = ratioView.findViewById(R.id.btn_crop_square);
+    View ratio_4_3 = ratioView.findViewById(R.id.btn_crop_4_3);
+    View ratio_16_9 = ratioView.findViewById(R.id.btn_crop_16_9);
+
+    ViewGroup.LayoutParams params = puzzleView.getLayoutParams();
+    View.OnClickListener listener = view -> {
+      switch (view.getId()) {
+        case R.id.btn_crop_square:
+          params.width = deviceSize;
+          params.height = deviceSize;
+          break;
+        case R.id.btn_crop_4_3:
+          params.width = deviceSize;
+          params.height = deviceSize / 4 * 3;
+          break;
+        case R.id.btn_crop_16_9:
+          params.width = deviceSize;
+          params.height = deviceSize / 16 * 9;
+          break;
+      }
+
+      puzzleView.setNeedResetPieceMatrix(false);
+      puzzleView.setLayoutParams(params);
+    };
+
+    ratio_1_1.setOnClickListener(listener);
+    ratio_4_3.setOnClickListener(listener);
+    ratio_16_9.setOnClickListener(listener);
+    return ratioView;
   }
 
   private View colorView() {

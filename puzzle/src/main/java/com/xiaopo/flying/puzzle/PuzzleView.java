@@ -65,6 +65,8 @@ public class PuzzleView extends View {
   private float piecePadding;
   private float pieceRadian;
 
+  private boolean needResetPieceMatrix = true;
+
   private OnPieceSelectedListener onPieceSelectedListener;
 
   private Runnable switchToSwapAction = new Runnable() {
@@ -140,7 +142,13 @@ public class PuzzleView extends View {
       for (int i = 0; i < puzzlePieces.size(); i++) {
         PuzzlePiece piece = puzzlePieces.get(i);
         piece.setArea(puzzleLayout.getArea(i));
-        piece.set(MatrixUtils.generateMatrix(piece, 0f));
+        if (needResetPieceMatrix) {
+          piece.set(MatrixUtils.generateMatrix(piece, 0f));
+        }else {
+          piece.fillArea(this,false);
+        }
+        piece.getArea().setPadding(piecePadding);
+        piece.getArea().setRadian(pieceRadian);
       }
     }
     invalidate();
@@ -156,6 +164,7 @@ public class PuzzleView extends View {
       puzzleLayout.reset();
       puzzleLayout.setOuterBounds(bounds);
       puzzleLayout.layout();
+      puzzleLayout.setPadding(piecePadding);
     }
   }
 
@@ -731,6 +740,10 @@ public class PuzzleView extends View {
     }
 
     invalidate();
+  }
+
+  public void setNeedResetPieceMatrix(boolean needResetPieceMatrix) {
+    this.needResetPieceMatrix = needResetPieceMatrix;
   }
 
   public float getPiecePadding() {

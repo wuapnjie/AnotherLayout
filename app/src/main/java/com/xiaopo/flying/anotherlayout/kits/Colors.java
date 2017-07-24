@@ -59,20 +59,17 @@ import java.util.List;
   public static final ColorItem c43 = new ColorItem(Color.rgb(232, 132, 55));
   public static final ColorItem c44 = new ColorItem(Color.rgb(236, 181, 62));
   public static final ColorItem c45 = new ColorItem(Color.rgb(246, 218, 140));
-  public static final ColorItem c46 = new ColorItem(Color.rgb(216, 57, 100));
-  public static final ColorItem c47 = new ColorItem(Color.rgb(227, 82, 65));
-  public static final ColorItem c48 = new ColorItem(Color.rgb(231, 148, 176));
-  public static final ColorItem c49 = new ColorItem(Color.rgb(228, 158, 156));
-  public static final ColorItem c50 = new ColorItem(Color.rgb(232, 132, 55));
-  public static final ColorItem c51 = new ColorItem(Color.rgb(236, 181, 62));
-  public static final ColorItem c52 = new ColorItem(Color.rgb(246, 218, 140));
-  public static final ColorItem c53 = new ColorItem(Color.rgb(254, 244, 168));
-  public static final ColorItem c54 = new ColorItem(Color.rgb(253, 234, 96));
 
   @NonNull public static List<ColorItem> all() {
-    return Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17,
+    List<ColorItem> items =
+        Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17,
         c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35,
-        c36, c37, c38, c39, c40, c41, c42, c43, c44, c45, c46, c47, c48, c49, c50, c51, c52, c53,
-        c54);
+        c36, c37, c38, c39, c40, c41, c42, c43, c44, c45);
+
+    for (ColorItem item : items){
+      item.setSelected(false);
+    }
+
+    return items;
   }
 }

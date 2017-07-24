@@ -33,7 +33,7 @@ dependencies {
 
   // fabric crash
   compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-    transitive = true;
+    transitive = true
   }
 
   // support library
