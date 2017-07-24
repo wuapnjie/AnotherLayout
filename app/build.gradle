@@ -43,6 +43,9 @@ dependencies {
   // picasso
   implementation "com.squareup.picasso:picasso:$picasso_version"
 
+  // database
+  implementation "com.squareup.sqlbrite2:sqlbrite:$sql_brite_version"
+
   // reactive
   implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
   implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"

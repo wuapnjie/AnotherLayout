@@ -9,6 +9,7 @@ buildscript {
     and_permission_version = '1.0.8'
     multi_type_version = '3.1.0'
     butter_knife_version = '8.5.1'
+    sql_brite_version = '2.0.0'
   }
 
   repositories {

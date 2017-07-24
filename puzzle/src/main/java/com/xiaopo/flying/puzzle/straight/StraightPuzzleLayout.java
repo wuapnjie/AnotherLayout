@@ -30,6 +30,8 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
 
   private Comparator<StraightArea> areaComparator = new StraightArea.AreaComparator();
 
+  private ArrayList<Step> steps = new ArrayList<>();
+
   protected StraightPuzzleLayout() {
 
   }
@@ -98,6 +100,7 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     lines.clear();
     areas.clear();
     areas.add(outerArea);
+    steps.clear();
   }
 
   @Override public Area getArea(int position) {
@@ -126,9 +129,15 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     return padding;
   }
 
-  protected List<StraightArea> addLine(int position, Line.Direction direction, float ratio) {
+  protected void addLine(int position, Line.Direction direction, float ratio) {
     StraightArea area = areas.get(position);
-    return addLine(area, direction, ratio);
+    addLine(area, direction, ratio);
+
+    Step step = new Step();
+    step.type = Step.ADD_LINE;
+    step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
+    step.position = position;
+    steps.add(step);
   }
 
   private List<StraightArea> addLine(StraightArea area, Line.Direction direction, float ratio) {
@@ -150,13 +159,20 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     for (int i = part; i > 1; i--) {
       temp = addLine(temp, direction, (float) (i - 1) / i).get(0);
     }
+
+    Step step = new Step();
+    step.type = Step.CUT_EQUAL_PART_TWO;
+    step.part = part;
+    step.position = position;
+    step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
+    steps.add(step);
   }
 
-  protected List<StraightArea> addCross(int position, float ratio) {
-    return addCross(position, ratio, ratio);
+  protected void addCross(int position, float ratio) {
+    addCross(position, ratio, ratio);
   }
 
-  protected List<StraightArea> addCross(int position, float horizontalRatio, float verticalRatio) {
+  protected void addCross(int position, float horizontalRatio, float verticalRatio) {
     StraightArea area = areas.get(position);
     areas.remove(area);
     StraightLine horizontal = createLine(area, Line.Direction.HORIZONTAL, horizontalRatio);
@@ -170,10 +186,13 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     updateLineLimit();
     sortAreas();
 
-    return newAreas;
+    Step step = new Step();
+    step.type = Step.ADD_CROSS;
+    step.position = position;
+    steps.add(step);
   }
 
-  protected List<StraightArea> cutAreaEqualPart(int position, int hSize, int vSize) {
+  protected void cutAreaEqualPart(int position, int hSize, int vSize) {
     StraightArea area = areas.get(position);
     areas.remove(area);
     Pair<List<StraightLine>, List<StraightArea>> increased =
@@ -187,10 +206,15 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     updateLineLimit();
     sortAreas();
 
-    return newAreas;
+    Step step = new Step();
+    step.type = Step.CUT_EQUAL_PART_ONE;
+    step.position = position;
+    step.hSize = hSize;
+    step.vSize = vSize;
+    steps.add(step);
   }
 
-  protected List<StraightArea> cutSpiral(int position) {
+  protected void cutSpiral(int position) {
     StraightArea area = areas.get(position);
     areas.remove(area);
     Pair<List<StraightLine>, List<StraightArea>> spilt = cutAreaSpiral(area);
@@ -201,7 +225,11 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     updateLineLimit();
     sortAreas();
 
-    return spilt.second;
+    Step step = new Step();
+    step.type = Step.CUT_SPIRAL;
+    step.position = position;
+    steps.add(step);
+
   }
 
   private void sortAreas() {
@@ -264,5 +292,19 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
         }
       }
     }
+  }
+
+  @Override
+  public Info generateInfo() {
+    Info info = new Info();
+    info.type = Info.TYPE_STRAIGHT;
+    info.steps = steps;
+    ArrayList<LineInfo> lineInfos = new ArrayList<>();
+    for (Line line : lines) {
+      LineInfo lineInfo = new LineInfo(line);
+      lineInfos.add(lineInfo);
+    }
+    info.lineInfos = lineInfos;
+    return info;
   }
 }

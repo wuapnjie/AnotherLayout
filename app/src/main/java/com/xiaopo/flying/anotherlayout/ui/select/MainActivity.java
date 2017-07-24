@@ -44,7 +44,6 @@ import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoHeaderBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.AlbumItemDecoration;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.PhotoItemDecoration;
-import com.xiaopo.flying.anotherlayout.ui.widget.BlurView;
 import com.xiaopo.flying.poiphoto.PhotoManager;
 import com.xiaopo.flying.poiphoto.datatype.Album;
 import com.xiaopo.flying.poiphoto.datatype.Photo;
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity
   @BindView(R.id.puzzle_list) RecyclerView puzzleList;
   @BindView(R.id.tab_layout) TabLayout tabLayout;
   @BindView(R.id.toolbar) Toolbar toolbar;
-  @BindView(R.id.blur_view) BlurView blurView;
   @BindView(R.id.viewPager) ViewPager viewPager;
   @BindView(R.id.content_main) FrameLayout contentMain;
 
@@ -213,14 +211,6 @@ public class MainActivity extends AppCompatActivity
 
     //about others
     tabLayout.setupWithViewPager(viewPager);
-
-    blurView.setBlurredView(puzzleList);
-    puzzleList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-        blurView.invalidate();
-      }
-    });
 
     setSupportActionBar(toolbar);
     DrawerLayout drawer = findViewById(R.id.drawer_layout);

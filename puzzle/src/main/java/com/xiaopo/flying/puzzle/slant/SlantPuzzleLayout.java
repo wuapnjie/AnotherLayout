@@ -31,6 +31,8 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
 
   private Comparator<SlantArea> areaComparator = new SlantArea.AreaComparator();
 
+  private ArrayList<Step> steps = new ArrayList<>();
+
   protected SlantPuzzleLayout() {
 
   }
@@ -135,6 +137,7 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     lines.clear();
     areas.clear();
     areas.add(outerArea);
+    steps.clear();
   }
 
   @Override public void update() {
@@ -216,10 +219,16 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     updateLineLimit();
     sortAreas();
 
+    Step step = new Step();
+    step.type = Step.ADD_LINE;
+    step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
+    step.position = position;
+    steps.add(step);
+
     return increasedAreas;
   }
 
-  protected List<SlantArea> addCross(int position, float startRatio1, float endRatio1,
+  protected void addCross(int position, float startRatio1, float endRatio1,
       float startRatio2, float endRatio2) {
     SlantArea area = areas.get(position);
     areas.remove(area);
@@ -234,15 +243,18 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     areas.addAll(increasedAreas);
     sortAreas();
 
-    return increasedAreas;
+    Step step = new Step();
+    step.type = Step.ADD_CROSS;
+    step.position = position;
+    steps.add(step);
   }
 
-  protected List<SlantArea> cutArea(int position, int horizontalSize, int verticalSize) {
+  protected void cutArea(int position, int hSize, int vSize) {
     SlantArea area = areas.get(position);
     areas.remove(area);
 
     Pair<List<SlantLine>, List<SlantArea>> spilt =
-        SlantUtils.cutAreaWith(area, horizontalSize, verticalSize);
+        SlantUtils.cutAreaWith(area, hSize, vSize);
 
     lines.addAll(spilt.first);
     areas.addAll(spilt.second);
@@ -250,6 +262,25 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     updateLineLimit();
     sortAreas();
 
-    return spilt.second;
+    Step step = new Step();
+    step.type = Step.CUT_EQUAL_PART_ONE;
+    step.position = position;
+    step.hSize = hSize;
+    step.vSize = vSize;
+    steps.add(step);
+  }
+
+  @Override
+  public Info generateInfo() {
+    Info info = new Info();
+    info.type = Info.TYPE_SLANT;
+    info.steps = steps;
+    ArrayList<LineInfo> lineInfos = new ArrayList<>();
+    for (Line line : lines) {
+      LineInfo lineInfo = new LineInfo(line);
+      lineInfos.add(lineInfo);
+    }
+    info.lineInfos = lineInfos;
+    return info;
   }
 }
