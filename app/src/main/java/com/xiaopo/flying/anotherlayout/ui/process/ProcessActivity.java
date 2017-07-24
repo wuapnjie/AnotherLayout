@@ -21,6 +21,7 @@ import com.xiaopo.flying.anotherlayout.kits.Colors;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
+import com.xiaopo.flying.anotherlayout.model.data.Stores;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ColorItemBinder;
 import com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer;
 import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
@@ -118,6 +119,16 @@ public class ProcessActivity extends AppCompatActivity {
   private void initView() {
     Toolbar toolbar = findViewById(R.id.toolbar);
     toolbar.setNavigationOnClickListener(v -> onBackPressed());
+    toolbar.inflateMenu(R.menu.menu_process);
+    toolbar.setOnMenuItemClickListener(item -> {
+      switch (item.getItemId()){
+        case R.id.action_save_layout:
+          PuzzleLayout.Info info = puzzleLayout.generateInfo();
+          Stores.instance(this).saveLayout(info);
+          break;
+      }
+      return true;
+    });
 
     ViewGroup.LayoutParams params = puzzleView.getLayoutParams();
     params.width = deviceSize;

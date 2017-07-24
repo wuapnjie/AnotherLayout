@@ -27,6 +27,8 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
   private List<Line> outerLines = new ArrayList<>(4);
 
   private float padding;
+  private float radian;
+  private int color;
 
   private Comparator<StraightArea> areaComparator = new StraightArea.AreaComparator();
 
@@ -111,9 +113,12 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     return outerArea;
   }
 
-  @Override
-  public void setPadding(float padding) {
+  @Override public void setPadding(float padding) {
     this.padding = padding;
+
+    for (Area area : areas) {
+      area.setPadding(padding);
+    }
 
     outerArea.lineLeft.startPoint().set(bounds.left + padding, bounds.top + padding);
     outerArea.lineLeft.endPoint().set(bounds.left + padding, bounds.bottom - padding);
@@ -124,8 +129,7 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     update();
   }
 
-  @Override
-  public float getPadding() {
+  @Override public float getPadding() {
     return padding;
   }
 
@@ -229,7 +233,6 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     step.type = Step.CUT_SPIRAL;
     step.position = position;
     steps.add(step);
-
   }
 
   private void sortAreas() {
@@ -294,10 +297,31 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     }
   }
 
-  @Override
-  public Info generateInfo() {
+  @Override public float getRadian() {
+    return radian;
+  }
+
+  @Override public void setRadian(float radian) {
+    this.radian = radian;
+    for (Area area : areas) {
+      area.setRadian(radian);
+    }
+  }
+
+  @Override public int getColor() {
+    return color;
+  }
+
+  @Override public void setColor(int color) {
+    this.color = color;
+  }
+
+  @Override public Info generateInfo() {
     Info info = new Info();
     info.type = Info.TYPE_STRAIGHT;
+    info.padding = padding;
+    info.radian = radian;
+    info.color = color;
     info.steps = steps;
     ArrayList<LineInfo> lineInfos = new ArrayList<>();
     for (Line line : lines) {

@@ -28,6 +28,8 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   private List<Line> lines = new ArrayList<>();
 
   private float padding;
+  private float radian;
+  private int color;
 
   private Comparator<SlantArea> areaComparator = new SlantArea.AreaComparator();
 
@@ -185,6 +187,9 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   @Override
   public void setPadding(float padding) {
     this.padding = padding;
+    for (Area area : areas) {
+      area.setPadding(padding);
+    }
 
     outerArea.lineLeft.startPoint().set(bounds.left + padding, bounds.top + padding);
     outerArea.lineLeft.endPoint().set(bounds.left + padding, bounds.bottom - padding);
@@ -199,6 +204,25 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   @Override
   public float getPadding() {
     return padding;
+  }
+
+  @Override public float getRadian() {
+    return radian;
+  }
+
+  @Override public void setRadian(float radian) {
+    this.radian = radian;
+    for (Area area : areas) {
+      area.setRadian(radian);
+    }
+  }
+
+  @Override public int getColor() {
+    return color;
+  }
+
+  @Override public void setColor(int color) {
+    this.color = color;
   }
 
   protected List<SlantArea> addLine(int position, Line.Direction direction, float ratio) {
@@ -274,6 +298,9 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   public Info generateInfo() {
     Info info = new Info();
     info.type = Info.TYPE_SLANT;
+    info.padding = padding;
+    info.radian = radian;
+    info.color = color;
     info.steps = steps;
     ArrayList<LineInfo> lineInfos = new ArrayList<>();
     for (Line line : lines) {

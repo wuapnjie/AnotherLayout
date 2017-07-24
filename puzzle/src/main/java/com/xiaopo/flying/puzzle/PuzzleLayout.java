@@ -34,7 +34,15 @@ public interface PuzzleLayout {
 
   float getPadding();
 
+  float getRadian();
+
+  void setRadian(float radian);
+
   Info generateInfo();
+
+  void setColor(int color);
+
+  int getColor();
 
   class Info {
     public static final int TYPE_STRAIGHT = 0;
@@ -43,6 +51,9 @@ public interface PuzzleLayout {
     public int type;
     public ArrayList<Step> steps;
     public ArrayList<LineInfo> lineInfos;
+    public float padding;
+    public float radian;
+    public int color;
   }
 
   class Step {

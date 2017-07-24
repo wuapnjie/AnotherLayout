@@ -24,4 +24,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_layout">我的布局</string>
+    <string name="action_save_layout">保存布局</string>
 </resources>

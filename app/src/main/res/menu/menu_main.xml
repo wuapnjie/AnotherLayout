@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.select.MainActivity">
   <item
-      android:id="@+id/action_settings"
+      android:id="@+id/action_layout"
       android:orderInCategory="100"
-      android:title="@string/action_settings"
-      app:showAsAction="never"/>
+      android:title="@string/action_layout"
+      android:icon="@drawable/ic_border_all_black_24dp"
+      app:showAsAction="ifRoom"/>
 </menu>

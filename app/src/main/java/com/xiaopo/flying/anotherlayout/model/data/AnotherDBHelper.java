@@ -21,7 +21,7 @@ public class AnotherDBHelper extends SQLiteOpenHelper {
   //@formatter:off
   private static final String SQL_CREATE_ENTRIES = "CREATE TABLE "
       + StyleEntry.TABLE_NAME + " ("
-      + StyleEntry.ID + INTEGER_TYPE + "PRIMARY KEY AUTOINCREMENT,"
+      + StyleEntry.ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT,"
       + StyleEntry.CREATE_AT + INTEGER_TYPE + COMMA_SEP
       + StyleEntry.UPDATE_AT + INTEGER_TYPE + COMMA_SEP
       + StyleEntry.LAYOUT_INFO + TEXT_TYPE + COMMA_SEP

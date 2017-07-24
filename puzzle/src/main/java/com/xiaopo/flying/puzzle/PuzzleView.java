@@ -70,8 +70,7 @@ public class PuzzleView extends View {
   private OnPieceSelectedListener onPieceSelectedListener;
 
   private Runnable switchToSwapAction = new Runnable() {
-    @Override
-    public void run() {
+    @Override public void run() {
       currentMode = ActionMode.SWAP;
       invalidate();
     }
@@ -133,8 +132,7 @@ public class PuzzleView extends View {
     midPoint = new PointF();
   }
 
-  @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+  @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
     resetPuzzleBounds();
 
@@ -144,11 +142,9 @@ public class PuzzleView extends View {
         piece.setArea(puzzleLayout.getArea(i));
         if (needResetPieceMatrix) {
           piece.set(MatrixUtils.generateMatrix(piece, 0f));
-        }else {
-          piece.fillArea(this,true);
+        } else {
+          piece.fillArea(this, true);
         }
-        piece.getArea().setPadding(piecePadding);
-        piece.getArea().setRadian(pieceRadian);
       }
     }
     invalidate();
@@ -165,11 +161,11 @@ public class PuzzleView extends View {
       puzzleLayout.setOuterBounds(bounds);
       puzzleLayout.layout();
       puzzleLayout.setPadding(piecePadding);
+      puzzleLayout.setRadian(pieceRadian);
     }
   }
 
-  @Override
-  protected void onDraw(Canvas canvas) {
+  @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
     if (puzzleLayout == null) {
@@ -260,8 +256,7 @@ public class PuzzleView extends View {
     invalidate();
   }
 
-  @SuppressLint("ClickableViewAccessibility")
-  @Override
+  @SuppressLint("ClickableViewAccessibility") @Override
   public boolean onTouchEvent(MotionEvent event) {
     if (!touchEnable) {
       return super.onTouchEvent(event);
@@ -341,8 +336,7 @@ public class PuzzleView extends View {
   }
 
   // 执行Action前的准备工作
-  @SuppressWarnings("unused")
-  private void prepareAction(MotionEvent event) {
+  @SuppressWarnings("unused") private void prepareAction(MotionEvent event) {
     switch (currentMode) {
       case NONE:
         break;
@@ -476,8 +470,7 @@ public class PuzzleView extends View {
 
   public void replace(final Drawable bitmapDrawable) {
     post(new Runnable() {
-      @Override
-      public void run() {
+      @Override public void run() {
         if (handlingPiece == null) {
           return;
         }
@@ -723,23 +716,23 @@ public class PuzzleView extends View {
       puzzleLayout.setPadding(padding);
     }
 
-    for (int i = 0; i < puzzlePieces.size(); i++) {
-      PuzzlePiece piece = puzzlePieces.get(i);
-      piece.getArea().setPadding(padding);
-      piece.fillArea(this, false);
-    }
-
     invalidate();
   }
 
   public void setPieceRadian(float radian) {
     this.pieceRadian = radian;
-    for (int i = 0; i < puzzlePieces.size(); i++) {
-      PuzzlePiece piece = puzzlePieces.get(i);
-      piece.getArea().setRadian(radian);
+    if (puzzleLayout != null) {
+      puzzleLayout.setRadian(radian);
     }
 
     invalidate();
+  }
+
+  @Override public void setBackgroundColor(int color) {
+    super.setBackgroundColor(color);
+    if (puzzleLayout != null) {
+      puzzleLayout.setColor(color);
+    }
   }
 
   public void setNeedResetPieceMatrix(boolean needResetPieceMatrix) {

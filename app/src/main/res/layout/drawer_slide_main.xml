@@ -13,6 +13,13 @@
         android:layout_height="match_parent"
         android:text="@string/another"
         android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="28sp"
         />
+
+    <View
+        android:background="@color/textColorPrimaryLite"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
 
 </LinearLayout>

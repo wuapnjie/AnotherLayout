@@ -50,6 +50,9 @@ dependencies {
   implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
   implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
+  // gson
+  implementation "com.google.code.gson:gson:$gson_version"
+
   // permission
   implementation "com.yanzhenjie:permission:$and_permission_version"
 

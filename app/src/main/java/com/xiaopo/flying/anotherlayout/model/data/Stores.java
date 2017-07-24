@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
+import com.xiaopo.flying.puzzle.PuzzleLayout;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 import java.util.function.Function;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 public class Stores {
   private static Stores instance;
   private BriteDatabase database;
+  private Gson gson;
   private Function<Cursor, Style> styleMapperFunction;
 
   private Stores(Context context) {
@@ -23,6 +26,7 @@ public class Stores {
     SqlBrite brite = new SqlBrite.Builder().build();
     database = brite.wrapDatabaseHelper(dbHelper, Schedulers.io());
     styleMapperFunction = this::mapStyle;
+    gson = new Gson();
   }
 
   private Style mapStyle(Cursor cursor) {
@@ -46,14 +50,24 @@ public class Stores {
     return instance;
   }
 
-  public Completable saveStyle(Style style){
+  public Completable saveStyle(Style style) {
     ContentValues values = new ContentValues();
-    values.put(StyleEntry.ID,style.getId());
-    values.put(StyleEntry.CREATE_AT,style.getCreateAt());
-    values.put(StyleEntry.UPDATE_AT,style.getUpdateAt());
-    values.put(StyleEntry.LAYOUT_INFO,style.getLayoutInfo());
-    values.put(StyleEntry.PIECE_INFO,style.getPieceInfo());
-    database.insert(StyleEntry.TABLE_NAME,values, SQLiteDatabase.CONFLICT_REPLACE);
+    values.put(StyleEntry.ID, style.getId());
+    values.put(StyleEntry.CREATE_AT, style.getCreateAt());
+    values.put(StyleEntry.UPDATE_AT, style.getUpdateAt());
+    values.put(StyleEntry.LAYOUT_INFO, style.getLayoutInfo());
+    values.put(StyleEntry.PIECE_INFO, style.getPieceInfo());
+    database.insert(StyleEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
+    return Completable.complete();
+  }
+
+  public Completable saveLayout(PuzzleLayout.Info layoutInfo) {
+    ContentValues values = new ContentValues();
+    long currentTimeMillis = System.currentTimeMillis();
+    values.put(StyleEntry.CREATE_AT, currentTimeMillis);
+    values.put(StyleEntry.UPDATE_AT, currentTimeMillis);
+    values.put(StyleEntry.LAYOUT_INFO, gson.toJson(layoutInfo));
+    database.insert(StyleEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
     return Completable.complete();
   }
 }
