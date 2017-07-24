@@ -145,7 +145,7 @@ public class PuzzleView extends View {
         if (needResetPieceMatrix) {
           piece.set(MatrixUtils.generateMatrix(piece, 0f));
         }else {
-          piece.fillArea(this,false);
+          piece.fillArea(this,true);
         }
         piece.getArea().setPadding(piecePadding);
         piece.getArea().setRadian(pieceRadian);
