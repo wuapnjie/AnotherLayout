@@ -625,7 +625,7 @@ public class PuzzleView extends View {
     setPiecePadding(piecePadding);
     setPieceRadian(pieceRadian);
 
-    postInvalidate();
+    invalidate();
   }
 
   public void setAnimateDuration(int duration) {

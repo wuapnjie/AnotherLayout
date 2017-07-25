@@ -107,7 +107,9 @@ public class ProcessActivity extends AppCompatActivity {
       };
 
       //noinspection SuspiciousNameCombination
-      Picasso.with(this).load("file:///" + bitmapPaint.get(i)).resize(deviceSize, deviceSize)
+      Picasso.with(this)
+          .load("file:///" + bitmapPaint.get(i))
+          .resize(deviceSize, deviceSize)
           .centerInside()
           .config(Bitmap.Config.RGB_565)
           .into(target);
@@ -136,7 +138,6 @@ public class ProcessActivity extends AppCompatActivity {
     puzzleView.setLayoutParams(params);
     puzzleView.setPuzzleLayout(puzzleLayout);
     puzzleView.setTouchEnable(true);
-    //puzzleView.setPiecePadding(20);
 
     addHandleItems();
 

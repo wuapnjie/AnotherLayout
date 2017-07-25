@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.poiphoto.datatype.Photo;
 import com.xiaopo.flying.anotherlayout.R;
@@ -73,25 +74,32 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
       Picasso.with(itemView.getContext())
           .load("file:///" + data.getPath()).resize(resize, resize).centerCrop()
           .into(ivPhoto);
-      itemView.setOnClickListener(v -> {
-        if (data.isSelected()) {
-          shadow.setVisibility(View.GONE);
-          data.setSelected(false);
-          selectedPositions.remove(position());
-        } else {
-          if (selectedPositions.size() >= maxCount) {
-            if (onPhotoMaxCountListener != null) {
-              onPhotoMaxCountListener.onPhotoMaxCount();
-            }
-            return;
-          }
-          shadow.setVisibility(View.VISIBLE);
-          data.setSelected(true);
-          selectedPositions.add(position());
-        }
+      itemView.setOnClickListener(new DebouncedOnClickListener() {
+        @Override
+        public void doClick(View view) {
+          if (data.isSelected()) {
+            shadow.setVisibility(View.GONE);
+            data.setSelected(false);
+            selectedPositions.remove(position());
 
-        if (onPhotoSelectedListener != null) {
-          onPhotoSelectedListener.onPhotoSelected(data, position());
+            if (onPhotoSelectedListener != null) {
+              onPhotoSelectedListener.onPhotoSelected(data, position());
+            }
+          } else {
+            if (selectedPositions.size() >= maxCount) {
+              if (onPhotoMaxCountListener != null) {
+                onPhotoMaxCountListener.onPhotoMaxCount();
+              }
+            }else {
+              shadow.setVisibility(View.VISIBLE);
+              data.setSelected(true);
+              selectedPositions.add(position());
+
+              if (onPhotoSelectedListener != null) {
+                onPhotoSelectedListener.onPhotoSelected(data, position());
+              }
+            }
+          }
         }
       });
 

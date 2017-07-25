@@ -28,7 +28,7 @@ public abstract class DebouncedOnClickListener implements View.OnClickListener {
 
   }
 
-  public abstract void doClick(View var1);
+  public abstract void doClick(View view);
 
   public long getInterval() {
     return this.interval;

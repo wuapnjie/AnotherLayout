@@ -245,10 +245,14 @@ public class MainActivity extends AppCompatActivity
       }
     };
 
+    final int screenWidth = DipPixelKit.getDeviceWidth(this);
+    final int availableWidth = screenWidth - 3 * DipPixelKit.dip2px(this, 2);
+    int resize = availableWidth / 4;
+
     Picasso.with(this)
         .load("file:///" + path)
-        .resize(deviceWidth, deviceWidth)
-        .centerInside()
+        .resize(resize, resize)
+        .centerCrop()
         .config(Bitmap.Config.RGB_565)
         .into(target);
 
