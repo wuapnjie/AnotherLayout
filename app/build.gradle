@@ -58,6 +58,7 @@ dependencies {
 
   // multi type adapter
   implementation "me.drakeet.multitype:multitype:$multi_type_version"
+  implementation "me.drakeet.support:about:$about_page_version"
 
   // butter knife
   implementation "com.jakewharton:butterknife:$butter_knife_version"

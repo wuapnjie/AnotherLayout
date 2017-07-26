@@ -34,6 +34,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity android:name=".ui.about.AboutActivity"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="96f9f303d32986afbf10489d3ac3ee895330db8e"

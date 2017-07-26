@@ -71,10 +71,6 @@ public class ProcessActivity extends AppCompatActivity {
     puzzleView.post(this::loadPhoto);
   }
 
-  @Override protected void onResume() {
-    super.onResume();
-  }
-
   private void loadPhoto() {
     final List<Bitmap> pieces = new ArrayList<>();
 
@@ -168,10 +164,11 @@ public class ProcessActivity extends AppCompatActivity {
         }
       };
 
+      //@formatter:off
       //noinspection SuspiciousNameCombination
-      Picasso.with(this).load("file:///" + path).resize(deviceSize, deviceSize)
+      Picasso.with(this).load("file:///" + path)
+          .resize(deviceSize, deviceSize)
           .centerInside()
-          .config(Bitmap.Config.RGB_565)
           .into(target);
     }
   }
@@ -195,7 +192,6 @@ public class ProcessActivity extends AppCompatActivity {
     handleItems.add(round);
   }
 
-  // TODO Handle detail view
   private View roundView() {
     View roundView = LayoutInflater.from(this).inflate(R.layout.handle_item_round, null);
     DegreeSeekBar seekBar = roundView.findViewById(R.id.seek_bar);

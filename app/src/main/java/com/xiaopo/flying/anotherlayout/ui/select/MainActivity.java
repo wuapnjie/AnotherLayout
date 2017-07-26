@@ -37,6 +37,7 @@ import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
+import com.xiaopo.flying.anotherlayout.ui.about.AboutActivity;
 import com.xiaopo.flying.anotherlayout.ui.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.adapter.PuzzleAdapter;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.AlbumTitleBinder;
@@ -212,7 +213,16 @@ public class MainActivity extends AppCompatActivity
     //about others
     tabLayout.setupWithViewPager(viewPager);
 
-    setSupportActionBar(toolbar);
+    toolbar.inflateMenu(R.menu.menu_main_toolbar);
+    toolbar.setOnMenuItemClickListener(item -> {
+      switch (item.getItemId()){
+        case R.id.action_about:
+          Intent intent = new Intent(this, AboutActivity.class);
+          startActivity(intent);
+          break;
+      }
+      return false;
+    });
     DrawerLayout drawer = findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
         R.string.navigation_drawer_close);
@@ -276,8 +286,8 @@ public class MainActivity extends AppCompatActivity
       Picasso.with(MainActivity.this)
           .load("file:///" + photo.getPath())
           .resize(deviceWidth, deviceWidth)
-          .centerInside()
           .memoryPolicy(MemoryPolicy.NO_CACHE)
+          .centerInside()
           .fetch();
     } else {
       Bitmap bitmap = arrayBitmap.remove(photo.getPath());
