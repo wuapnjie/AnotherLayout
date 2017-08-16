@@ -21,7 +21,7 @@ public class WeakHandler extends Handler {
   }
 
   public void handleMessage(Message msg) {
-    WeakHandler.IHandler handler = (WeakHandler.IHandler) this.ref.get();
+    WeakHandler.IHandler handler = this.ref.get();
     if (handler != null && msg != null) {
       handler.handleMsg(msg);
     }
