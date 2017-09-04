@@ -78,6 +78,7 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
           .centerCrop()
           .config(Bitmap.Config.RGB_565)
           .into(ivPhoto);
+
       itemView.setOnClickListener(view -> {
         if (data.isSelected()) {
           shadow.setVisibility(View.GONE);

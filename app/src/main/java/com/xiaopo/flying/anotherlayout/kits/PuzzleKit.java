@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author wupanjie
  */
-public class PuzzleKit {
+public final class PuzzleKit {
   private static final String TAG = "PuzzleKit";
 
   private PuzzleKit() {

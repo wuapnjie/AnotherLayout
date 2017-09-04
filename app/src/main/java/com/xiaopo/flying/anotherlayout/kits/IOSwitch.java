@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers;
  * @author wupanjie
  */
 
-public class IOSwitch {
+public final class IOSwitch {
   private IOSwitch() {
     //no instance
   }

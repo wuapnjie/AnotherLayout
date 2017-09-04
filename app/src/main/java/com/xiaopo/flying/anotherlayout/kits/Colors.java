@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author wupanjie
  */
-@SuppressWarnings("WeakerAccess") public class Colors {
+@SuppressWarnings("WeakerAccess") public final class Colors {
   private Colors() {
     //no instance
   }

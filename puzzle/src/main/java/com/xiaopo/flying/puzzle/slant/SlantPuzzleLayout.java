@@ -308,6 +308,12 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
       lineInfos.add(lineInfo);
     }
     info.lineInfos = lineInfos;
+
+    info.left = bounds.left;
+    info.top = bounds.top;
+    info.right = bounds.right;
+    info.bottom = bounds.bottom;
+
     return info;
   }
 }

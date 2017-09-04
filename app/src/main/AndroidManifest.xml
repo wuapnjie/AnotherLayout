@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".AnotherApp"
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.select.MainActivity"
+            android:name=".ui.page.select.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,17 +24,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.process.ProcessActivity"
+            android:name=".ui.page.process.ProcessActivity"
             android:label="@string/title_activity_process"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ui.crop.CropActivity"
+            android:name=".ui.page.crop.CropActivity"
             android:label="@string/title_activity_crop"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".ui.about.AboutActivity"/>
+        <activity android:name=".ui.page.about.AboutActivity"/>
+
+        <activity android:name=".ui.page.mylayout.MyLayoutActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

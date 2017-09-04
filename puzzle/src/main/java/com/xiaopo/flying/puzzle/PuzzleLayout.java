@@ -54,6 +54,11 @@ public interface PuzzleLayout {
     public float padding;
     public float radian;
     public int color;
+
+    public float left;
+    public float top;
+    public float right;
+    public float bottom;
   }
 
   class Step {
@@ -69,6 +74,10 @@ public interface PuzzleLayout {
     public int part;
     public int hSize;
     public int vSize;
+
+    public Line.Direction lineDirection() {
+      return direction == 0 ? Line.Direction.HORIZONTAL : Line.Direction.VERTICAL;
+    }
   }
 
   class LineInfo {
@@ -77,7 +86,7 @@ public interface PuzzleLayout {
     public float endX;
     public float endY;
 
-    public LineInfo(Line line){
+    public LineInfo(Line line) {
       startX = line.startPoint().x;
       startY = line.startPoint().y;
       endX = line.endPoint().x;

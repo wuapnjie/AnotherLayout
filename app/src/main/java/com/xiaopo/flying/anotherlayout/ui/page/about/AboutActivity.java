@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.ui.about;
+package com.xiaopo.flying.anotherlayout.ui.page.about;
 
 import android.support.annotation.NonNull;
 import android.view.View;

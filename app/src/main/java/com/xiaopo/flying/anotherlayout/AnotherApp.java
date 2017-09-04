@@ -3,6 +3,7 @@ package com.xiaopo.flying.anotherlayout;
 import android.app.Application;
 import android.graphics.Bitmap;
 import com.squareup.picasso.Picasso;
+import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * @author wupanjie

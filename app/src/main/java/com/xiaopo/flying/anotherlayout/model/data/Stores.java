@@ -2,15 +2,16 @@ package com.xiaopo.flying.anotherlayout.model.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
+import com.xiaopo.flying.anotherlayout.layout.parser.GsonLayoutParser;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-import java.util.function.Function;
+import java.util.List;
 
 /**
  * @author wupanjie
@@ -19,23 +20,14 @@ public class Stores {
   private static Stores instance;
   private BriteDatabase database;
   private Gson gson;
-  private Function<Cursor, Style> styleMapperFunction;
+  private GsonLayoutParser layoutParser;
 
   private Stores(Context context) {
     AnotherDBHelper dbHelper = new AnotherDBHelper(context);
     SqlBrite brite = new SqlBrite.Builder().build();
     database = brite.wrapDatabaseHelper(dbHelper, Schedulers.io());
-    styleMapperFunction = this::mapStyle;
     gson = new Gson();
-  }
-
-  private Style mapStyle(Cursor cursor) {
-    int id = cursor.getInt(cursor.getColumnIndexOrThrow(StyleEntry.ID));
-    long createAt = cursor.getLong(cursor.getColumnIndexOrThrow(StyleEntry.CREATE_AT));
-    long updateAt = cursor.getLong(cursor.getColumnIndexOrThrow(StyleEntry.UPDATE_AT));
-    String layoutInfo = cursor.getString(cursor.getColumnIndexOrThrow(StyleEntry.LAYOUT_INFO));
-    String pieceInfo = cursor.getString(cursor.getColumnIndexOrThrow(StyleEntry.PIECE_INFO));
-    return new Style(id, createAt, updateAt, layoutInfo, pieceInfo);
+    layoutParser = new GsonLayoutParser(gson);
   }
 
   public static Stores instance(Context context) {
@@ -69,5 +61,19 @@ public class Stores {
     values.put(StyleEntry.LAYOUT_INFO, gson.toJson(layoutInfo));
     database.insert(StyleEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
     return Completable.complete();
+  }
+
+  public Observable<List<Style>> getAllStyles() {
+    return database.createQuery(StyleEntry.TABLE_NAME,
+        "SELECT * " + "FROM " + StyleEntry.TABLE_NAME).mapToList(Style.MAPPER).map(styles -> {
+      final int size = styles.size();
+      for (int i = 0; i < size; i++) {
+        Style style = styles.get(i);
+        PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
+        style.setLayout(layout);
+      }
+
+      return styles;
+    });
   }
 }

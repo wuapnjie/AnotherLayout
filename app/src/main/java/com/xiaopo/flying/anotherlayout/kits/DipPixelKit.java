@@ -6,7 +6,7 @@ import android.content.Context;
 /**
  * Dip和Pixel之间转化
  */
-public class DipPixelKit {
+public final class DipPixelKit {
   private static float sScale = 0;
   private static int sDeviceWidth = 0;
   private static int sDeviceHeight = 0;

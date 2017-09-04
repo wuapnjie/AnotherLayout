@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.ui.select;
+package com.xiaopo.flying.anotherlayout.ui.page.select;
 
 import android.Manifest;
 import android.content.Intent;
@@ -37,8 +37,9 @@ import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
-import com.xiaopo.flying.anotherlayout.ui.about.AboutActivity;
-import com.xiaopo.flying.anotherlayout.ui.process.ProcessActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.mylayout.MyLayoutActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.adapter.PuzzleAdapter;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.AlbumTitleBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
@@ -213,16 +214,23 @@ public class MainActivity extends AppCompatActivity
     //about others
     tabLayout.setupWithViewPager(viewPager);
 
+    // Toolbar
     toolbar.inflateMenu(R.menu.menu_main_toolbar);
     toolbar.setOnMenuItemClickListener(item -> {
+      Intent intent = null;
       switch (item.getItemId()){
+        case R.id.action_my_layout:
+          intent = new Intent(this, MyLayoutActivity.class);
+          break;
         case R.id.action_about:
-          Intent intent = new Intent(this, AboutActivity.class);
-          startActivity(intent);
+          intent = new Intent(this, AboutActivity.class);
           break;
       }
+      startActivity(intent);
       return false;
     });
+
+    // drawer layout
     DrawerLayout drawer = findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
         R.string.navigation_drawer_close);

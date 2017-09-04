@@ -11,7 +11,7 @@ import java.util.Map;
  * <p/>
  * Also see https://code.google.com/p/android/issues/detail?id=9904
  */
-public class FontKit {
+public final class FontKit {
 
   private FontKit() {
   }

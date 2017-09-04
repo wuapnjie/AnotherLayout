@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.ui.process;
+package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

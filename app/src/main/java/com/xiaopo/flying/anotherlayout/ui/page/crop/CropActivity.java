@@ -1,5 +1,6 @@
-package com.xiaopo.flying.anotherlayout.ui.crop;
+package com.xiaopo.flying.anotherlayout.ui.page.crop;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;

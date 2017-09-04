@@ -260,6 +260,14 @@ public class DegreeSeekBar extends View {
     postInvalidate();
     mLastTouchedPosition = event.getX();
     mCurrentDegrees = (int) ((mTotalScrollDistance * mDragFactor) / mPointMargin);
+    if (mCurrentDegrees > mMaxReachableDegrees){
+      mCurrentDegrees = mMaxReachableDegrees;
+    }
+
+    if (mCurrentDegrees < mMinReachableDegrees){
+      mCurrentDegrees = mMinReachableDegrees;
+    }
+
     if (mScrollingListener != null) {
       mScrollingListener.onScroll(mCurrentDegrees);
     }

@@ -32,9 +32,10 @@ public class PuzzleView extends View {
   private ActionMode currentMode = ActionMode.NONE;
 
   private List<PuzzlePiece> puzzlePieces = new ArrayList<>();
-
   private List<PuzzlePiece> needChangePieces = new ArrayList<>();
+
   private PuzzleLayout puzzleLayout;
+  private PuzzleLayout.Info initialInfo;
 
   private RectF bounds;
   private int lineSize;
@@ -162,6 +163,19 @@ public class PuzzleView extends View {
       puzzleLayout.layout();
       puzzleLayout.setPadding(piecePadding);
       puzzleLayout.setRadian(pieceRadian);
+
+      if (initialInfo != null){
+        final int size = initialInfo.lineInfos.size();
+        for (int i = 0; i < size; i++) {
+          PuzzleLayout.LineInfo lineInfo = initialInfo.lineInfos.get(i);
+          Line line = puzzleLayout.getLines().get(i);
+          line.startPoint().x = lineInfo.startX;
+          line.startPoint().y = lineInfo.startY;
+          line.endPoint().x = lineInfo.endX;
+          line.endPoint().y = lineInfo.endY;
+        }
+      }
+      puzzleLayout.update();
     }
   }
 
@@ -250,10 +264,26 @@ public class PuzzleView extends View {
 
     this.puzzleLayout = puzzleLayout;
 
-    this.puzzleLayout.setOuterBounds(bounds);
-    this.puzzleLayout.layout();
+    puzzleLayout.setOuterBounds(bounds);
+    puzzleLayout.layout();
 
     invalidate();
+  }
+
+  public void setPuzzleLayout(PuzzleLayout.Info info) {
+    this.initialInfo = info;
+    clearPieces();
+
+    this.puzzleLayout =  PuzzleLayoutParser.parser(info);
+    this.piecePadding = info.padding;
+    this.pieceRadian = info.radian;
+    setBackgroundColor(info.color);
+
+    invalidate();
+  }
+
+  public PuzzleLayout getPuzzleLayout() {
+    return puzzleLayout;
   }
 
   @SuppressLint("ClickableViewAccessibility") @Override
