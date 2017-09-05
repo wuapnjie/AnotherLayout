@@ -20,4 +20,5 @@
     <color name="textColorPrimaryLight">#de6c6969</color>
 
     <color name="selected_color">#4E86EC</color>
+    <color name="placeholder_color">#B9B9B9</color>
 </resources>

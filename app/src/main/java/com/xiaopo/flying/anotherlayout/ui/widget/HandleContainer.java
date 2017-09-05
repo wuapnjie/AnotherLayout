@@ -12,24 +12,31 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.HandleItemBinder;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * @author wupanjie
  */
 public class HandleContainer extends LinearLayout implements HandleItemBinder.OnItemClickListener {
-  @BindView(R.id.handle_content_layout) FrameLayout handleContentLayout;
-  @BindView(R.id.handle_item_list) RecyclerView handleItemList;
+  @BindView(R.id.handle_content_layout)
+  FrameLayout handleContentLayout;
+  @BindView(R.id.handle_item_list)
+  RecyclerView handleItemList;
   private MultiTypeAdapter handleAdapter;
-  @NonNull private List<HandleItem> handleItems = new ArrayList<>();
+  @NonNull
+  private List<HandleItem> handleItems = new ArrayList<>();
   private HandleItem currentUsing;
   private boolean isAnimateRunning;
 
@@ -67,7 +74,8 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
     handleAdapter.notifyDataSetChanged();
   }
 
-  @Override public void onItemClick(HandleImageView icon, HandleItem item, int position) {
+  @Override
+  public void onItemClick(HandleImageView icon, HandleItem item, int position) {
     if (isAnimateRunning) return;
     if (currentUsing == null) {
       currentUsing = item;
@@ -109,12 +117,14 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
         .setDuration(300)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override public void onAnimationStart(Animator animation) {
+          @Override
+          public void onAnimationStart(Animator animation) {
             isAnimateRunning = true;
             icon.setNeedDrawArrow(true);
           }
 
-          @Override public void onAnimationEnd(Animator animation) {
+          @Override
+          public void onAnimationEnd(Animator animation) {
             super.onAnimationEnd(animation);
             isAnimateRunning = false;
           }
@@ -123,7 +133,7 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
   }
 
   private void dismissHandleDetail(HandleItem item, final HandleImageView icon,
-      final int position) {
+                                   final int position) {
     final int width = DipPixelKit.getDeviceWidth(getContext()) / handleItems.size();
     handleContentLayout.setPivotX(width / 2 + position * width);
     handleContentLayout.setPivotY(handleContentLayout.getHeight());
@@ -134,11 +144,13 @@ public class HandleContainer extends LinearLayout implements HandleItemBinder.On
         .setDuration(300)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override public void onAnimationStart(Animator animation) {
+          @Override
+          public void onAnimationStart(Animator animation) {
             isAnimateRunning = true;
           }
 
-          @Override public void onAnimationEnd(Animator animation) {
+          @Override
+          public void onAnimationEnd(Animator animation) {
             handleContentLayout.setVisibility(View.INVISIBLE);
             icon.setNeedDrawArrow(false);
             isAnimateRunning = false;

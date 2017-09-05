@@ -11,11 +11,13 @@ public class SixStraightLayout extends NumberStraightLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 12;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         cutAreaEqualPart(0, 2, 1);

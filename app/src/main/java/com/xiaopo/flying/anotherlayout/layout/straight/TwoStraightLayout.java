@@ -1,6 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.straight;
 
 import android.util.Log;
+
 import com.xiaopo.flying.puzzle.Line;
 
 /**
@@ -22,11 +23,13 @@ public class TwoStraightLayout extends NumberStraightLayout {
     mRadio = radio;
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 6;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         addLine(0, Line.Direction.HORIZONTAL, mRadio);

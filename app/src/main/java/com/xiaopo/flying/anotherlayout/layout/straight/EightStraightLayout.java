@@ -10,11 +10,13 @@ public class EightStraightLayout extends NumberStraightLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 11;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         cutAreaEqualPart(0, 3, 1);

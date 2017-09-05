@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.xiaopo.flying.anotherlayout.BuildConfig;
 import com.xiaopo.flying.anotherlayout.R;
+
 import me.drakeet.multitype.Items;
 import me.drakeet.support.about.AbsAboutActivity;
 import me.drakeet.support.about.Card;

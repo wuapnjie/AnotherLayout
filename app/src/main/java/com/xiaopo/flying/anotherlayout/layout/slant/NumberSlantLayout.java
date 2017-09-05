@@ -1,6 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.slant;
 
 import android.util.Log;
+
 import com.xiaopo.flying.puzzle.slant.SlantPuzzleLayout;
 
 /**

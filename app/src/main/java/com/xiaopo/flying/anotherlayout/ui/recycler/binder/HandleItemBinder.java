@@ -5,13 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.ui.widget.HandleImageView;
+
 import me.drakeet.multitype.ItemViewBinder;
 
 /**
@@ -28,7 +31,7 @@ public class HandleItemBinder extends ItemViewBinder<HandleItem, HandleItemBinde
   @NonNull
   @Override
   protected ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater,
-      @NonNull ViewGroup parent) {
+                                          @NonNull ViewGroup parent) {
     View itemView = inflater.inflate(R.layout.item_handle_item, parent, false);
     return new ViewHolder(itemView);
   }
@@ -50,7 +53,8 @@ public class HandleItemBinder extends ItemViewBinder<HandleItem, HandleItemBinde
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.icon) HandleImageView icon;
+    @BindView(R.id.icon)
+    HandleImageView icon;
 
     ViewHolder(View itemView) {
       super(itemView);

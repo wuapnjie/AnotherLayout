@@ -20,7 +20,7 @@ public abstract class DebouncedOnClickListener implements View.OnClickListener {
   }
 
   public final void onClick(View v) {
-    if(enabled) {
+    if (enabled) {
       enabled = false;
       v.postDelayed(ENABLE_AGAIN, this.interval);
       this.doClick(v);

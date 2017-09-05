@@ -11,11 +11,13 @@ public class OneSlantLayout extends NumberSlantLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 4;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         addLine(0, Line.Direction.HORIZONTAL, 0.56f, 0.44f);

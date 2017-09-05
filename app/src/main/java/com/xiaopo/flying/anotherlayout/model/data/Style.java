@@ -1,11 +1,14 @@
 package com.xiaopo.flying.anotherlayout.model.data;
 
 import android.database.Cursor;
+
 import com.xiaopo.flying.anotherlayout.kits.DB;
 import com.xiaopo.flying.anotherlayout.kits.guava.Optional;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
+
 import io.reactivex.functions.Function;
+
 import java.util.List;
 
 /**

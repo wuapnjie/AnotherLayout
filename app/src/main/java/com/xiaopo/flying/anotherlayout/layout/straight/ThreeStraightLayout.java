@@ -11,11 +11,13 @@ public class ThreeStraightLayout extends NumberStraightLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 6;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         cutAreaEqualPart(0, 3, Line.Direction.HORIZONTAL);

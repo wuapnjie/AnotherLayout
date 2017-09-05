@@ -7,7 +7,8 @@ import android.view.View;
  * @author wupanjie
  */
 public class HandleItem {
-  @DrawableRes private final int icon;
+  @DrawableRes
+  private final int icon;
   private final View handleView;
   private boolean isUsing;
 

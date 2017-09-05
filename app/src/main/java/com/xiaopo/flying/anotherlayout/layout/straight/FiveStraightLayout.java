@@ -11,11 +11,13 @@ public class FiveStraightLayout extends NumberStraightLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 17;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         cutAreaEqualPart(0, 5, Line.Direction.HORIZONTAL);

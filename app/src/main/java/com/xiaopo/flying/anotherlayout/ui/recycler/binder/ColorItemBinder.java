@@ -7,11 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
+
 import java.util.List;
+
 import me.drakeet.multitype.ItemViewBinder;
 
 /**
@@ -35,7 +39,7 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
   @NonNull
   @Override
   protected ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater,
-      @NonNull ViewGroup parent) {
+                                          @NonNull ViewGroup parent) {
     View itemView = inflater.inflate(R.layout.item_color, parent, false);
     return new ViewHolder(itemView);
   }
@@ -54,7 +58,7 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
           (ViewHolder) recyclerView.findViewHolderForLayoutPosition(selectedPosition);
       if (viewHolder != null) {
         viewHolder.selected.setVisibility(View.GONE);
-      }else {
+      } else {
         getAdapter().notifyItemChanged(selectedPosition);
       }
       allColors.get(selectedPosition).setSelected(false);
@@ -69,11 +73,12 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
     });
   }
 
-  @Override protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull ColorItem item,
-      @NonNull List<Object> payloads) {
-    if (payloads.isEmpty()){
+  @Override
+  protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull ColorItem item,
+                                  @NonNull List<Object> payloads) {
+    if (payloads.isEmpty()) {
       onBindViewHolder(holder, item);
-    }else {
+    } else {
       if (item.isSelected()) {
         holder.selected.setVisibility(View.VISIBLE);
       } else {
@@ -83,8 +88,10 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.selected) View selected;
-    @BindView(R.id.color) FrameLayout color;
+    @BindView(R.id.selected)
+    View selected;
+    @BindView(R.id.color)
+    FrameLayout color;
 
     ViewHolder(View itemView) {
       super(itemView);

@@ -26,8 +26,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -53,16 +55,19 @@ import com.xiaopo.flying.puzzle.slant.SlantPuzzleLayout;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
+
 import io.fabric.sdk.android.Fabric;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
@@ -72,11 +77,16 @@ public class MainActivity extends AppCompatActivity
   private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
 
-  @BindView(R.id.puzzle_list) RecyclerView puzzleList;
-  @BindView(R.id.tab_layout) TabLayout tabLayout;
-  @BindView(R.id.toolbar) Toolbar toolbar;
-  @BindView(R.id.viewPager) ViewPager viewPager;
-  @BindView(R.id.content_main) FrameLayout contentMain;
+  @BindView(R.id.puzzle_list)
+  RecyclerView puzzleList;
+  @BindView(R.id.tab_layout)
+  TabLayout tabLayout;
+  @BindView(R.id.toolbar)
+  Toolbar toolbar;
+  @BindView(R.id.viewPager)
+  ViewPager viewPager;
+  @BindView(R.id.content_main)
+  FrameLayout contentMain;
 
   RecyclerView photoList;
   RecyclerView albumList;
@@ -102,7 +112,8 @@ public class MainActivity extends AppCompatActivity
 
   private CompositeDisposable compositeDisposables = new CompositeDisposable();
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Fabric.with(this, new Crashlytics());
 
@@ -133,8 +144,9 @@ public class MainActivity extends AppCompatActivity
     Toast.makeText(this, "必须要权限", Toast.LENGTH_SHORT).show();
   }
 
-  @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                         @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == 110
         && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -177,7 +189,8 @@ public class MainActivity extends AppCompatActivity
     photoAdapter.register(Photo.class, photoBinder);
     GridLayoutManager allPhotosLayoutManager = new GridLayoutManager(this, 4);
     allPhotosLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-      @Override public int getSpanSize(int position) {
+      @Override
+      public int getSpanSize(int position) {
         return position == 0 ? 4 : 1;
       }
     });
@@ -198,7 +211,8 @@ public class MainActivity extends AppCompatActivity
 
     GridLayoutManager allPhotosWithAlbumLayoutManager = new GridLayoutManager(MainActivity.this, 4);
     allPhotosWithAlbumLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-      @Override public int getSpanSize(int position) {
+      @Override
+      public int getSpanSize(int position) {
         if (position == 0) return 4;
         return allPhotosWithAlbum.get(position) instanceof Album ? 4 : 1;
       }
@@ -218,7 +232,7 @@ public class MainActivity extends AppCompatActivity
     toolbar.inflateMenu(R.menu.menu_main_toolbar);
     toolbar.setOnMenuItemClickListener(item -> {
       Intent intent = null;
-      switch (item.getItemId()){
+      switch (item.getItemId()) {
         case R.id.action_my_layout:
           intent = new Intent(this, MyLayoutActivity.class);
           break;
@@ -244,7 +258,8 @@ public class MainActivity extends AppCompatActivity
   public void fetchBitmap(final String path) {
     Log.d(TAG, "fetchBitmap: ");
     final Target target = new Target() {
-      @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+      @Override
+      public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
         Log.d(TAG, "onBitmapLoaded: ");
         arrayBitmap.put(path, bitmap);
         bitmaps.add(bitmap);
@@ -254,11 +269,13 @@ public class MainActivity extends AppCompatActivity
         targets.remove(this);
       }
 
-      @Override public void onBitmapFailed(Drawable errorDrawable) {
+      @Override
+      public void onBitmapFailed(Drawable errorDrawable) {
 
       }
 
-      @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+      @Override
+      public void onPrepareLoad(Drawable placeHolderDrawable) {
 
       }
     };
@@ -364,7 +381,8 @@ public class MainActivity extends AppCompatActivity
     });
   }
 
-  @Override protected void onDestroy() {
+  @Override
+  protected void onDestroy() {
     super.onDestroy();
     compositeDisposables.clear();
   }
@@ -393,25 +411,30 @@ public class MainActivity extends AppCompatActivity
       this.titleList = titleList;
     }
 
-    @Override public Object instantiateItem(ViewGroup container, int position) {
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
       container.addView(viewList.get(position));
       return viewList.get(position);
     }
 
-    @Override public int getCount() {
+    @Override
+    public int getCount() {
       return viewList.size();
     }
 
-    @Override public boolean isViewFromObject(View view, Object object) {
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
       return view == object;
     }
 
-    @Override public void destroyItem(ViewGroup container, int position, Object object) {
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
       super.destroyItem(container, position, object);
       container.removeView((View) object);
     }
 
-    @Override public CharSequence getPageTitle(int position) {
+    @Override
+    public CharSequence getPageTitle(int position) {
       return titleList.get(position);
     }
   }

@@ -59,6 +59,14 @@ public interface PuzzleLayout {
     public float top;
     public float right;
     public float bottom;
+
+    public float width(){
+      return right - left;
+    }
+
+    public float height(){
+      return bottom - top;
+    }
   }
 
   class Step {

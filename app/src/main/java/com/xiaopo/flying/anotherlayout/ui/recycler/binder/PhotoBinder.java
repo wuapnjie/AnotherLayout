@@ -8,13 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.squareup.picasso.Picasso;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.poiphoto.datatype.Photo;
+
 import java.util.Set;
+
 import me.drakeet.multitype.ItemViewBinder;
 
 /**
@@ -33,14 +37,16 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
     this.maxCount = maxCount;
   }
 
-  @NonNull @Override
+  @NonNull
+  @Override
   protected PhotoBinder.ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater,
-      @NonNull ViewGroup parent) {
+                                                      @NonNull ViewGroup parent) {
     View itemView = inflater.inflate(R.layout.item_photo, parent, false);
     return new ViewHolder(itemView);
   }
 
-  @Override public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Photo cellData) {
+  @Override
+  public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Photo cellData) {
     holder.bindCellData(cellData, imageResizeWidth(holder.itemView.getContext()));
   }
 
@@ -62,8 +68,10 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
   }
 
   class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.iv_photo) ImageView ivPhoto;
-    @BindView(R.id.shadow) View shadow;
+    @BindView(R.id.iv_photo)
+    ImageView ivPhoto;
+    @BindView(R.id.shadow)
+    View shadow;
 
     ViewHolder(View itemView) {
       super(itemView);
@@ -93,7 +101,7 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
             if (onPhotoMaxCountListener != null) {
               onPhotoMaxCountListener.onPhotoMaxCount();
             }
-          }else {
+          } else {
             shadow.setVisibility(View.VISIBLE);
             data.setSelected(true);
             selectedPositions.add(position());

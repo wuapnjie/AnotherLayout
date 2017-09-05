@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+
 import com.xiaopo.flying.anotherlayout.R;
 
 /**

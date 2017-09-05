@@ -12,13 +12,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.Colors;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
+import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.model.data.Stores;
@@ -29,8 +32,12 @@ import com.xiaopo.flying.poiphoto.Define;
 import com.xiaopo.flying.poiphoto.PhotoPicker;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzleView;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
@@ -42,9 +49,12 @@ public class ProcessActivity extends AppCompatActivity {
   public static final String INTENT_KEY_THEME = "theme_id";
   public static final String INTENT_KEY_TYPE = "piece_type";
 
-  @BindView(R.id.toolbar) Toolbar toolbar;
-  @BindView(R.id.puzzle_view) PuzzleView puzzleView;
-  @BindView(R.id.handle_container) HandleContainer handleContainer;
+  @BindView(R.id.toolbar)
+  Toolbar toolbar;
+  @BindView(R.id.puzzle_view)
+  PuzzleView puzzleView;
+  @BindView(R.id.handle_container)
+  HandleContainer handleContainer;
 
   private PuzzleLayout puzzleLayout;
   private List<String> bitmapPaint;
@@ -52,8 +62,10 @@ public class ProcessActivity extends AppCompatActivity {
   private List<Target> targets = new ArrayList<>();
   private int deviceSize = 0;
   private List<HandleItem> handleItems = new ArrayList<>(5);
+  private CompositeDisposable disposables = new CompositeDisposable();
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_process);
     ButterKnife.bind(this);
@@ -79,7 +91,8 @@ public class ProcessActivity extends AppCompatActivity {
 
     for (int i = 0; i < count; i++) {
       final Target target = new Target() {
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
           pieces.add(bitmap);
           if (pieces.size() == count) {
             if (bitmapPaint.size() < puzzleLayout.getAreaCount()) {
@@ -93,11 +106,13 @@ public class ProcessActivity extends AppCompatActivity {
           targets.remove(this);
         }
 
-        @Override public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
 
         }
 
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
         }
       };
@@ -119,10 +134,13 @@ public class ProcessActivity extends AppCompatActivity {
     toolbar.setNavigationOnClickListener(v -> onBackPressed());
     toolbar.inflateMenu(R.menu.menu_process);
     toolbar.setOnMenuItemClickListener(item -> {
-      switch (item.getItemId()){
+      switch (item.getItemId()) {
         case R.id.action_save_layout:
           PuzzleLayout.Info info = puzzleLayout.generateInfo();
-          Stores.instance(this).saveLayout(info);
+          Disposable disposable =
+              Stores.instance(this)
+                  .saveLayout(info)
+                  .subscribe(this::showSaveSuccess);
           break;
       }
       return true;
@@ -140,33 +158,40 @@ public class ProcessActivity extends AppCompatActivity {
     handleContainer.setHandleItems(handleItems);
   }
 
+  private void showSaveSuccess() {
+    Toasts.show(this, R.string.save_layout_success);
+  }
+
   private void showSelectedPhotoDialog() {
     PhotoPicker.newInstance().setMaxCount(1).pick(this);
   }
 
-  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == Define.DEFAULT_REQUEST_CODE && resultCode == RESULT_OK) {
       List<String> paths = data.getStringArrayListExtra(Define.PATHS);
       String path = paths.get(0);
 
       final Target target = new Target() {
-        @Override public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
           puzzleView.replace(bitmap);
         }
 
-        @Override public void onBitmapFailed(Drawable errorDrawable) {
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
           Snackbar.make(puzzleView, "Replace Failed!", Snackbar.LENGTH_SHORT).show();
         }
 
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
 
         }
       };
 
-      //@formatter:off
-      //noinspection SuspiciousNameCombination
-      Picasso.with(this).load("file:///" + path)
+      Picasso.with(this)
+          .load("file:///" + path)
           .resize(deviceSize, deviceSize)
           .centerInside()
           .into(target);
@@ -198,7 +223,8 @@ public class ProcessActivity extends AppCompatActivity {
     seekBar.setDegreeRange(0, 100);
     seekBar.setCurrentDegrees((int) puzzleView.getPieceRadian());
     seekBar.setScrollingListener(new DegreeSeekBar.SimpleScrollingListener() {
-      @Override public void onScroll(int currentDegrees) {
+      @Override
+      public void onScroll(int currentDegrees) {
         puzzleView.setPieceRadian(currentDegrees);
       }
     });
@@ -211,7 +237,8 @@ public class ProcessActivity extends AppCompatActivity {
     seekBar.setDegreeRange(0, 30);
     seekBar.setCurrentDegrees((int) puzzleView.getPiecePadding());
     seekBar.setScrollingListener(new DegreeSeekBar.SimpleScrollingListener() {
-      @Override public void onScroll(int currentDegrees) {
+      @Override
+      public void onScroll(int currentDegrees) {
         puzzleView.setPiecePadding(currentDegrees);
       }
     });
@@ -296,5 +323,11 @@ public class ProcessActivity extends AppCompatActivity {
         new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
     return colorView;
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    disposables.dispose();
   }
 }

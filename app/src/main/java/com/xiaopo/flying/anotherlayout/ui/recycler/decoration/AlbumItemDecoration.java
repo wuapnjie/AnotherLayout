@@ -19,7 +19,9 @@ package com.xiaopo.flying.anotherlayout.ui.recycler.decoration;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import com.xiaopo.flying.poiphoto.datatype.Album;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,8 +48,9 @@ public class AlbumItemDecoration extends RecyclerView.ItemDecoration {
     }
   }
 
-  @Override public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-      RecyclerView.State state) {
+  @Override
+  public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                             RecyclerView.State state) {
     int position = parent.getChildLayoutPosition(view);
     int column = 0; // item column
     if (dontNeedSet.contains(position)) {

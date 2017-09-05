@@ -1,6 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.slant;
 
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 

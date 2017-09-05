@@ -1,15 +1,19 @@
 package com.xiaopo.flying.anotherlayout.kits;
 
 import android.graphics.Color;
+
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
+
 import io.reactivex.annotations.NonNull;
+
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author wupanjie
  */
-@SuppressWarnings("WeakerAccess") public final class Colors {
+@SuppressWarnings("WeakerAccess")
+public final class Colors {
   private Colors() {
     //no instance
   }
@@ -60,13 +64,14 @@ import java.util.List;
   public static final ColorItem c44 = new ColorItem(Color.rgb(236, 181, 62));
   public static final ColorItem c45 = new ColorItem(Color.rgb(246, 218, 140));
 
-  @NonNull public static List<ColorItem> all() {
+  @NonNull
+  public static List<ColorItem> all() {
     List<ColorItem> items =
         Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17,
-        c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35,
-        c36, c37, c38, c39, c40, c41, c42, c43, c44, c45);
+            c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, c32, c33, c34, c35,
+            c36, c37, c38, c39, c40, c41, c42, c43, c44, c45);
 
-    for (ColorItem item : items){
+    for (ColorItem item : items) {
       item.setSelected(false);
     }
 

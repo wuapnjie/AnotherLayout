@@ -15,6 +15,7 @@ import com.xiaopo.flying.anotherlayout.layout.straight.StraightLayoutHelper;
 import com.xiaopo.flying.anotherlayout.layout.straight.ThreeStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.TwoStraightLayout;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 

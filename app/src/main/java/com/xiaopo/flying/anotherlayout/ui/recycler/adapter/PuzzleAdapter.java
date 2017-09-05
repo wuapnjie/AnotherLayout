@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.SquarePuzzleView;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.layout.slant.NumberSlantLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.NumberStraightLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +24,15 @@ public class PuzzleAdapter extends RecyclerView.Adapter<PuzzleAdapter.PuzzleView
   private List<Bitmap> bitmapData = new ArrayList<>();
   private OnItemClickListener onItemClickListener;
 
-  @Override public PuzzleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  @Override
+  public PuzzleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     View itemView =
         LayoutInflater.from(parent.getContext()).inflate(R.layout.item_puzzle, parent, false);
     return new PuzzleViewHolder(itemView);
   }
 
-  @Override public void onBindViewHolder(PuzzleViewHolder holder, int position) {
+  @Override
+  public void onBindViewHolder(PuzzleViewHolder holder, int position) {
     final PuzzleLayout puzzleLayout = layoutData.get(position);
 
     holder.puzzleView.setNeedDrawLine(true);
@@ -62,7 +66,8 @@ public class PuzzleAdapter extends RecyclerView.Adapter<PuzzleAdapter.PuzzleView
     }
   }
 
-  @Override public int getItemCount() {
+  @Override
+  public int getItemCount() {
     return layoutData == null ? 0 : layoutData.size();
   }
 

@@ -14,27 +14,33 @@ import android.support.annotation.Nullable;
 public class PlaceHolderDrawable extends Drawable {
   public static Drawable instance = new PlaceHolderDrawable();
 
-  @Override public void draw(@NonNull Canvas canvas) {
-    canvas.drawColor(Color.BLACK);
+  @Override
+  public void draw(@NonNull Canvas canvas) {
+    canvas.drawColor(Color.parseColor("#EDEDED"));
   }
 
-  @Override public void setAlpha(int alpha) {
+  @Override
+  public void setAlpha(int alpha) {
     // no-ops
   }
 
-  @Override public void setColorFilter(@Nullable ColorFilter colorFilter) {
+  @Override
+  public void setColorFilter(@Nullable ColorFilter colorFilter) {
     // no-ops
   }
 
-  @Override public int getOpacity() {
+  @Override
+  public int getOpacity() {
     return PixelFormat.UNKNOWN;
   }
 
-  @Override public int getIntrinsicHeight() {
+  @Override
+  public int getIntrinsicHeight() {
     return 1;
   }
 
-  @Override public int getIntrinsicWidth() {
+  @Override
+  public int getIntrinsicWidth() {
     return 1;
   }
 }

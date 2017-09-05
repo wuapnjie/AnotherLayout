@@ -3,14 +3,17 @@ package com.xiaopo.flying.anotherlayout.model.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
 import com.xiaopo.flying.anotherlayout.layout.parser.GsonLayoutParser;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+
 import java.util.List;
 
 /**
@@ -75,5 +78,21 @@ public class Stores {
 
       return styles;
     });
+  }
+
+  public Observable<List<Style>> getAllStyles(final int limit, final int offset) {
+    return database.createQuery(StyleEntry.TABLE_NAME,
+        "SELECT * " + "FROM " + StyleEntry.TABLE_NAME + " LIMIT " + limit + " OFFSET " + offset)
+        .mapToList(Style.MAPPER)
+        .map(styles -> {
+          final int size = styles.size();
+          for (int i = 0; i < size; i++) {
+            Style style = styles.get(i);
+            PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
+            style.setLayout(layout);
+          }
+
+          return styles;
+        });
   }
 }

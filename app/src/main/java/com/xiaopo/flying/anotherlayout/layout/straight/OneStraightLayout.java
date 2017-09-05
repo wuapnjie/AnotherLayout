@@ -11,11 +11,13 @@ public class OneStraightLayout extends NumberStraightLayout {
     super(theme);
   }
 
-  @Override public int getThemeCount() {
+  @Override
+  public int getThemeCount() {
     return 6;
   }
 
-  @Override public void layout() {
+  @Override
+  public void layout() {
     switch (theme) {
       case 0:
         addLine(0, Line.Direction.HORIZONTAL, 1f / 2);

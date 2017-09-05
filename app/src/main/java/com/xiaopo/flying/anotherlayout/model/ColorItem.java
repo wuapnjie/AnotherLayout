@@ -6,7 +6,8 @@ import android.support.annotation.ColorInt;
  * @author wupanjie
  */
 public class ColorItem {
-  @ColorInt private int color;
+  @ColorInt
+  private int color;
   private boolean isSelected;
 
   public ColorItem(@ColorInt int color) {

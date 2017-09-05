@@ -2,7 +2,9 @@ package com.xiaopo.flying.anotherlayout;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+
 import com.squareup.picasso.Picasso;
+
 import io.reactivex.plugins.RxJavaPlugins;
 
 /**
@@ -10,9 +12,13 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 
 public class AnotherApp extends Application {
-  @Override public void onCreate() {
+  @Override
+  public void onCreate() {
     super.onCreate();
-    Picasso picasso = new Picasso.Builder(this).defaultBitmapConfig(Bitmap.Config.RGB_565).build();
+    Picasso picasso =
+        new Picasso.Builder(this)
+            .defaultBitmapConfig(Bitmap.Config.RGB_565)
+            .build();
     Picasso.setSingletonInstance(picasso);
   }
 }

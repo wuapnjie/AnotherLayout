@@ -25,7 +25,8 @@ public final class DipPixelKit {
     return sDeviceHeight;
   }
 
-  @SuppressLint("DefaultLocale") public static int dip2px(Context context, float dpValue) {
+  @SuppressLint("DefaultLocale")
+  public static int dip2px(Context context, float dpValue) {
     if (sScale == 0) {
       sScale = context.getResources().getDisplayMetrics().density;
     }

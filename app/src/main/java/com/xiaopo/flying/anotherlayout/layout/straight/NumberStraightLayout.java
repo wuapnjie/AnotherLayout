@@ -1,6 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.straight;
 
 import android.util.Log;
+
 import com.xiaopo.flying.puzzle.straight.StraightPuzzleLayout;
 
 /**
