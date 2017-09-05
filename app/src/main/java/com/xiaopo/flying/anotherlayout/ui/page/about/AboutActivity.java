@@ -55,7 +55,7 @@ public class AboutActivity extends AbsAboutActivity {
         "https://github.com/google/gson"));
     items.add(new License("AndPermission", "drakeet", License.APACHE_2,
         "https://github.com/yanzhenjie/AndPermission"));
-    items.add(new License("ButterKnife", "JakeWh", License.APACHE_2,
+    items.add(new License("ButterKnife", "JakeWharton", License.APACHE_2,
         "https://github.com/JakeWharton/butterknife"));
     items.add(new License("MultiType", "drakeet", License.APACHE_2,
         "https://github.com/drakeet/MultiType"));

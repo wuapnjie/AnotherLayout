@@ -8,20 +8,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -40,7 +36,8 @@ import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
 import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
-import com.xiaopo.flying.anotherlayout.ui.page.mylayout.MyLayoutActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.production.ProductionActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.layout.LayoutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.adapter.PuzzleAdapter;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.AlbumTitleBinder;
@@ -72,7 +69,7 @@ import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 public class MainActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener, WeakHandler.IHandler {
+    implements WeakHandler.IHandler {
   private static final String TAG = MainActivity.class.getSimpleName();
   private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
@@ -117,7 +114,8 @@ public class MainActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     Fabric.with(this, new Crashlytics());
 
-    setContentView(R.layout.activity_main);
+    // TODO 暂时去掉抽屉
+    setContentView(R.layout.drawer_content_main);
     ButterKnife.bind(this);
 
     puzzleHandler = new WeakHandler(this);
@@ -233,8 +231,11 @@ public class MainActivity extends AppCompatActivity
     toolbar.setOnMenuItemClickListener(item -> {
       Intent intent = null;
       switch (item.getItemId()) {
+        case R.id.action_my_image:
+          intent = new Intent(this, ProductionActivity.class);
+          break;
         case R.id.action_my_layout:
-          intent = new Intent(this, MyLayoutActivity.class);
+          intent = new Intent(this, LayoutActivity.class);
           break;
         case R.id.action_about:
           intent = new Intent(this, AboutActivity.class);
@@ -245,14 +246,14 @@ public class MainActivity extends AppCompatActivity
     });
 
     // drawer layout
-    DrawerLayout drawer = findViewById(R.id.drawer_layout);
-    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
-        R.string.navigation_drawer_close);
-    drawer.addDrawerListener(toggle);
-    toggle.syncState();
-
-    NavigationView navigationView = findViewById(R.id.nav_view);
-    navigationView.setNavigationItemSelectedListener(this);
+//    DrawerLayout drawer = findViewById(R.id.drawer_layout);
+//    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
+//        R.string.navigation_drawer_close);
+//    drawer.addDrawerListener(toggle);
+//    toggle.syncState();
+//
+//    NavigationView navigationView = findViewById(R.id.nav_view);
+//    navigationView.setNavigationItemSelectedListener(this);
   }
 
   public void fetchBitmap(final String path) {
@@ -330,11 +331,12 @@ public class MainActivity extends AppCompatActivity
     allPhotosWithAlbum.add(new PhotoHeader());
     final ArrayMap<String, List<Photo>> albumArray = new ArrayMap<>();
 
-    Observable.just(new PhotoManager(this)).flatMap(photoManager -> {
-      List<Photo> photos = photoManager.getAllPhotos();
-      allPhotos.addAll(photos);
-      return Observable.fromIterable(photos);
-    }).subscribe(new Observer<Photo>() {
+    Observable.just(new PhotoManager(this))
+        .flatMap(photoManager -> {
+          List<Photo> photos = photoManager.getAllPhotos();
+          allPhotos.addAll(photos);
+          return Observable.fromIterable(photos);
+        }).subscribe(new Observer<Photo>() {
       @Override
       public void onSubscribe(Disposable d) {
         compositeDisposables.add(d);
@@ -394,11 +396,6 @@ public class MainActivity extends AppCompatActivity
     } else if (msg.what == 120) {
       fetchBitmap((String) msg.obj);
     }
-  }
-
-  @Override
-  public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-    return false;
   }
 
   private class SelectPagerAdapter extends PagerAdapter {

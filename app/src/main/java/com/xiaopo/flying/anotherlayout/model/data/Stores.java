@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
 import com.xiaopo.flying.anotherlayout.layout.parser.GsonLayoutParser;
+import com.xiaopo.flying.anotherlayout.layout.parser.GsonPiecesParser;
+import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import io.reactivex.Completable;
@@ -24,6 +26,7 @@ public class Stores {
   private BriteDatabase database;
   private Gson gson;
   private GsonLayoutParser layoutParser;
+  private GsonPiecesParser piecesParser;
 
   private Stores(Context context) {
     AnotherDBHelper dbHelper = new AnotherDBHelper(context);
@@ -31,6 +34,7 @@ public class Stores {
     database = brite.wrapDatabaseHelper(dbHelper, Schedulers.io());
     gson = new Gson();
     layoutParser = new GsonLayoutParser(gson);
+    piecesParser = new GsonPiecesParser(gson);
   }
 
   public static Stores instance(Context context) {
@@ -66,6 +70,18 @@ public class Stores {
     return Completable.complete();
   }
 
+  public Completable saveLayoutAndPieces(PuzzleLayout.Info layoutInfo,
+                                         PhotoPuzzleView.PieceInfos pieceInfos) {
+    ContentValues values = new ContentValues();
+    long currentTimeMillis = System.currentTimeMillis();
+    values.put(StyleEntry.CREATE_AT, currentTimeMillis);
+    values.put(StyleEntry.UPDATE_AT, currentTimeMillis);
+    values.put(StyleEntry.LAYOUT_INFO, gson.toJson(layoutInfo));
+    values.put(StyleEntry.PIECE_INFO, gson.toJson(pieceInfos));
+    database.insert(StyleEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
+    return Completable.complete();
+  }
+
   public Observable<List<Style>> getAllStyles() {
     return database.createQuery(StyleEntry.TABLE_NAME,
         "SELECT * " + "FROM " + StyleEntry.TABLE_NAME).mapToList(Style.MAPPER).map(styles -> {
@@ -80,9 +96,13 @@ public class Stores {
     });
   }
 
-  public Observable<List<Style>> getAllStyles(final int limit, final int offset) {
-    return database.createQuery(StyleEntry.TABLE_NAME,
-        "SELECT * " + "FROM " + StyleEntry.TABLE_NAME + " LIMIT " + limit + " OFFSET " + offset)
+  public Observable<List<Style>> getAllLayouts(final int limit, final int offset) {
+    final String sql
+        = "SELECT * " + "FROM " + StyleEntry.TABLE_NAME
+        + " WHERE " + StyleEntry.PIECE_INFO + " IS NULL"
+        + " LIMIT " + limit + " OFFSET " + offset;
+
+    return database.createQuery(StyleEntry.TABLE_NAME, sql)
         .mapToList(Style.MAPPER)
         .map(styles -> {
           final int size = styles.size();
@@ -90,6 +110,28 @@ public class Stores {
             Style style = styles.get(i);
             PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
             style.setLayout(layout);
+          }
+
+          return styles;
+        });
+  }
+
+  public Observable<List<Style>> getAllProductions(final int limit, final int offset) {
+    final String sql
+        = "SELECT * " + "FROM " + StyleEntry.TABLE_NAME
+        + " WHERE " + StyleEntry.PIECE_INFO + " IS NOT NULL"
+        + " LIMIT " + limit + " OFFSET " + offset;
+
+    return database.createQuery(StyleEntry.TABLE_NAME, sql)
+        .mapToList(Style.MAPPER)
+        .map(styles -> {
+          final int size = styles.size();
+          for (int i = 0; i < size; i++) {
+            Style style = styles.get(i);
+            PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
+            PhotoPuzzleView.PieceInfos piecesInfos = piecesParser.parse(style.getPieceInfo());
+            style.setLayout(layout);
+            style.setPieces(piecesInfos);
           }
 
           return styles;

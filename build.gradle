@@ -6,7 +6,7 @@ buildscript {
     picasso_version = '2.5.2'
     rxjava_version = '2.1.1'
     rxandroid_version = '2.0.1'
-    and_permission_version = '1.0.8'
+    and_permission_version = '1.1.0'
     multi_type_version = '3.1.0'
     about_page_version = '1.2.1'
     butter_knife_version = '8.5.1'

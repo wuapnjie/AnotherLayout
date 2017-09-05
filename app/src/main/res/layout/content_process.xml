@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/handle_bar_height"
         >
-        <com.xiaopo.flying.puzzle.PuzzleView
+        <com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView
             android:id="@+id/puzzle_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

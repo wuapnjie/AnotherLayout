@@ -781,6 +781,10 @@ public class PuzzleView extends View {
     return pieceRadian;
   }
 
+  public List<PuzzlePiece> getPuzzlePieces() {
+    return puzzlePieces;
+  }
+
   public void setOnPieceSelectedListener(OnPieceSelectedListener onPieceSelectedListener) {
     this.onPieceSelectedListener = onPieceSelectedListener;
   }

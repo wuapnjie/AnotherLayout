@@ -26,7 +26,7 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
  * @author wupanjie
  */
 @SuppressWarnings("WeakerAccess") public class PuzzlePiece {
-  private static Xfermode SRC_IN = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+  private static final Xfermode SRC_IN = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 
   private Drawable drawable;
   private Matrix matrix;
@@ -426,5 +426,9 @@ import static com.xiaopo.flying.puzzle.MatrixUtils.judgeIsImageContainsBorder;
 
   void setAnimateDuration(int duration) {
     this.duration = duration;
+  }
+
+  public Matrix getMatrix() {
+    return matrix;
   }
 }

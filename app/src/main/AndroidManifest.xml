@@ -36,7 +36,8 @@
 
         <activity android:name=".ui.page.about.AboutActivity"/>
 
-        <activity android:name=".ui.page.mylayout.MyLayoutActivity"/>
+        <activity android:name=".ui.page.layout.LayoutActivity"/>
+        <activity android:name=".ui.page.production.ProductionActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

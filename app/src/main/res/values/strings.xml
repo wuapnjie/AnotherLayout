@@ -31,4 +31,7 @@
     <string name="card_content">这是我独立开发的拼图应用AnotherLayout</string>
     <string name="my_layout">我的布局</string>
     <string name="save_layout_success">布局保存成功</string>
+    <string name="action_save_image">保存图片</string>
+    <string name="no_more">没有更多了</string>
+    <string name="my_image">我的作品</string>
 </resources>

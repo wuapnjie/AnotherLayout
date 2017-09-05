@@ -1,9 +1,8 @@
-package com.xiaopo.flying.anotherlayout.ui.page.mylayout;
+package com.xiaopo.flying.anotherlayout.ui.page.production;
 
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,8 +13,9 @@ import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.data.Stores;
 import com.xiaopo.flying.anotherlayout.model.data.Style;
+import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
-import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
+import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +26,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
 /**
  * @author wupanjie
  */
-public class MyLayoutActivity extends AppCompatActivity
+public class ProductionActivity extends AnotherActivity
     implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler {
 
   public static final int LIMIT = 10;
@@ -34,41 +34,42 @@ public class MyLayoutActivity extends AppCompatActivity
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
-  @BindView(R.id.puzzle_list)
-  RecyclerView puzzleList;
+  @BindView(R.id.image_list)
+  RecyclerView imageList;
 
   private MultiTypeAdapter adapter;
+  private Items productionItems = new Items();
+
   private boolean loading;
   private int currentOffset;
-
-  private Items layoutItems = new Items();
   private WeakHandler handler = new WeakHandler(this);
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_my_layout);
+    setContentView(R.layout.activity_production);
     ButterKnife.bind(this);
 
-    puzzleList.setLayoutManager(new LinearLayoutManager(this));
+    toolbar.setNavigationOnClickListener(v -> onBackPressed());
+
+    imageList.setLayoutManager(new LinearLayoutManager(this));
 
     final int screenWidth = DipPixelKit.getDeviceWidth(this);
-    adapter = new MultiTypeAdapter(layoutItems);
-    adapter.register(Style.class, new PuzzleLayoutBinder(screenWidth));
-    puzzleList.setAdapter(adapter);
+    adapter = new MultiTypeAdapter(productionItems);
+    adapter.register(Style.class, new ProductionBinder(screenWidth));
+    imageList.setAdapter(adapter);
 
-    toolbar.setNavigationOnClickListener(view -> onBackPressed());
     LoadMoreDelegate loadMoreDelegate = new LoadMoreDelegate(this);
-    loadMoreDelegate.attach(puzzleList);
+    loadMoreDelegate.attach(imageList);
 
-    fetchMyLayouts(LIMIT, currentOffset);
+    fetchMyProductions(LIMIT, currentOffset);
   }
 
-  private void fetchMyLayouts(int limit, int offset) {
+  private void fetchMyProductions(int limit, int offset) {
     loading = true;
 
     Stores.instance(this)
-        .getAllStyles(limit, offset)
+        .getAllProductions(limit, offset)
         .filter(styles -> {
           if (styles == null || styles.isEmpty()) {
             handler.sendEmptyMessage(WHAT_NO_MORE);
@@ -78,11 +79,21 @@ public class MyLayoutActivity extends AppCompatActivity
         })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(styles -> {
-          layoutItems.addAll(styles);
-          adapter.notifyDataSetChanged();
+          final int insert = productionItems.size();
+          productionItems.addAll(styles);
+          adapter.notifyItemInserted(insert);
           currentOffset += LIMIT;
           loading = false;
         });
+  }
+
+  @Override
+  public void handleMsg(Message msg) {
+    switch (msg.what) {
+      case WHAT_NO_MORE:
+        Toasts.show(this, R.string.no_more);
+        break;
+    }
   }
 
   @Override
@@ -92,15 +103,6 @@ public class MyLayoutActivity extends AppCompatActivity
 
   @Override
   public void onLoadMore() {
-    fetchMyLayouts(LIMIT, currentOffset);
-  }
-
-  @Override
-  public void handleMsg(Message msg) {
-    switch (msg.what) {
-      case WHAT_NO_MORE:
-        Toasts.show(this, "没有更多了");
-        break;
-    }
+    fetchMyProductions(LIMIT, currentOffset);
   }
 }

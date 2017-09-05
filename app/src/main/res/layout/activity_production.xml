@@ -19,14 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-            app:title="@string/my_layout"
+            app:title="@string/my_image"
             >
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_my_layout"/>
+    <include layout="@layout/content_production"/>
 
     <!--<android.support.design.widget.FloatingActionButton-->
     <!--android:id="@+id/fab"-->

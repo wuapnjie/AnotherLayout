@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.xiaopo.flying.anotherlayout.kits.DB;
 import com.xiaopo.flying.anotherlayout.kits.guava.Optional;
+import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
 
@@ -21,8 +22,8 @@ public class Style {
   private String layoutInfo;
   private String pieceInfo;
 
-  private Optional<PuzzleLayout.Info> layout;
-  private Optional<List<PuzzlePiece>> pieces;
+  private Optional<PuzzleLayout.Info> layout = Optional.absent();
+  private Optional<PhotoPuzzleView.PieceInfos> pieces = Optional.absent();
 
   public static final Function<Cursor, Style> MAPPER = cursor -> {
     long id = DB.getLong(cursor, StyleEntry.ID);
@@ -83,5 +84,13 @@ public class Style {
 
   public void setLayout(PuzzleLayout.Info layout) {
     this.layout = Optional.fromNullable(layout);
+  }
+
+  public Optional<PhotoPuzzleView.PieceInfos> getPieces() {
+    return pieces;
+  }
+
+  public void setPieces(PhotoPuzzleView.PieceInfos pieces) {
+    this.pieces = Optional.fromNullable(pieces);
   }
 }
