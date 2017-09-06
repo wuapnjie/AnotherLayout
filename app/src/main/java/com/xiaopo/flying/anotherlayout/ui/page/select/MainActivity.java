@@ -2,12 +2,9 @@ package com.xiaopo.flying.anotherlayout.ui.page.select;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.PagerAdapter;
@@ -17,7 +14,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -26,14 +22,12 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.crashlytics.android.Crashlytics;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
+import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
 import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.production.ProductionActivity;
@@ -45,19 +39,18 @@ import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoHeaderBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.AlbumItemDecoration;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.PhotoItemDecoration;
-import com.xiaopo.flying.poiphoto.PhotoManager;
-import com.xiaopo.flying.poiphoto.datatype.Album;
-import com.xiaopo.flying.poiphoto.datatype.Photo;
+import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
+import com.xiaopo.flying.anotherlayout.model.Album;
+import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.puzzle.slant.SlantPuzzleLayout;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
 
-import io.fabric.sdk.android.Fabric;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,12 +58,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.reactivex.schedulers.Schedulers;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 public class MainActivity extends AppCompatActivity
     implements WeakHandler.IHandler {
-  private static final String TAG = MainActivity.class.getSimpleName();
   private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
 
@@ -101,7 +94,7 @@ public class MainActivity extends AppCompatActivity
   private Items allPhotos = new Items();
   private Items allPhotosWithAlbum = new Items();
 
-  private int deviceWidth;
+  private int deviceSize;
 
   private WeakHandler puzzleHandler;
 
@@ -112,7 +105,8 @@ public class MainActivity extends AppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Fabric.with(this, new Crashlytics());
+    // TODO 暂时去掉统计
+//    Fabric.with(this, new Crashlytics());
 
     // TODO 暂时去掉抽屉
     setContentView(R.layout.drawer_content_main);
@@ -122,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
     initView();
 
-    deviceWidth = DipPixelKit.getDeviceWidth(this);
+    deviceSize = DipPixelKit.getDeviceWidth(this);
 
     AndPermission.with(this)
         .requestCode(CODE_REQUEST_PERMISSION)
@@ -140,17 +134,6 @@ public class MainActivity extends AppCompatActivity
   @PermissionNo(CODE_REQUEST_PERMISSION)
   private void getPermissionNo(List<String> deniedPermissions) {
     Toast.makeText(this, "必须要权限", Toast.LENGTH_SHORT).show();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                         @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == 110
-        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-      loadPhoto();
-    }
   }
 
   private void initView() {
@@ -257,42 +240,23 @@ public class MainActivity extends AppCompatActivity
   }
 
   public void fetchBitmap(final String path) {
-    Log.d(TAG, "fetchBitmap: ");
-    final Target target = new Target() {
-      @Override
-      public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-        Log.d(TAG, "onBitmapLoaded: ");
-        arrayBitmap.put(path, bitmap);
-        bitmaps.add(bitmap);
-        selectedPath.add(path);
-
-        refreshLayout();
-        targets.remove(this);
-      }
-
-      @Override
-      public void onBitmapFailed(Drawable errorDrawable) {
-
-      }
-
-      @Override
-      public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-      }
-    };
-
     final int screenWidth = DipPixelKit.getDeviceWidth(this);
     final int availableWidth = screenWidth - 3 * DipPixelKit.dip2px(this, 2);
-    int resize = availableWidth / 4;
+    final int resize = availableWidth / 4;
 
-    Picasso.with(this)
-        .load("file:///" + path)
-        .resize(resize, resize)
-        .centerCrop()
-        .config(Bitmap.Config.RGB_565)
-        .into(target);
+    Observable.just(path)
+        .subscribeOn(Schedulers.io())
+        .map(photoPath ->
+          ImageEngine.instance()
+              .get(this, path, resize, resize)
+        ).observeOn(AndroidSchedulers.mainThread())
+        .subscribe(bitmap -> {
+          arrayBitmap.put(path, bitmap);
+          bitmaps.add(bitmap);
+          selectedPath.add(path);
 
-    targets.add(target);
+          refreshLayout();
+        });
   }
 
   private void refreshLayout() {
@@ -307,14 +271,8 @@ public class MainActivity extends AppCompatActivity
       message.obj = photo.getPath();
       puzzleHandler.sendMessage(message);
 
-      //prefetch the photo
-      //noinspection SuspiciousNameCombination
-      Picasso.with(MainActivity.this)
-          .load("file:///" + photo.getPath())
-          .resize(deviceWidth, deviceWidth)
-          .memoryPolicy(MemoryPolicy.NO_CACHE)
-          .centerInside()
-          .fetch();
+      ImageEngine.instance()
+          .prefetch(this, photo.getPath(), deviceSize, deviceSize);
     } else {
       Bitmap bitmap = arrayBitmap.remove(photo.getPath());
       bitmaps.remove(bitmap);
@@ -331,19 +289,15 @@ public class MainActivity extends AppCompatActivity
     allPhotosWithAlbum.add(new PhotoHeader());
     final ArrayMap<String, List<Photo>> albumArray = new ArrayMap<>();
 
-    Observable.just(new PhotoManager(this))
-        .flatMap(photoManager -> {
-          List<Photo> photos = photoManager.getAllPhotos();
-          allPhotos.addAll(photos);
-          return Observable.fromIterable(photos);
-        }).subscribe(new Observer<Photo>() {
-      @Override
-      public void onSubscribe(Disposable d) {
-        compositeDisposables.add(d);
-      }
+    Completable.wrap(completableObserver -> {
+      PhotoManager photoManager = new PhotoManager(this);
 
-      @Override
-      public void onNext(Photo photo) {
+      List<Photo> photos = photoManager.getAllPhotos();
+      allPhotos.addAll(photos);
+
+      final int size = photos.size();
+      for (int i = 0; i < size; i++) {
+        Photo photo = photos.get(i);
         if (albumArray.containsKey(photo.getBucketId())) {
           albumArray.get(photo.getBucketId()).add(photo);
         } else {
@@ -353,34 +307,33 @@ public class MainActivity extends AppCompatActivity
         }
       }
 
-      @Override
-      public void onError(Throwable e) {
-
+      for (String key : albumArray.keySet()) {
+        List<Photo> list = albumArray.get(key);
+        Album album = new Album();
+        album.setId(key);
+        album.setName(list.get(0).getBuckedName());
+        allPhotosWithAlbum.add(album);
+        allPhotosWithAlbum.addAll(list);
       }
 
-      @Override
-      public void onComplete() {
-        for (String key : albumArray.keySet()) {
-          List<Photo> list = albumArray.get(key);
-          Album album = new Album();
-          album.setId(key);
-          album.setName(list.get(0).getBuckedName());
-          allPhotosWithAlbum.add(album);
-          allPhotosWithAlbum.addAll(list);
-        }
+      completableObserver.onComplete();
 
-        final int space = DipPixelKit.dip2px(MainActivity.this, 2);
-        AlbumItemDecoration albumItemDecoration = new AlbumItemDecoration(allPhotosWithAlbum, space);
-        albumAdapter.setItems(allPhotosWithAlbum);
-        albumAdapter.notifyDataSetChanged();
-        albumList.addItemDecoration(albumItemDecoration);
+    }).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> {
+          final int space = DipPixelKit.dip2px(MainActivity.this, 2);
+          AlbumItemDecoration albumItemDecoration
+              = new AlbumItemDecoration(allPhotosWithAlbum, space);
+          albumAdapter.setItems(allPhotosWithAlbum);
+          albumAdapter.notifyDataSetChanged();
+          albumList.addItemDecoration(albumItemDecoration);
 
-        PhotoItemDecoration photoItemDecoration = new PhotoItemDecoration(4, space, false);
-        photoAdapter.setItems(allPhotos);
-        photoAdapter.notifyDataSetChanged();
-        photoList.addItemDecoration(photoItemDecoration);
-      }
-    });
+          PhotoItemDecoration photoItemDecoration
+              = new PhotoItemDecoration(4, space, false);
+          photoAdapter.setItems(allPhotos);
+          photoAdapter.notifyDataSetChanged();
+          photoList.addItemDecoration(photoItemDecoration);
+        });
   }
 
   @Override

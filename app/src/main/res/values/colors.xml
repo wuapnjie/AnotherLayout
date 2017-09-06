@@ -21,4 +21,6 @@
 
     <color name="selected_color">#4E86EC</color>
     <color name="placeholder_color">#B9B9B9</color>
+
+    <color name="divider_color">#00E8E8E8</color>
 </resources>

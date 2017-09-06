@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
 import com.xiaopo.flying.puzzle.PuzzleView;
@@ -42,6 +41,11 @@ public class PhotoPuzzleView extends PuzzleView {
     addPiece(bitmap);
   }
 
+  public void addPiece(Bitmap bitmap, String path, Matrix initialMatrix) {
+    photoPaths.add(path);
+    addPiece(bitmap, initialMatrix);
+  }
+
   public PieceInfos generatePieceInfo() {
     List<PuzzlePiece> pieces = getPuzzlePieces();
     float[] values = new float[9];
@@ -72,7 +76,7 @@ public class PhotoPuzzleView extends PuzzleView {
     return pieceInfos;
   }
 
-  public static class PieceInfos{
+  public static class PieceInfos {
     @SerializedName("pieces")
     public List<PieceInfo> pieces;
     @SerializedName("image_path")

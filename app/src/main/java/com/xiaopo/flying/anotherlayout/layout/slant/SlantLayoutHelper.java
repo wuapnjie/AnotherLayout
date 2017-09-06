@@ -31,11 +31,11 @@ public class SlantLayoutHelper {
           puzzleLayouts.add(new ThreeSlantLayout(i));
         }
         break;
-      //case 4:
-      //  for (int i = 0; i < 8; i++) {
-      //    puzzleLayouts.add(new FourStraightLayout(i));
-      //  }
-      //  break;
+      case 4:
+        for (int i = 0; i < 1; i++) {
+          puzzleLayouts.add(new FourSlantLayout(i));
+        }
+        break;
       //case 5:
       //  for (int i = 0; i < 17; i++) {
       //    puzzleLayouts.add(new FiveStraightLayout(i));

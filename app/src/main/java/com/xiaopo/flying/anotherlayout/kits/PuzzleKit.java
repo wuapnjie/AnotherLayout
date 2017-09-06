@@ -1,5 +1,6 @@
 package com.xiaopo.flying.anotherlayout.kits;
 
+import com.xiaopo.flying.anotherlayout.layout.slant.FourSlantLayout;
 import com.xiaopo.flying.anotherlayout.layout.slant.SlantLayoutHelper;
 import com.xiaopo.flying.anotherlayout.layout.straight.EightStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.FourStraightLayout;
@@ -38,6 +39,8 @@ public final class PuzzleKit {
           return new TwoSlantLayout(themeId);
         case 3:
           return new ThreeSlantLayout(themeId);
+        case 4:
+          return new FourSlantLayout(themeId);
         default:
           return new OneSlantLayout(themeId);
       }
@@ -72,6 +75,7 @@ public final class PuzzleKit {
     //slant layout
     puzzleLayouts.addAll(SlantLayoutHelper.getAllThemeLayout(2));
     puzzleLayouts.addAll(SlantLayoutHelper.getAllThemeLayout(3));
+    puzzleLayouts.addAll(SlantLayoutHelper.getAllThemeLayout(4));
 
     // straight layout
     puzzleLayouts.addAll(StraightLayoutHelper.getAllThemeLayout(2));

@@ -1,7 +1,6 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,10 +11,10 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.squareup.picasso.Picasso;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
-import com.xiaopo.flying.poiphoto.datatype.Photo;
+import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
+import com.xiaopo.flying.anotherlayout.model.Photo;
 
 import java.util.Set;
 
@@ -79,13 +78,13 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
     }
 
     void bindCellData(Photo data, int resize) {
-      // @formatter:off
-      Picasso.with(itemView.getContext())
-          .load("file:///" + data.getPath())
-          .resize(resize, resize)
-          .centerCrop()
-          .config(Bitmap.Config.RGB_565)
-          .into(ivPhoto);
+      ImageEngine.instance()
+          .load(itemView.getContext(),
+              data.getPath(),
+              ivPhoto,
+              resize,
+              resize);
+
 
       itemView.setOnClickListener(view -> {
         if (data.isSelected()) {

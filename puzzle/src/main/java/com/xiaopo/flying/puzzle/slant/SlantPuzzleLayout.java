@@ -1,5 +1,6 @@
 package com.xiaopo.flying.puzzle.slant;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Pair;
 import com.xiaopo.flying.puzzle.Area;
@@ -29,7 +30,7 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
 
   private float padding;
   private float radian;
-  private int color;
+  private int color = Color.WHITE;
 
   private Comparator<SlantArea> areaComparator = new SlantArea.AreaComparator();
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.xiaopo.flying.poiphoto.datatype.Album;
+import com.xiaopo.flying.anotherlayout.model.Album;
 import com.xiaopo.flying.anotherlayout.R;
 
 import me.drakeet.multitype.ItemViewBinder;

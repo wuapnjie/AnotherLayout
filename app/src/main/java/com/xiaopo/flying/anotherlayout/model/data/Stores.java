@@ -7,16 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
-import com.xiaopo.flying.anotherlayout.layout.parser.GsonLayoutParser;
-import com.xiaopo.flying.anotherlayout.layout.parser.GsonPiecesParser;
+import com.xiaopo.flying.anotherlayout.kits.GsonManager;
+import com.xiaopo.flying.anotherlayout.layout.parser.Parsers;
 import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-
-import java.util.List;
 
 /**
  * @author wupanjie
@@ -25,16 +25,14 @@ public class Stores {
   private static Stores instance;
   private BriteDatabase database;
   private Gson gson;
-  private GsonLayoutParser layoutParser;
-  private GsonPiecesParser piecesParser;
+  private Parsers parsers;
 
   private Stores(Context context) {
     AnotherDBHelper dbHelper = new AnotherDBHelper(context);
     SqlBrite brite = new SqlBrite.Builder().build();
     database = brite.wrapDatabaseHelper(dbHelper, Schedulers.io());
-    gson = new Gson();
-    layoutParser = new GsonLayoutParser(gson);
-    piecesParser = new GsonPiecesParser(gson);
+    gson = GsonManager.defaultGson();
+    parsers = Parsers.instance();
   }
 
   public static Stores instance(Context context) {
@@ -88,7 +86,7 @@ public class Stores {
       final int size = styles.size();
       for (int i = 0; i < size; i++) {
         Style style = styles.get(i);
-        PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
+        PuzzleLayout.Info layout = parsers.parseLayout(style.getLayoutInfo());
         style.setLayout(layout);
       }
 
@@ -108,7 +106,7 @@ public class Stores {
           final int size = styles.size();
           for (int i = 0; i < size; i++) {
             Style style = styles.get(i);
-            PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
+            PuzzleLayout.Info layout = parsers.parseLayout(style.getLayoutInfo());
             style.setLayout(layout);
           }
 
@@ -128,8 +126,8 @@ public class Stores {
           final int size = styles.size();
           for (int i = 0; i < size; i++) {
             Style style = styles.get(i);
-            PuzzleLayout.Info layout = layoutParser.parse(style.getLayoutInfo());
-            PhotoPuzzleView.PieceInfos piecesInfos = piecesParser.parse(style.getPieceInfo());
+            PuzzleLayout.Info layout = parsers.parseLayout(style.getLayoutInfo());
+            PhotoPuzzleView.PieceInfos piecesInfos = parsers.parsePieces(style.getPieceInfo());
             style.setLayout(layout);
             style.setPieces(piecesInfos);
           }

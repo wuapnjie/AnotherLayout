@@ -16,6 +16,7 @@ import com.xiaopo.flying.anotherlayout.model.data.Stores;
 import com.xiaopo.flying.anotherlayout.model.data.Style;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
+import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.LinearDividerDecoration;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +31,7 @@ public class LayoutActivity extends AppCompatActivity
     implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler {
 
   public static final int LIMIT = 10;
-  private static final int WHAT_NO_MORE = 1;
+  private static final int WHAT_NO_MORE = 10001;
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
@@ -57,6 +58,13 @@ public class LayoutActivity extends AppCompatActivity
     adapter.register(Style.class, new PuzzleLayoutBinder(screenWidth));
     puzzleList.setAdapter(adapter);
 
+    LinearDividerDecoration decoration = new LinearDividerDecoration(
+        getResources(),
+        R.color.divider_color,
+        DipPixelKit.dip2px(this, 16f),
+        LinearLayoutManager.VERTICAL);
+    puzzleList.addItemDecoration(decoration);
+
     toolbar.setNavigationOnClickListener(view -> onBackPressed());
     LoadMoreDelegate loadMoreDelegate = new LoadMoreDelegate(this);
     loadMoreDelegate.attach(puzzleList);
@@ -69,15 +77,12 @@ public class LayoutActivity extends AppCompatActivity
 
     Stores.instance(this)
         .getAllLayouts(limit, offset)
-        .filter(styles -> {
-          if (styles == null || styles.isEmpty()) {
-            handler.sendEmptyMessage(WHAT_NO_MORE);
-            return false;
-          }
-          return true;
-        })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(styles -> {
+          if (styles == null||styles.isEmpty() ){
+            handler.sendEmptyMessage(WHAT_NO_MORE);
+            return;
+          }
           final int insert = layoutItems.size();
           layoutItems.addAll(styles);
           adapter.notifyItemInserted(insert);

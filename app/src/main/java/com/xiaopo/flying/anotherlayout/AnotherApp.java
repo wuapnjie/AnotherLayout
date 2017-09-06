@@ -1,13 +1,13 @@
 package com.xiaopo.flying.anotherlayout;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
-
-import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * @author wupanjie
@@ -20,6 +20,7 @@ public class AnotherApp extends Application {
     Picasso picasso =
         new Picasso.Builder(this)
             .defaultBitmapConfig(Bitmap.Config.RGB_565)
+            .memoryCache(new LruCache(calculateMemoryCacheSize()))
             .listener(new Picasso.Listener() {
               @Override
               public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
@@ -28,5 +29,12 @@ public class AnotherApp extends Application {
             })
             .build();
     Picasso.setSingletonInstance(picasso);
+  }
+
+  private int calculateMemoryCacheSize() {
+    ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    int memoryClass = am.getMemoryClass();
+    // Target ~25% of the available heap.
+    return 1024 * 1024 * memoryClass / 4;
   }
 }

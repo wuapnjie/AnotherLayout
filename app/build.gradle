@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 
 repositories {
   maven { url 'https://maven.fabric.io/public' }
@@ -32,12 +32,12 @@ dependencies {
   compile fileTree(include: ['*.jar'], dir: 'libs')
 
   // fabric crash
-  compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-    transitive = true
-  }
+//  compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+//    transitive = true
+//  }
 
   // support library
-  implementation "com.android.support:appcompat-v7:$support_version"
+  implementation "com.android.support:support-core-ui:$support_version"
   implementation "com.android.support:design:$support_version"
 
   // picasso
@@ -67,7 +67,7 @@ dependencies {
   // module
   implementation project(':pixelcrop')
   implementation project(':puzzle')
-  implementation project(':poiphoto')
+//  implementation project(':poiphoto')
 
   // for test
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

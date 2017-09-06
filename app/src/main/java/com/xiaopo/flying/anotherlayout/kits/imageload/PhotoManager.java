@@ -1,12 +1,12 @@
-package com.xiaopo.flying.poiphoto;
+package com.xiaopo.flying.anotherlayout.kits.imageload;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.v4.util.ArrayMap;
-import com.xiaopo.flying.poiphoto.datatype.Album;
-import com.xiaopo.flying.poiphoto.datatype.Photo;
+import com.xiaopo.flying.anotherlayout.model.Album;
+import com.xiaopo.flying.anotherlayout.model.Photo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -2,10 +2,11 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer;
 import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.PuzzleView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,6 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
 
   @Override
   public void initUI() {
-    Log.d(TAG, "initUI: ");
     toolbar.setNavigationOnClickListener(v -> controller.onBackPressed());
     toolbar.inflateMenu(R.menu.menu_process);
     toolbar.setOnMenuItemClickListener(this);
@@ -70,6 +69,7 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
     params.height = deviceSize;
     puzzleView.setLayoutParams(params);
     puzzleView.setTouchEnable(true);
+    puzzleView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
     addHandleItems();
 
@@ -78,27 +78,31 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
 
   @Override
   public void onDestroy() {
-    Log.d(TAG, "onDestroy: ");
   }
 
 
   @Override
   public void setPuzzleLayout(PuzzleLayout puzzleLayout) {
-    Log.d(TAG, "setPuzzleLayout: ");
     this.puzzleLayout = puzzleLayout;
     puzzleView.setPuzzleLayout(puzzleLayout);
   }
 
   @Override
+  public PuzzleLayout setPuzzleLayoutInfo(PuzzleLayout.Info puzzleLayoutInfo) {
+    puzzleView.setPuzzleLayout(puzzleLayoutInfo);
+    this.puzzleLayout = puzzleView.getPuzzleLayout();
+
+    return this.puzzleLayout;
+  }
+
+  @Override
   public void addPiece(Bitmap piece, String path) {
-    Log.d(TAG, "addPiece: ");
     puzzleView.addPiece(piece, path);
   }
 
   @Override
-  public void addPieces(List<Bitmap> pieces) {
-    Log.d(TAG, "addPieces: ");
-    puzzleView.addPieces(pieces);
+  public void addPiece(Bitmap piece, String path, Matrix initialMatrix) {
+    puzzleView.addPiece(piece, path, initialMatrix);
   }
 
   private void addHandleItems() {
@@ -256,6 +260,7 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
   public Bitmap createBitmap() {
     Bitmap bitmap = Bitmap.createBitmap(puzzleView.getWidth(), puzzleView.getHeight(), Bitmap.Config.RGB_565);
     Canvas canvas = new Canvas(bitmap);
+    puzzleView.clearHandlingPieces();
     puzzleView.draw(canvas);
     return bitmap;
   }

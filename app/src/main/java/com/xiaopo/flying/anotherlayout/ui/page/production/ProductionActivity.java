@@ -1,5 +1,6 @@
 package com.xiaopo.flying.anotherlayout.ui.page.production;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.data.Stores;
 import com.xiaopo.flying.anotherlayout.model.data.Style;
 import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
 
@@ -30,7 +32,7 @@ public class ProductionActivity extends AnotherActivity
     implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler {
 
   public static final int LIMIT = 10;
-  private static final int WHAT_NO_MORE = 1;
+  private static final int WHAT_NO_MORE = 10001;
 
   @BindView(R.id.toolbar)
   Toolbar toolbar;
@@ -55,8 +57,15 @@ public class ProductionActivity extends AnotherActivity
     imageList.setLayoutManager(new LinearLayoutManager(this));
 
     final int screenWidth = DipPixelKit.getDeviceWidth(this);
+    ProductionBinder productionBinder = new ProductionBinder(screenWidth);
+    productionBinder.setOnItemClickListener((item, position) -> {
+      Intent intent = new Intent(this, ProcessActivity.class);
+      intent.putExtra(ProcessActivity.INTENT_KEY_STYLE, item);
+      startActivity(intent);
+    });
+
     adapter = new MultiTypeAdapter(productionItems);
-    adapter.register(Style.class, new ProductionBinder(screenWidth));
+    adapter.register(Style.class, productionBinder);
     imageList.setAdapter(adapter);
 
     LoadMoreDelegate loadMoreDelegate = new LoadMoreDelegate(this);
@@ -70,15 +79,12 @@ public class ProductionActivity extends AnotherActivity
 
     Stores.instance(this)
         .getAllProductions(limit, offset)
-        .filter(styles -> {
-          if (styles == null || styles.isEmpty()) {
-            handler.sendEmptyMessage(WHAT_NO_MORE);
-            return false;
-          }
-          return true;
-        })
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(styles -> {
+          if (styles == null||styles.isEmpty() ){
+            handler.sendEmptyMessage(WHAT_NO_MORE);
+            return;
+          }
           final int insert = productionItems.size();
           productionItems.addAll(styles);
           adapter.notifyItemInserted(insert);

@@ -38,6 +38,7 @@ public class PuzzleAdapter extends RecyclerView.Adapter<PuzzleAdapter.PuzzleView
     holder.puzzleView.setNeedDrawLine(true);
     holder.puzzleView.setNeedDrawOuterLine(true);
     holder.puzzleView.setTouchEnable(false);
+    holder.puzzleView.setQuickMode(true);
 
     holder.puzzleView.setPuzzleLayout(puzzleLayout);
 

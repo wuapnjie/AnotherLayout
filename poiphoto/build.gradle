@@ -3,7 +3,7 @@ apply from: rootProject.file('library.gradle')
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-  implementation "com.android.support:appcompat-v7:$support_version"
+  implementation "com.android.support:support-core-ui:$support_version"
   implementation "com.android.support:design:$support_version"
 
   provided "com.squareup.picasso:picasso:$picasso_version"

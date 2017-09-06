@@ -1,4 +1,4 @@
-package com.xiaopo.flying.poiphoto.datatype;
+package com.xiaopo.flying.anotherlayout.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,6 +1,8 @@
 package com.xiaopo.flying.anotherlayout.model.data;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.xiaopo.flying.anotherlayout.kits.DB;
 import com.xiaopo.flying.anotherlayout.kits.guava.Optional;
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * @author wupanjie
  */
-public class Style {
+public class Style implements Parcelable {
   private final long id;
   private long createAt;
   private long updateAt;
@@ -41,6 +43,26 @@ public class Style {
     this.layoutInfo = layoutInfo;
     this.pieceInfo = pieceInfo;
   }
+
+  protected Style(Parcel in) {
+    id = in.readLong();
+    createAt = in.readLong();
+    updateAt = in.readLong();
+    layoutInfo = in.readString();
+    pieceInfo = in.readString();
+  }
+
+  public static final Creator<Style> CREATOR = new Creator<Style>() {
+    @Override
+    public Style createFromParcel(Parcel in) {
+      return new Style(in);
+    }
+
+    @Override
+    public Style[] newArray(int size) {
+      return new Style[size];
+    }
+  };
 
   public long getId() {
     return id;
@@ -92,5 +114,19 @@ public class Style {
 
   public void setPieces(PhotoPuzzleView.PieceInfos pieces) {
     this.pieces = Optional.fromNullable(pieces);
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeLong(id);
+    parcel.writeLong(createAt);
+    parcel.writeLong(updateAt);
+    parcel.writeString(layoutInfo);
+    parcel.writeString(pieceInfo);
   }
 }

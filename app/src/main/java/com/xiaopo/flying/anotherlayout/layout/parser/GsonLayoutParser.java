@@ -6,14 +6,14 @@ import com.xiaopo.flying.puzzle.PuzzleLayout;
 /**
  * @author wupanjie
  */
-public class GsonLayoutParser {
+class GsonLayoutParser {
   private final Gson gson;
 
-  public GsonLayoutParser(Gson gson) {
+  GsonLayoutParser(Gson gson) {
     this.gson = gson;
   }
 
-  public PuzzleLayout.Info parse(String layoutInfo) {
+  PuzzleLayout.Info parse(String layoutInfo) {
     return gson.fromJson(layoutInfo, PuzzleLayout.Info.class);
   }
 }

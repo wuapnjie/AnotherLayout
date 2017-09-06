@@ -1,6 +1,5 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
 import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
+import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.model.data.Style;
-import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.PuzzleView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,10 +25,15 @@ import me.drakeet.multitype.ItemViewBinder;
  */
 public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.ViewHolder> {
 
-  private final int screenWidth;
+  private final int screenSize;
+  private OnItemClickListener<Style> onItemClickListener;
 
-  public ProductionBinder(int screenWidth) {
-    this.screenWidth = screenWidth;
+  public ProductionBinder(int screenSize) {
+    this.screenSize = screenSize;
+  }
+
+  public void setOnItemClickListener(OnItemClickListener<Style> onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
   }
 
   @NonNull
@@ -46,18 +50,35 @@ public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.Vie
 
     final PuzzleLayout.Info layoutInfo = item.getLayout().get();
     ViewGroup.LayoutParams layoutParams = holder.ivProduction.getLayoutParams();
-    layoutParams.width = screenWidth;
-    layoutParams.height = (int) (screenWidth / layoutInfo.width() * layoutInfo.height());
+    layoutParams.width = screenSize;
+    layoutParams.height = (int) (screenSize / layoutInfo.width() * layoutInfo.height());
     holder.ivProduction.setLayoutParams(layoutParams);
 
     PhotoPuzzleView.PieceInfos pieceInfos = item.getPieces().get();
-    Picasso.with(holder.itemView.getContext())
-        .load("file:///" + pieceInfos.imagePath)
-        .resize(layoutParams.width, layoutParams.height)
-        .centerCrop()
-        .placeholder(PlaceHolderDrawable.instance)
-        .into(holder.ivProduction);
+    final int size = pieceInfos.pieces.size();
+    for (int i = 0; i < size; i++) {
+      ImageEngine.instance()
+          .prefetch(holder.itemView.getContext(),
+              pieceInfos.pieces.get(i).path,
+              screenSize,
+              screenSize);
+    }
 
+    ImageEngine.instance()
+        .load(holder.itemView.getContext(),
+            pieceInfos.imagePath,
+            holder.ivProduction,
+            layoutParams.width,
+            layoutParams.height);
+
+    holder.container.setOnClickListener(new DebouncedOnClickListener() {
+      @Override
+      public void doClick(View view) {
+        if (onItemClickListener != null) {
+          onItemClickListener.onItemClick(item, holder.getAdapterPosition());
+        }
+      }
+    });
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {

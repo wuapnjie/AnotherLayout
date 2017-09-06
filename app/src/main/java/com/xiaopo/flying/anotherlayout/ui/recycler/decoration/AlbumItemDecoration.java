@@ -20,7 +20,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.xiaopo.flying.poiphoto.datatype.Album;
+import com.xiaopo.flying.anotherlayout.model.Album;
 
 import java.util.HashSet;
 import java.util.List;
