@@ -1,7 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.parser;
 
 import com.xiaopo.flying.anotherlayout.kits.GsonManager;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 /**
@@ -25,7 +25,7 @@ public class Parsers {
     return layoutParser.parse(layoutInfo);
   }
 
-  public PhotoPuzzleView.PieceInfos parsePieces(String piecesInfo) {
+  public PieceInfos parsePieces(String piecesInfo) {
     return piecesParser.parse(piecesInfo);
   }
 

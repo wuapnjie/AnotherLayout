@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
 import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
 
 import me.drakeet.multitype.ItemViewBinder;
 

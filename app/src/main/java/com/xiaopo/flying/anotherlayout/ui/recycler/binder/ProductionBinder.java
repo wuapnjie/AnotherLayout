@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
-import com.xiaopo.flying.anotherlayout.model.data.Style;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
+import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import butterknife.BindView;
@@ -54,7 +54,7 @@ public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.Vie
     layoutParams.height = (int) (screenSize / layoutInfo.width() * layoutInfo.height());
     holder.ivProduction.setLayoutParams(layoutParams);
 
-    PhotoPuzzleView.PieceInfos pieceInfos = item.getPieces().get();
+    PieceInfos pieceInfos = item.getPieces().get();
     final int size = pieceInfos.pieces.size();
     for (int i = 0; i < size; i++) {
       ImageEngine.instance()

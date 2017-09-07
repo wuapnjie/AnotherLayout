@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.SquarePuzzleView;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.layout.slant.NumberSlantLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.NumberStraightLayout;
+import com.xiaopo.flying.puzzle.PuzzleLayout;
+import com.xiaopo.flying.puzzle.SquarePuzzleView;
 
 import java.util.ArrayList;
 import java.util.List;

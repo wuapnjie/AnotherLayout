@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.model.data;
+package com.xiaopo.flying.anotherlayout.model.database;
 
 import android.database.Cursor;
 import android.os.Parcel;
@@ -6,13 +6,10 @@ import android.os.Parcelable;
 
 import com.xiaopo.flying.anotherlayout.kits.DB;
 import com.xiaopo.flying.anotherlayout.kits.guava.Optional;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-import com.xiaopo.flying.puzzle.PuzzlePiece;
 
 import io.reactivex.functions.Function;
-
-import java.util.List;
 
 /**
  * @author wupanjie
@@ -25,7 +22,7 @@ public class Style implements Parcelable {
   private String pieceInfo;
 
   private Optional<PuzzleLayout.Info> layout = Optional.absent();
-  private Optional<PhotoPuzzleView.PieceInfos> pieces = Optional.absent();
+  private Optional<PieceInfos> pieces = Optional.absent();
 
   public static final Function<Cursor, Style> MAPPER = cursor -> {
     long id = DB.getLong(cursor, StyleEntry.ID);
@@ -108,11 +105,11 @@ public class Style implements Parcelable {
     this.layout = Optional.fromNullable(layout);
   }
 
-  public Optional<PhotoPuzzleView.PieceInfos> getPieces() {
+  public Optional<PieceInfos> getPieces() {
     return pieces;
   }
 
-  public void setPieces(PhotoPuzzleView.PieceInfos pieces) {
+  public void setPieces(PieceInfos pieces) {
     this.pieces = Optional.fromNullable(pieces);
   }
 

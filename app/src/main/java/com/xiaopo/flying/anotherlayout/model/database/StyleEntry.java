@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.model.data;
+package com.xiaopo.flying.anotherlayout.model.database;
 
 /**
  * @author wupanjie

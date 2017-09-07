@@ -4,10 +4,10 @@ import android.graphics.Color;
 
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 
-import io.reactivex.annotations.NonNull;
-
 import java.util.Arrays;
 import java.util.List;
+
+import io.reactivex.annotations.NonNull;
 
 /**
  * @author wupanjie

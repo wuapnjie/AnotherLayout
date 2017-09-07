@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.drakeet.multitype.ItemViewBinder;
 
 /**

@@ -3,7 +3,6 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.xiaopo.flying.anotherlayout.R;
@@ -11,10 +10,11 @@ import com.xiaopo.flying.anotherlayout.kits.FileKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.layout.parser.Parsers;
-import com.xiaopo.flying.anotherlayout.model.data.Stores;
-import com.xiaopo.flying.anotherlayout.model.data.Style;
+import com.xiaopo.flying.anotherlayout.model.PieceInfo;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
+import com.xiaopo.flying.anotherlayout.model.database.Stores;
+import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class ProcessActivity extends AnotherActivity
 
     if (style != null) {
       PuzzleLayout.Info layoutInfo = Parsers.instance().parseLayout(style.getLayoutInfo());
-      PhotoPuzzleView.PieceInfos pieceInfos = Parsers.instance().parsePieces(style.getPieceInfo());
+      PieceInfos pieceInfos = Parsers.instance().parsePieces(style.getPieceInfo());
 
       style.setLayout(layoutInfo);
       style.setPieces(pieceInfos);
@@ -77,14 +77,14 @@ public class ProcessActivity extends AnotherActivity
   private void loadPhotoWithStyle() {
     if (!style.getPieces().isPresent()) return;
 
-    List<PhotoPuzzleView.PieceInfo> infos = style.getPieces().get().pieces;
+    List<PieceInfo> infos = style.getPieces().get().pieces;
     final int count = infos.size();
 
     LoadPhotosObservables.loadWithStyle(this, style)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(results -> {
           for (int i = 0; i < puzzleLayout.getAreaCount(); i++) {
-            PhotoPuzzleView.PieceInfo pieceInfo = infos.get(i);
+            PieceInfo pieceInfo = infos.get(i);
             float[] values = {
                 pieceInfo.value1, pieceInfo.value2, pieceInfo.value3,
                 pieceInfo.value4, pieceInfo.value5, pieceInfo.value6,
@@ -93,7 +93,6 @@ public class ProcessActivity extends AnotherActivity
 
             Matrix matrix = new Matrix();
             matrix.setValues(values);
-            Log.d(TAG, "loadPhotoWithStyle: matrix --> " + matrix);
             ui.addPiece(results.get(i % count).first, results.get(i % count).second, matrix);
           }
         });
@@ -121,7 +120,7 @@ public class ProcessActivity extends AnotherActivity
 
   @Override
   public void saveImage(PuzzleLayout.Info layoutInfo,
-                        PhotoPuzzleView.PieceInfos pieceInfos) {
+                        PieceInfos pieceInfos) {
     Bitmap bitmap = ui.createBitmap();
     Disposable disposable
         = FileKit

@@ -1,16 +1,16 @@
 package com.xiaopo.flying.anotherlayout.kits;
 
 import com.xiaopo.flying.anotherlayout.layout.slant.FourSlantLayout;
-import com.xiaopo.flying.anotherlayout.layout.slant.SlantLayoutHelper;
-import com.xiaopo.flying.anotherlayout.layout.straight.EightStraightLayout;
-import com.xiaopo.flying.anotherlayout.layout.straight.FourStraightLayout;
-import com.xiaopo.flying.anotherlayout.layout.straight.SevenStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.slant.OneSlantLayout;
+import com.xiaopo.flying.anotherlayout.layout.slant.SlantLayoutHelper;
 import com.xiaopo.flying.anotherlayout.layout.slant.ThreeSlantLayout;
 import com.xiaopo.flying.anotherlayout.layout.slant.TwoSlantLayout;
+import com.xiaopo.flying.anotherlayout.layout.straight.EightStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.FiveStraightLayout;
+import com.xiaopo.flying.anotherlayout.layout.straight.FourStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.NineStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.OneStraightLayout;
+import com.xiaopo.flying.anotherlayout.layout.straight.SevenStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.SixStraightLayout;
 import com.xiaopo.flying.anotherlayout.layout.straight.StraightLayoutHelper;
 import com.xiaopo.flying.anotherlayout.layout.straight.ThreeStraightLayout;

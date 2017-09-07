@@ -3,7 +3,6 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -89,7 +88,13 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
 
   @Override
   public PuzzleLayout setPuzzleLayoutInfo(PuzzleLayout.Info puzzleLayoutInfo) {
+    ViewGroup.LayoutParams layoutParams = puzzleView.getLayoutParams();
+    layoutParams.width = deviceSize;
+    layoutParams.height = (int) (deviceSize / puzzleLayoutInfo.width() * puzzleLayoutInfo.height());
+    puzzleView.setLayoutParams(layoutParams);
+
     puzzleView.setPuzzleLayout(puzzleLayoutInfo);
+    puzzleView.setNeedResetPieceMatrix(false);
     this.puzzleLayout = puzzleView.getPuzzleLayout();
 
     return this.puzzleLayout;

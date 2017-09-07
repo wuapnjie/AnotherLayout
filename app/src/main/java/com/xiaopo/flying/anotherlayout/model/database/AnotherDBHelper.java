@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.model.data;
+package com.xiaopo.flying.anotherlayout.model.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

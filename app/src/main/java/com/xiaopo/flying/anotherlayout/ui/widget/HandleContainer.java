@@ -13,9 +13,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
@@ -24,6 +21,8 @@ import com.xiaopo.flying.anotherlayout.ui.recycler.binder.HandleItemBinder;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**

@@ -1,4 +1,4 @@
-package com.xiaopo.flying.anotherlayout.model.data;
+package com.xiaopo.flying.anotherlayout.model.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,7 @@ import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
 import com.xiaopo.flying.anotherlayout.kits.GsonManager;
 import com.xiaopo.flying.anotherlayout.layout.parser.Parsers;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import java.util.List;
@@ -69,7 +69,7 @@ public class Stores {
   }
 
   public Completable saveLayoutAndPieces(PuzzleLayout.Info layoutInfo,
-                                         PhotoPuzzleView.PieceInfos pieceInfos) {
+                                         PieceInfos pieceInfos) {
     ContentValues values = new ContentValues();
     long currentTimeMillis = System.currentTimeMillis();
     values.put(StyleEntry.CREATE_AT, currentTimeMillis);
@@ -127,7 +127,7 @@ public class Stores {
           for (int i = 0; i < size; i++) {
             Style style = styles.get(i);
             PuzzleLayout.Info layout = parsers.parseLayout(style.getLayoutInfo());
-            PhotoPuzzleView.PieceInfos piecesInfos = parsers.parsePieces(style.getPieceInfo());
+            PieceInfos piecesInfos = parsers.parsePieces(style.getPieceInfo());
             style.setLayout(layout);
             style.setPieces(piecesInfos);
           }

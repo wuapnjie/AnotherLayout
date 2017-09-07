@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.xiaopo.flying.anotherlayout.R;
-import com.xiaopo.flying.anotherlayout.model.data.Style;
+import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzleView;

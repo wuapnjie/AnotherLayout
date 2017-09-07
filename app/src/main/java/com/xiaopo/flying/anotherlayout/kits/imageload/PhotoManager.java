@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.v4.util.ArrayMap;
+
 import com.xiaopo.flying.anotherlayout.model.Album;
 import com.xiaopo.flying.anotherlayout.model.Photo;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

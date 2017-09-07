@@ -6,15 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.xiaopo.flying.anotherlayout.R;
-import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.ui.widget.HandleImageView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.drakeet.multitype.ItemViewBinder;
 
 /**

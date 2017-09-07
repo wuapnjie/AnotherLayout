@@ -6,8 +6,8 @@ import android.util.Pair;
 
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
-import com.xiaopo.flying.anotherlayout.model.data.Style;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
+import com.xiaopo.flying.anotherlayout.model.PieceInfo;
+import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class LoadPhotosObservables {
       final int deviceSize = DipPixelKit.getDeviceWidth(context);
       final Map<String, Bitmap> pathBitmaps = new HashMap<>();
 
-      List<PhotoPuzzleView.PieceInfo> infos = style.getPieces().get().pieces;
+      List<PieceInfo> infos = style.getPieces().get().pieces;
       final int count = infos.size();
       final List<Pair<Bitmap, String>> results = new ArrayList<>(count);
 

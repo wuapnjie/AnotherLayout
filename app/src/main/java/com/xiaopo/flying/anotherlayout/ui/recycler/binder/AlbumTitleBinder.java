@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.model.Album;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import com.xiaopo.flying.anotherlayout.model.Album;
-import com.xiaopo.flying.anotherlayout.R;
-
 import me.drakeet.multitype.ItemViewBinder;
 
 /**

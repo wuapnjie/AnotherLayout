@@ -19,38 +19,30 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.squareup.picasso.Target;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
+import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
+import com.xiaopo.flying.anotherlayout.model.Album;
+import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
 import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
-import com.xiaopo.flying.anotherlayout.ui.page.production.ProductionActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.layout.LayoutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.production.ProductionActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.adapter.PuzzleAdapter;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.AlbumTitleBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoHeaderBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.AlbumItemDecoration;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.PhotoItemDecoration;
-import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
-import com.xiaopo.flying.anotherlayout.model.Album;
-import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.puzzle.slant.SlantPuzzleLayout;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
-
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +50,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;

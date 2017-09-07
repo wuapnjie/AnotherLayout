@@ -2,12 +2,9 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 
 import com.xiaopo.flying.anotherlayout.ui.UI;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-
-import java.util.List;
 
 /**
  * @author wupanjie

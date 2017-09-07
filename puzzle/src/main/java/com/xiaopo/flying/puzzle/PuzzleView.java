@@ -654,12 +654,12 @@ public class PuzzleView extends View {
     addPiece(bitmapDrawable, null);
   }
 
-  public void addPiece(Bitmap bitmap, Matrix ma) {
+  public void addPiece(Bitmap bitmap, Matrix matrix) {
     BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
     bitmapDrawable.setAntiAlias(true);
     bitmapDrawable.setFilterBitmap(true);
 
-    addPiece(bitmapDrawable, null);
+    addPiece(bitmapDrawable, matrix);
   }
 
   public void addPiece(Drawable drawable) {

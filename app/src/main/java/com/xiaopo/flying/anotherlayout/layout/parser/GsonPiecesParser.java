@@ -1,7 +1,7 @@
 package com.xiaopo.flying.anotherlayout.layout.parser;
 
 import com.google.gson.Gson;
-import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 
 /**
  * @author wupanjie
@@ -13,7 +13,7 @@ class GsonPiecesParser {
     this.gson = gson;
   }
 
-  PhotoPuzzleView.PieceInfos parse(String piecesInfo) {
-    return gson.fromJson(piecesInfo, PhotoPuzzleView.PieceInfos.class);
+  PieceInfos parse(String piecesInfo) {
+    return gson.fromJson(piecesInfo, PieceInfos.class);
   }
 }

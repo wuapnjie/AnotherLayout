@@ -5,7 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 
-import com.google.gson.annotations.SerializedName;
+import com.xiaopo.flying.anotherlayout.model.PieceInfo;
+import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
 import com.xiaopo.flying.puzzle.PuzzleView;
 
@@ -74,25 +75,5 @@ public class PhotoPuzzleView extends PuzzleView {
     pieceInfos.pieces = pieceInfoList;
 
     return pieceInfos;
-  }
-
-  public static class PieceInfos {
-    @SerializedName("pieces")
-    public List<PieceInfo> pieces;
-    @SerializedName("image_path")
-    public String imagePath;
-  }
-
-  public static class PieceInfo {
-    public String path;
-    public float value1;
-    public float value2;
-    public float value3;
-    public float value4;
-    public float value5;
-    public float value6;
-    public float value7;
-    public float value8;
-    public float value9;
   }
 }
