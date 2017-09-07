@@ -253,7 +253,7 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
         controller.saveLayout(info);
         break;
     }
-    return false;
+    return true;
   }
 
   @Override

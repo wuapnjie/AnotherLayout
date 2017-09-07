@@ -29,6 +29,7 @@ import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
 import com.xiaopo.flying.anotherlayout.model.Album;
 import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
+import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.layout.LayoutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
@@ -56,11 +57,12 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AnotherActivity
     implements WeakHandler.IHandler {
   private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity
   private ArrayMap<String, Bitmap> arrayBitmap = new ArrayMap<>();
   private ArrayList<String> selectedPath = new ArrayList<>();
   private List<Bitmap> bitmaps = new ArrayList<>();
-  private List<Target> targets = new ArrayList<>();
 
   private Items allPhotos = new Items();
   private Items allPhotosWithAlbum = new Items();
@@ -243,10 +244,11 @@ public class MainActivity extends AppCompatActivity
     final int resize = availableWidth / 4;
 
     Observable.just(path)
+        .compose(this.bindToLifecycle())
         .subscribeOn(Schedulers.io())
         .map(photoPath ->
-          ImageEngine.instance()
-              .get(this, path, resize, resize)
+            ImageEngine.instance()
+                .get(this, path, resize, resize)
         ).observeOn(AndroidSchedulers.mainThread())
         .subscribe(bitmap -> {
           arrayBitmap.put(path, bitmap);
@@ -255,6 +257,7 @@ public class MainActivity extends AppCompatActivity
 
           refreshLayout();
         });
+
   }
 
   private void refreshLayout() {
@@ -316,7 +319,8 @@ public class MainActivity extends AppCompatActivity
 
       completableObserver.onComplete();
 
-    }).subscribeOn(Schedulers.io())
+    }).compose(this.bindToLifecycle())
+        .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(() -> {
           final int space = DipPixelKit.dip2px(MainActivity.this, 2);
@@ -332,6 +336,7 @@ public class MainActivity extends AppCompatActivity
           photoAdapter.notifyDataSetChanged();
           photoList.addItemDecoration(photoItemDecoration);
         });
+
   }
 
   @Override

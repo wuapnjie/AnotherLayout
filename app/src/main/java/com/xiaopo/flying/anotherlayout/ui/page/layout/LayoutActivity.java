@@ -8,12 +8,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.database.Stores;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
+import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.LinearDividerDecoration;
@@ -21,13 +23,14 @@ import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.LinearDividerDecor
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * @author wupanjie
  */
-public class LayoutActivity extends AppCompatActivity
+public class LayoutActivity extends AnotherActivity
     implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler {
 
   public static final int LIMIT = 10;
@@ -77,9 +80,10 @@ public class LayoutActivity extends AppCompatActivity
 
     Stores.instance(this)
         .getAllLayouts(limit, offset)
+        .compose(this.bindUntilEvent(ActivityEvent.PAUSE))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(styles -> {
-          if (styles == null||styles.isEmpty() ){
+          if (styles == null || styles.isEmpty()) {
             handler.sendEmptyMessage(WHAT_NO_MORE);
             return;
           }
@@ -89,6 +93,7 @@ public class LayoutActivity extends AppCompatActivity
           currentOffset += LIMIT;
           loading = false;
         });
+
   }
 
   @Override

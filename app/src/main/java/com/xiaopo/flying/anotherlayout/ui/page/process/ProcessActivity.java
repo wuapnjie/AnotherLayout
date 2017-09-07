@@ -81,6 +81,7 @@ public class ProcessActivity extends AnotherActivity
     final int count = infos.size();
 
     LoadPhotosObservables.loadWithStyle(this, style)
+        .compose(this.bindToLifecycle())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(results -> {
           for (int i = 0; i < puzzleLayout.getAreaCount(); i++) {
@@ -103,6 +104,7 @@ public class ProcessActivity extends AnotherActivity
         ? puzzleLayout.getAreaCount() : bitmapPaths.size();
 
     LoadPhotosObservables.loadWithPaths(this, puzzleLayout, bitmapPaths)
+        .compose(this.bindToLifecycle())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(results -> {
           for (int i = 0; i < puzzleLayout.getAreaCount(); i++) {
@@ -122,30 +124,28 @@ public class ProcessActivity extends AnotherActivity
   public void saveImage(PuzzleLayout.Info layoutInfo,
                         PieceInfos pieceInfos) {
     Bitmap bitmap = ui.createBitmap();
-    Disposable disposable
-        = FileKit
-        .saveImageAndGetPath(this, bitmap, "another_" + System.currentTimeMillis())
+    FileKit.saveImageAndGetPath(this, bitmap, "another_" + System.currentTimeMillis())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(uriPair -> {
           pieceInfos.imagePath = uriPair.first.getPath();
           Stores.instance(this)
               .saveLayoutAndPieces(layoutInfo, pieceInfos)
+              .compose(this.bindToLifecycle())
               .observeOn(AndroidSchedulers.mainThread())
               .subscribe(()->{
                 Toasts.show(this,R.string.image_save_success);
               });
         });
 
-    addDisposable(disposable);
 
   }
 
   @Override
   public void saveLayout(PuzzleLayout.Info layoutInfo) {
-    Disposable disposable = Stores.instance(this)
+    Stores.instance(this)
         .saveLayout(layoutInfo)
+        .compose(this.bindToLifecycle())
         .subscribe(ui::showSaveSuccess);
-    addDisposable(disposable);
   }
 
 }

@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
  */
 
 public class AnotherApp extends Application {
+
   @Override
   public void onCreate() {
     super.onCreate();

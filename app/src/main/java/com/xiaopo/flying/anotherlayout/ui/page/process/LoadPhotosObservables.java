@@ -22,9 +22,9 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author wupanjie
  */
-public class LoadPhotosObservables {
+class LoadPhotosObservables {
 
-  public static Observable<List<Pair<Bitmap, String>>> loadWithStyle(
+  static Observable<List<Pair<Bitmap, String>>> loadWithStyle(
       final Context context, final Style style) {
     return Observable.create((ObservableOnSubscribe<List<Pair<Bitmap, String>>>) emitter -> {
       if (!style.getPieces().isPresent()) return;
@@ -61,7 +61,7 @@ public class LoadPhotosObservables {
     }).subscribeOn(Schedulers.io());
   }
 
-  public static Observable<List<Pair<Bitmap, String>>> loadWithPaths(
+  static Observable<List<Pair<Bitmap, String>>> loadWithPaths(
       final Context context, final PuzzleLayout puzzleLayout, final List<String> bitmapPaths) {
     return Observable.create((ObservableOnSubscribe<List<Pair<Bitmap, String>>>) emitter -> {
       final int deviceSize = DipPixelKit.getDeviceWidth(context);
