@@ -20,13 +20,12 @@ import com.xiaopo.flying.puzzle.PuzzleLayout;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 /**
  * @author wupanjie
  */
 public class ProcessActivity extends AnotherActivity
-    implements ProcessController{
+    implements ProcessController {
   private static final String TAG = "ProcessActivity";
 
   public static final String INTENT_KEY_PATHS = "photo_path";
@@ -45,8 +44,6 @@ public class ProcessActivity extends AnotherActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_process);
-    View contentRootView = findViewById(R.id.root_view);
-    ui = new ProcessUI(this, contentRootView);
 
     int type = getIntent().getIntExtra(INTENT_KEY_TYPE, 0);
     int pieceSize = getIntent().getIntExtra(INTENT_KEY_SIZE, 0);
@@ -54,6 +51,10 @@ public class ProcessActivity extends AnotherActivity
     style = getIntent().getParcelableExtra(INTENT_KEY_STYLE);
 
     bitmapPaths = getIntent().getStringArrayListExtra(INTENT_KEY_PATHS);
+
+    final int uiMode = style == null ? ProcessUI.MODE_COMMON : ProcessUI.MODE_STYLE;
+    View contentRootView = findViewById(R.id.root_view);
+    ui = new ProcessUI(this, contentRootView, uiMode);
 
     ui.initUI();
 
@@ -132,8 +133,8 @@ public class ProcessActivity extends AnotherActivity
               .saveLayoutAndPieces(layoutInfo, pieceInfos)
               .compose(this.bindToLifecycle())
               .observeOn(AndroidSchedulers.mainThread())
-              .subscribe(()->{
-                Toasts.show(this,R.string.image_save_success);
+              .subscribe(() -> {
+                Toasts.show(this, R.string.image_save_success);
               });
         });
 

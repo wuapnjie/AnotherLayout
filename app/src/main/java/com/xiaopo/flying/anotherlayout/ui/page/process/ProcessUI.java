@@ -3,6 +3,7 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,8 @@ import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,10 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * @author wupanjie
  */
 public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
-  private static final String TAG = "ProcessUI";
+  public static final int MODE_COMMON = 0;
+  public static final int MODE_STYLE = 1;
+  public static final int MODE_LAYOUT = 2;
+
   private final View contentRootView;
   private final ProcessController controller;
 
@@ -48,11 +54,13 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
   private PuzzleLayout puzzleLayout;
   private List<HandleItem> handleItems = new ArrayList<>(5);
   private int deviceSize = 0;
+  @UiMode private final int uiMode;
 
-  ProcessUI(ProcessController controller, View contentRootView) {
+  ProcessUI(ProcessController controller, View contentRootView, @UiMode int uiMode) {
     this.controller = controller;
     this.contentRootView = contentRootView;
     deviceSize = DipPixelKit.getDeviceWidth(controller.context());
+    this.uiMode = uiMode;
 
     ButterKnife.bind(this, contentRootView);
   }
@@ -84,6 +92,7 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
   public void setPuzzleLayout(PuzzleLayout puzzleLayout) {
     this.puzzleLayout = puzzleLayout;
     puzzleView.setPuzzleLayout(puzzleLayout);
+    puzzleView.setBackgroundColor(puzzleLayout.getColor());
   }
 
   @Override
@@ -101,13 +110,13 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
   }
 
   @Override
-  public void addPiece(Bitmap piece, String path) {
-    puzzleView.addPiece(piece, path);
+  public void addPiece(final Bitmap piece, final String path) {
+    puzzleView.post(() -> puzzleView.addPiece(piece, path));
   }
 
   @Override
-  public void addPiece(Bitmap piece, String path, Matrix initialMatrix) {
-    puzzleView.addPiece(piece, path, initialMatrix);
+  public void addPiece(final Bitmap piece, final String path, final Matrix initialMatrix) {
+    puzzleView.post(() -> puzzleView.addPiece(piece, path, initialMatrix));
   }
 
   private void addHandleItems() {
@@ -116,8 +125,10 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
     HandleItem color = new HandleItem(R.drawable.ic_palette_black_24dp, colorView());
     handleItems.add(color);
 
-    HandleItem ratio = new HandleItem(R.drawable.ic_image_aspect_ratio_black_24dp, ratioView());
-    handleItems.add(ratio);
+    if (uiMode == MODE_COMMON) {
+      HandleItem ratio = new HandleItem(R.drawable.ic_image_aspect_ratio_black_24dp, ratioView());
+      handleItems.add(ratio);
+    }
 
     HandleItem transform = new HandleItem(R.drawable.ic_transform_black_24dp, transformView());
     handleItems.add(transform);
@@ -268,5 +279,10 @@ public class ProcessUI implements IProcessUI, Toolbar.OnMenuItemClickListener {
     puzzleView.clearHandlingPieces();
     puzzleView.draw(canvas);
     return bitmap;
+  }
+
+  @IntDef({MODE_COMMON, MODE_STYLE, MODE_LAYOUT})
+  @Retention(RetentionPolicy.SOURCE) @interface UiMode {
+
   }
 }

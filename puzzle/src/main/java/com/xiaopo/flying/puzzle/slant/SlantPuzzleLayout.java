@@ -3,9 +3,11 @@ package com.xiaopo.flying.puzzle.slant;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Pair;
+
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,7 +42,8 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
 
   }
 
-  @Override public void setOuterBounds(RectF bounds) {
+  @Override
+  public void setOuterBounds(RectF bounds) {
     reset();
 
     this.bounds = bounds;
@@ -132,18 +135,21 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     }
   }
 
-  @Override public int getAreaCount() {
+  @Override
+  public int getAreaCount() {
     return areas.size();
   }
 
-  @Override public void reset() {
+  @Override
+  public void reset() {
     lines.clear();
     areas.clear();
     areas.add(outerArea);
     steps.clear();
   }
 
-  @Override public void update() {
+  @Override
+  public void update() {
     for (int i = 0; i < lines.size(); i++) {
       lines.get(i).update(width(), height());
     }
@@ -153,35 +159,39 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     }
   }
 
-  @Override public float width() {
-    return outerArea == null ? 0 : outerArea.width();
-  }
-
-  @Override public float height() {
-    return outerArea == null ? 0 : outerArea.height();
-  }
-
-  private void sortAreas() {
+  @Override
+  public void sortAreas() {
     Collections.sort(areas, areaComparator);
   }
 
-  @Override public List<Line> getOuterLines() {
+  @Override
+  public float width() {
+    return outerArea == null ? 0 : outerArea.width();
+  }
+
+  @Override
+  public float height() {
+    return outerArea == null ? 0 : outerArea.height();
+  }
+
+  @Override
+  public List<Line> getOuterLines() {
     return outerLines;
   }
 
-  @Override public Area getOuterArea() {
+  @Override
+  public Area getOuterArea() {
     return outerArea;
   }
 
-  public List<SlantArea> getAreas() {
-    return areas;
-  }
-
-  @Override public SlantArea getArea(int position) {
+  @Override
+  public SlantArea getArea(int position) {
+    sortAreas();
     return areas.get(position);
   }
 
-  @Override public List<Line> getLines() {
+  @Override
+  public List<Line> getLines() {
     return lines;
   }
 
@@ -207,22 +217,26 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
     return padding;
   }
 
-  @Override public float getRadian() {
+  @Override
+  public float getRadian() {
     return radian;
   }
 
-  @Override public void setRadian(float radian) {
+  @Override
+  public void setRadian(float radian) {
     this.radian = radian;
     for (Area area : areas) {
       area.setRadian(radian);
     }
   }
 
-  @Override public int getColor() {
+  @Override
+  public int getColor() {
     return color;
   }
 
-  @Override public void setColor(int color) {
+  @Override
+  public void setColor(int color) {
     this.color = color;
   }
 
@@ -231,7 +245,7 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   }
 
   protected List<SlantArea> addLine(int position, Line.Direction direction, float startRatio,
-      float endRatio) {
+                                    float endRatio) {
     SlantArea area = areas.get(position);
     areas.remove(area);
     SlantLine line = createLine(area, direction, startRatio, endRatio);
@@ -254,7 +268,7 @@ public abstract class SlantPuzzleLayout implements PuzzleLayout {
   }
 
   protected void addCross(int position, float startRatio1, float endRatio1,
-      float startRatio2, float endRatio2) {
+                          float startRatio2, float endRatio2) {
     SlantArea area = areas.get(position);
     areas.remove(area);
 

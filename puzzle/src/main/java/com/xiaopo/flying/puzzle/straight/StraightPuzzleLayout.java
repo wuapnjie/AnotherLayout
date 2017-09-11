@@ -1,11 +1,14 @@
 package com.xiaopo.flying.puzzle.straight;
 
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Pair;
+
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +31,7 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
 
   private float padding;
   private float radian;
-  private int color;
+  private int color = Color.WHITE;
 
   private Comparator<StraightArea> areaComparator = new StraightArea.AreaComparator();
 
@@ -235,7 +238,7 @@ public abstract class StraightPuzzleLayout implements PuzzleLayout {
     steps.add(step);
   }
 
-  private void sortAreas() {
+  @Override public void sortAreas() {
     Collections.sort(areas, areaComparator);
   }
 

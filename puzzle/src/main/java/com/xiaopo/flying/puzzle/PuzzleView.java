@@ -18,7 +18,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wupanjie
@@ -34,6 +36,7 @@ public class PuzzleView extends View {
 
   private List<PuzzlePiece> puzzlePieces = new ArrayList<>();
   private List<PuzzlePiece> needChangePieces = new ArrayList<>();
+  private Map<Area, PuzzlePiece> areaPieceMap = new HashMap<>();
 
   private PuzzleLayout puzzleLayout;
   private PuzzleLayout.Info initialInfo;
@@ -73,8 +76,7 @@ public class PuzzleView extends View {
   private OnPieceSelectedListener onPieceSelectedListener;
 
   private Runnable switchToSwapAction = new Runnable() {
-    @Override
-    public void run() {
+    @Override public void run() {
       currentMode = ActionMode.SWAP;
       invalidate();
     }
@@ -136,8 +138,7 @@ public class PuzzleView extends View {
     midPoint = new PointF();
   }
 
-  @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+  @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
     resetPuzzleBounds();
 
@@ -160,6 +161,7 @@ public class PuzzleView extends View {
     bounds.top = getPaddingTop();
     bounds.right = getWidth() - getPaddingRight();
     bounds.bottom = getHeight() - getPaddingBottom();
+    Log.d(TAG, "onSizeChanged: rect -> " + bounds);
 
     if (puzzleLayout != null) {
       puzzleLayout.reset();
@@ -179,12 +181,13 @@ public class PuzzleView extends View {
           line.endPoint().y = lineInfo.endY;
         }
       }
+
+      puzzleLayout.sortAreas();
       puzzleLayout.update();
     }
   }
 
-  @Override
-  protected void onDraw(Canvas canvas) {
+  @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
     if (puzzleLayout == null) {
@@ -279,7 +282,8 @@ public class PuzzleView extends View {
     this.initialInfo = info;
     clearPieces();
 
-    this.puzzleLayout = PuzzleLayoutParser.parser(info);
+    this.puzzleLayout = PuzzleLayoutParser.parse(info);
+
     this.piecePadding = info.padding;
     this.pieceRadian = info.radian;
     setBackgroundColor(info.color);
@@ -480,6 +484,7 @@ public class PuzzleView extends View {
 
     if (needUpdate) {
       puzzleLayout.update();
+      puzzleLayout.sortAreas();
       updatePiecesInArea(line, event);
     }
   }
@@ -507,8 +512,7 @@ public class PuzzleView extends View {
 
   public void replace(final Drawable bitmapDrawable) {
     post(new Runnable() {
-      @Override
-      public void run() {
+      @Override public void run() {
         if (handlingPiece == null) {
           return;
         }
@@ -655,18 +659,27 @@ public class PuzzleView extends View {
   }
 
   public void addPiece(Bitmap bitmap, Matrix matrix) {
+    addPiece(bitmap, matrix, "");
+  }
+
+  public void addPiece(Bitmap bitmap, Matrix matrix, String path) {
     BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
     bitmapDrawable.setAntiAlias(true);
     bitmapDrawable.setFilterBitmap(true);
 
-    addPiece(bitmapDrawable, matrix);
+    addPiece(bitmapDrawable, matrix, path);
   }
+
 
   public void addPiece(Drawable drawable) {
     addPiece(drawable, null);
   }
 
   public void addPiece(Drawable drawable, Matrix initialMatrix) {
+    addPiece(drawable, initialMatrix, "");
+  }
+
+  public void addPiece(Drawable drawable, Matrix initialMatrix, String path) {
     int position = puzzlePieces.size();
 
     if (position >= puzzleLayout.getAreaCount()) {
@@ -686,8 +699,10 @@ public class PuzzleView extends View {
     piece.set(matrix);
 
     piece.setAnimateDuration(duration);
+    piece.setPath(path);
 
     puzzlePieces.add(piece);
+    areaPieceMap.put(area, piece);
 
     setPiecePadding(piecePadding);
     setPieceRadian(pieceRadian);
@@ -804,8 +819,7 @@ public class PuzzleView extends View {
     invalidate();
   }
 
-  @Override
-  public void setBackgroundColor(int color) {
+  @Override public void setBackgroundColor(int color) {
     super.setBackgroundColor(color);
     if (puzzleLayout != null) {
       puzzleLayout.setColor(color);
@@ -825,7 +839,16 @@ public class PuzzleView extends View {
   }
 
   public List<PuzzlePiece> getPuzzlePieces() {
-    return puzzlePieces;
+    final int size = puzzlePieces.size();
+    final List<PuzzlePiece> pieces = new ArrayList<>(size);
+    puzzleLayout.sortAreas();
+    for (int i = 0; i < size; i++) {
+      Area area = puzzleLayout.getArea(i);
+      PuzzlePiece piece = areaPieceMap.get(area);
+      pieces.add(piece);
+    }
+
+    return pieces;
   }
 
   public void setOnPieceSelectedListener(OnPieceSelectedListener onPieceSelectedListener) {

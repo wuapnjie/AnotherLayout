@@ -47,6 +47,8 @@ public interface PuzzleLayout {
 
   int getColor();
 
+  void sortAreas();
+
   class Info implements Parcelable{
     public static final int TYPE_STRAIGHT = 0;
     public static final int TYPE_SLANT = 1;

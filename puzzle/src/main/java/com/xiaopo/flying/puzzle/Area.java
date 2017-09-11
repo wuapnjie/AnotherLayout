@@ -3,6 +3,8 @@ package com.xiaopo.flying.puzzle;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
+
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -56,6 +58,7 @@ public interface Area {
   void setPadding(float padding);
 
   void setPadding(float paddingLeft, float paddingTop, float paddingRight, float paddingBottom);
+
 }
 
 

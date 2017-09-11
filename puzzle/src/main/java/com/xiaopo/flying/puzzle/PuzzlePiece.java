@@ -14,6 +14,7 @@ import android.graphics.RectF;
 import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -47,6 +48,7 @@ public class PuzzlePiece {
   private ValueAnimator animator;
   private int duration = 300;
   private Matrix tempMatrix;
+  private String path = "";
 
   PuzzlePiece(Drawable drawable, Area area, Matrix matrix) {
     this.drawable = drawable;
@@ -432,5 +434,13 @@ public class PuzzlePiece {
 
   public Matrix getMatrix() {
     return matrix;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
+
+  public String getPath() {
+    return path;
   }
 }

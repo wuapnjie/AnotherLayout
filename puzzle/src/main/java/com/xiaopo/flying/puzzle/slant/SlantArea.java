@@ -3,8 +3,10 @@ package com.xiaopo.flying.puzzle.slant;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
+
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -279,6 +281,8 @@ class SlantArea implements Area {
       } else if (one.leftTop.y == two.leftTop.y) {
         if (one.leftTop.x < two.leftTop.x) {
           return -1;
+        } else if (one.leftTop.x == two.leftTop.x) {
+          return 0;
         } else {
           return 1;
         }

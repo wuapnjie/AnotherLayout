@@ -13,7 +13,7 @@ class PuzzleLayoutParser {
     //no instance
   }
 
-  public static PuzzleLayout parser(PuzzleLayout.Info info) {
+  public static PuzzleLayout parse(PuzzleLayout.Info info) {
     PuzzleLayout layout;
     if (info.type == PuzzleLayout.Info.TYPE_STRAIGHT) {
       layout = new StraightPuzzleLayout() {
@@ -82,6 +82,7 @@ class PuzzleLayoutParser {
       line.endPoint().y = lineInfo.endY;
     }
 
+    layout.sortAreas();
     layout.update();
 
     return layout;
