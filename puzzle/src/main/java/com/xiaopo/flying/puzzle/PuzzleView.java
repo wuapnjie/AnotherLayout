@@ -453,13 +453,7 @@ public class PuzzleView extends View {
         break;
       case SWAP:
         if (handlingPiece != null && replacePiece != null) {
-          Drawable temp = handlingPiece.getDrawable();
-
-          handlingPiece.setDrawable(replacePiece.getDrawable());
-          replacePiece.setDrawable(temp);
-
-          handlingPiece.fillArea(this, true);
-          replacePiece.fillArea(this, true);
+          swapPiece();
 
           handlingPiece = null;
           replacePiece = null;
@@ -470,6 +464,19 @@ public class PuzzleView extends View {
 
     handlingLine = null;
     needChangePieces.clear();
+  }
+
+  private void swapPiece() {
+    Drawable temp = handlingPiece.getDrawable();
+    String tempPath = handlingPiece.getPath();
+
+    handlingPiece.setDrawable(replacePiece.getDrawable());
+    handlingPiece.setPath(replacePiece.getPath());
+    replacePiece.setDrawable(temp);
+    replacePiece.setPath(tempPath);
+
+    handlingPiece.fillArea(this, true);
+    replacePiece.fillArea(this, true);
   }
 
   private void moveLine(Line line, MotionEvent event) {
