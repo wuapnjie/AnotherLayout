@@ -1,9 +1,7 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +15,7 @@ import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
-import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

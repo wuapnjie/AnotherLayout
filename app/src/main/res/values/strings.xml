@@ -40,4 +40,5 @@
     <string name="puzzle_transition">puzzle_transition</string>
     <string name="action_replace_photo">替换图片</string>
     <string name="action_layout_done">完成</string>
+    <string name="select_more_photo">请继续选择%d张图片</string>
 </resources>

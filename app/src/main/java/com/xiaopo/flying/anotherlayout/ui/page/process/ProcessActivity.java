@@ -2,14 +2,11 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.xiaopo.flying.anotherlayout.R;
-import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.FileKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
@@ -69,6 +66,8 @@ public class ProcessActivity extends AnotherActivity
     ui = new ProcessUI(this, contentRootView, processMode);
     setUI(ui);
 
+    ui.initUI();
+
     if (processMode == ProcessUI.PROCESS_MODE_STYLE) {
       PuzzleLayout.Info layoutInfo = Parsers.instance().parseLayout(style.getLayoutInfo());
       PieceInfos pieceInfos = Parsers.instance().parsePieces(style.getPieceInfo());
@@ -88,15 +87,10 @@ public class ProcessActivity extends AnotherActivity
       style.setLayout(layoutInfo);
 
       puzzleLayout = ui.setPuzzleLayoutInfo(layoutInfo);
-      loadPlaceholder();
+      ui.showPlaceholder();
+      ui.showReplaceScene();
     }
 
-    ui.initUI();
-
-  }
-
-  private void loadPlaceholder() {
-    ui.showPlaceholder();
   }
 
   private void loadPhotoWithStyle() {

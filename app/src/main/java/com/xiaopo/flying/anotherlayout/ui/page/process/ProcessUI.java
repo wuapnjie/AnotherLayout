@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,17 +25,21 @@ import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.kits.guava.Optional;
+import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnPhotoSelectedListener;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ColorItemBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
 import com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer;
 import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
 import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+import com.xiaopo.flying.puzzle.PuzzlePiece;
+import com.xiaopo.flying.puzzle.PuzzleView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -45,15 +50,16 @@ import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * @author wupanjie
  */
-public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener {
+@SuppressWarnings("WeakerAccess")
+public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener, PuzzleView.OnPieceSelectedListener, OnPhotoSelectedListener {
   public static final int PROCESS_MODE_COMMON = 0;
   public static final int PROCESS_MODE_STYLE = 1;
   public static final int PROCESS_MODE_LAYOUT = 2;
@@ -63,7 +69,6 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
 
   private static final int ANIMATE_DURATION = 500;
 
-  private final View contentRootView;
   private final ProcessController controller;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
@@ -77,24 +82,23 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
   private PuzzleLayout puzzleLayout;
   private Optional<PuzzleLayout.Info> puzzleLayoutInfo = Optional.absent();
   private List<HandleItem> handleItems = new ArrayList<>(5);
-  private int deviceSize = 0;
+  private final int deviceSize;
   @ProcessMode private int processMode;
   private int uiMode = UI_MODE_EDIT;
 
   private MultiTypeAdapter photoAdapter;
-  private Items photos = new Items();
+  private PhotoBinder photoBinder;
+  private List<Photo> photos;
   private int photoHeight;
 
   private final Set<Integer> selectedPositions = new TreeSet<>();
 
   ProcessUI(ProcessController controller, ViewGroup contentRootView, @ProcessMode int processMode) {
     this.controller = controller;
-    this.contentRootView = contentRootView;
     deviceSize = DipPixelKit.getDeviceWidth(controller.context());
     this.processMode = processMode;
 
     ButterKnife.bind(this, contentRootView);
-
   }
 
   @Override
@@ -111,11 +115,15 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
     }
 
     final Context context = controller.context();
+    photos = new PhotoManager(context).getAllPhotosFromCache();
 
-    photoAdapter = new MultiTypeAdapter();
+    photoAdapter = new MultiTypeAdapter(photos);
     photoHeight = context.getResources().getDimensionPixelSize(R.dimen
         .ratio_photo_height);
-    photoAdapter.register(Photo.class, new PhotoBinder(selectedPositions, 9, -1, photoHeight));
+    photoBinder = new PhotoBinder(photoList, photos, -1, photoHeight);
+    photoBinder.setOnPhotoSelectedListener(this);
+    photoBinder.setSelectMode(PhotoBinder.SELECT_MODE_SINGLE);
+    photoAdapter.register(Photo.class, photoBinder);
     photoList.setAdapter(photoAdapter);
     photoList.setLayoutManager(
         new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -125,22 +133,20 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
         if (uiMode == UI_MODE_EDIT) {
           showPopupMenu();
         } else if (uiMode == UI_MODE_REPLACE) {
+          if (processMode == PROCESS_MODE_LAYOUT) {
+            if (selectedPositions.size() < puzzleLayout.getAreaCount()) {
+              final int needMore = puzzleLayout.getAreaCount() - selectedPositions.size();
+              Toasts.show(context, context.getString(R.string.select_more_photo, needMore));
+              return;
+            }
+          }
           processMode = PROCESS_MODE_COMMON;
+          puzzleView.setNeedDrawLine(false);
           changeToEditScene(ANIMATE_DURATION);
         }
       }
     });
 
-    PhotoManager photoManager = new PhotoManager(context);
-    photoManager.fetchAllPhotos()
-        .compose(controller.bindToLifecycle())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(photoList -> {
-          photos.addAll(photoList);
-          photoAdapter.setItems(photos);
-          photoAdapter.notifyDataSetChanged();
-        });
   }
 
   private void showPopupMenu() {
@@ -190,8 +196,9 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
     this.puzzleLayout = puzzleView.getPuzzleLayout();
 
     if (processMode == PROCESS_MODE_LAYOUT) {
-      puzzleView.setLineSize(8);
-      changeToReplaceScene(0);
+      if (puzzleLayoutInfo.padding == 0) {
+        puzzleView.setLineSize(8);
+      }
     }
 
     return this.puzzleLayout;
@@ -214,9 +221,12 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
       puzzleView.setNeedDrawLine(false);
     }
 
-    for (int i = 0; i < puzzleView.getPuzzleLayout().getAreaCount(); i++) {
-      puzzleView.addPiece(PlaceHolderDrawable.instance);
-    }
+    puzzleView.post(() -> {
+      for (int i = 0; i < puzzleView.getPuzzleLayout().getAreaCount(); i++) {
+        puzzleView.addPiece(PlaceHolderDrawable.instance);
+      }
+    });
+
   }
 
   private void addHandleItems() {
@@ -370,12 +380,13 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
         PuzzleLayout.Info info = puzzleLayout.generateInfo();
         controller.saveLayout(info);
         break;
-      case R.id.action_layout_done:
-        // TODO
-        Toasts.show(controller.context(), "DONE");
-        break;
     }
     return true;
+  }
+
+  @Override
+  public void showReplaceScene() {
+    changeToReplaceScene(0);
   }
 
   private void changeToReplaceScene(final int duration) {
@@ -386,6 +397,18 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
     iconMore.setBackground(null);
 
     handleContainer.setVisibility(View.INVISIBLE);
+
+    puzzleView.setOnPieceSelectedListener(this);
+    puzzleView.setCanDrag(false);
+    puzzleView.setCanMoveLine(false);
+    puzzleView.setCanSwap(false);
+    puzzleView.setCanZoom(false);
+
+    if (!puzzleView.hasPieceSelected()) {
+      puzzleView.setSelected(0);
+    } else {
+      selectPhoto(puzzleView.getHandlingPiece().getPath());
+    }
 
     puzzleView.animate()
         .translationY(-200)
@@ -418,6 +441,12 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
         .scaleY(1f)
         .setDuration(duration)
         .start();
+
+    puzzleView.setOnPieceSelectedListener(null);
+    puzzleView.setCanDrag(true);
+    puzzleView.setCanMoveLine(true);
+    puzzleView.setCanSwap(true);
+    puzzleView.setCanZoom(true);
 
     photoList.animate()
         .alpha(1f)
@@ -453,6 +482,49 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener 
     puzzleView.clearHandlingPieces();
     puzzleView.draw(canvas);
     return bitmap;
+  }
+
+  @Override public void onPieceSelected(PuzzlePiece piece, int position) {
+    final String path = piece.getPath();
+    selectPhoto(path);
+  }
+
+  private void selectPhoto(final String path) {
+    final int size = photos.size();
+    for (int i = 0; i < size; i++) {
+      Photo photo = photos.get(i);
+      if (TextUtils.equals(path, photo.getPath())) {
+        photo.setSelected(true);
+        photoBinder.setSelectedPosition(i);
+        photoAdapter.notifyItemChanged(i);
+        photoList.smoothScrollToPosition(i);
+      } else {
+        if (photo.isSelected()) {
+          photo.setSelected(false);
+          photoAdapter.notifyItemChanged(i);
+        }
+      }
+    }
+  }
+
+  @Override public void onPhotoSelected(Photo photo, int position) {
+    final String path = photo.getPath();
+    Observable.just(path)
+        .compose(controller.bindToLifecycle())
+        .subscribeOn(Schedulers.io())
+        .map(photoPath ->
+            ImageEngine.instance()
+                .get(controller.context(), path, deviceSize, deviceSize)
+        ).observeOn(AndroidSchedulers.mainThread())
+        .subscribe(bitmap -> {
+          if (processMode == PROCESS_MODE_LAYOUT) {
+            final int piecePosition = puzzleView.getHandlingPiecePosition();
+            if (piecePosition >= 0) {
+              selectedPositions.add(piecePosition);
+            }
+          }
+          puzzleView.replace(bitmap, path);
+        });
   }
 
   @IntDef({PROCESS_MODE_COMMON, PROCESS_MODE_STYLE, PROCESS_MODE_LAYOUT})

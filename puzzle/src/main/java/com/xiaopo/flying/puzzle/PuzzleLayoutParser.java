@@ -1,6 +1,7 @@
 package com.xiaopo.flying.puzzle;
 
 import android.graphics.RectF;
+
 import com.xiaopo.flying.puzzle.slant.SlantPuzzleLayout;
 import com.xiaopo.flying.puzzle.straight.StraightPuzzleLayout;
 

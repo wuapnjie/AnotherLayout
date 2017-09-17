@@ -2,6 +2,7 @@ package com.xiaopo.flying.anotherlayout.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * @author wupanjie
@@ -13,9 +14,10 @@ public class Photo implements Parcelable {
   private long dataModified;
   private String bucketId = "";
   private String buckedName = "";
-  private boolean isSelected;
   private int width;
   private int height;
+
+  private boolean isSelected;
 
   public Photo(String path, long dataAdded, long dataModified, String bucketId, String
       buckedName, int width, int height) {
@@ -26,6 +28,16 @@ public class Photo implements Parcelable {
     this.buckedName = buckedName;
     this.width = width;
     this.height = height;
+  }
+
+  public Photo(@NonNull Photo photo) {
+    this.path = photo.path;
+    this.dataAdded = photo.dataAdded;
+    this.dataModified = photo.dataModified;
+    this.bucketId = photo.bucketId;
+    this.buckedName = photo.buckedName;
+    this.width = photo.width;
+    this.height = photo.height;
   }
 
   public String getBucketId() {

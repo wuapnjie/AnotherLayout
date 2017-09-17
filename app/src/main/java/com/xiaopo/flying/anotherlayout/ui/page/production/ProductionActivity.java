@@ -1,6 +1,5 @@
 package com.xiaopo.flying.anotherlayout.ui.page.production;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.database.Stores;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
-import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
 

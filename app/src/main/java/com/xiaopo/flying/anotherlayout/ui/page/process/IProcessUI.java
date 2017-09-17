@@ -21,6 +21,8 @@ public interface IProcessUI extends UI{
 
   void addPiece(Bitmap piece, String path, Matrix initialMatrix);
 
+  void showReplaceScene();
+
   void showSaveSuccess();
 
   Bitmap createBitmap();

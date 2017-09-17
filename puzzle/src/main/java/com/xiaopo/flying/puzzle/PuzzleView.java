@@ -25,6 +25,7 @@ import java.util.Map;
 /**
  * @author wupanjie
  */
+@SuppressWarnings({"unused", "SameParameterValue"})
 public class PuzzleView extends View {
   private static final String TAG = "PuzzleView";
 
@@ -73,10 +74,16 @@ public class PuzzleView extends View {
   private boolean needResetPieceMatrix = true;
   private boolean quickMode = false;
 
+  private boolean canDrag = true;
+  private boolean canMoveLine = true;
+  private boolean canZoom = true;
+  private boolean canSwap = true;
+
   private OnPieceSelectedListener onPieceSelectedListener;
 
   private Runnable switchToSwapAction = new Runnable() {
     @Override public void run() {
+      if (!canSwap) return;
       currentMode = ActionMode.SWAP;
       invalidate();
     }
@@ -350,17 +357,12 @@ public class PuzzleView extends View {
 
     if (event.getPointerCount() == 1) {
       handlingLine = findHandlingLine();
-      if (handlingLine != null) {
+      if (handlingLine != null && canMoveLine) {
         currentMode = ActionMode.MOVE;
       } else {
         handlingPiece = findHandlingPiece();
-        // trigger listener
-        if (handlingPiece != null && onPieceSelectedListener != null) {
-          onPieceSelectedListener.onPieceSelected(handlingPiece,
-              puzzlePieces.indexOf(handlingPiece));
-        }
 
-        if (handlingPiece != null) {
+        if (handlingPiece != null && canDrag) {
           currentMode = ActionMode.DRAG;
 
           postDelayed(switchToSwapAction, 500);
@@ -369,7 +371,8 @@ public class PuzzleView extends View {
     } else if (event.getPointerCount() > 1) {
       if (handlingPiece != null
           && handlingPiece.contains(event.getX(1), event.getY(1))
-          && currentMode == ActionMode.DRAG) {
+          && currentMode == ActionMode.DRAG
+          && canZoom) {
         currentMode = ActionMode.ZOOM;
       }
     }
@@ -462,6 +465,12 @@ public class PuzzleView extends View {
         break;
     }
 
+    // trigger listener
+    if (handlingPiece != null && onPieceSelectedListener != null) {
+      onPieceSelectedListener.onPieceSelected(handlingPiece,
+          puzzlePieces.indexOf(handlingPiece));
+    }
+
     handlingLine = null;
     needChangePieces.clear();
   }
@@ -513,23 +522,24 @@ public class PuzzleView extends View {
     piece.translate(event.getX() - downX, event.getY() - downY);
   }
 
-  public void replace(Bitmap bitmap) {
-    replace(new BitmapDrawable(getResources(), bitmap));
+  public void replace(Bitmap bitmap, String path) {
+    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
+    bitmapDrawable.setAntiAlias(true);
+    bitmapDrawable.setFilterBitmap(true);
+
+    replace(bitmapDrawable, path);
   }
 
-  public void replace(final Drawable bitmapDrawable) {
-    post(new Runnable() {
-      @Override public void run() {
-        if (handlingPiece == null) {
-          return;
-        }
+  public void replace(final Drawable bitmapDrawable, String path) {
+    if (handlingPiece == null) {
+      return;
+    }
 
-        handlingPiece.setDrawable(bitmapDrawable);
-        handlingPiece.set(MatrixUtils.generateMatrix(handlingPiece, 0f));
+    handlingPiece.setPath(path);
+    handlingPiece.setDrawable(bitmapDrawable);
+    handlingPiece.set(MatrixUtils.generateMatrix(handlingPiece, 0f));
 
-        postInvalidate();
-      }
-    });
+    invalidate();
   }
 
   public void flipVertically() {
@@ -665,16 +675,16 @@ public class PuzzleView extends View {
     addPiece(bitmapDrawable, null);
   }
 
-  public void addPiece(Bitmap bitmap, Matrix matrix) {
-    addPiece(bitmap, matrix, "");
+  public void addPiece(Bitmap bitmap, Matrix initialMatrix) {
+    addPiece(bitmap, initialMatrix, "");
   }
 
-  public void addPiece(Bitmap bitmap, Matrix matrix, String path) {
+  public void addPiece(Bitmap bitmap, Matrix initialMatrix, String path) {
     BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
     bitmapDrawable.setAntiAlias(true);
     bitmapDrawable.setFilterBitmap(true);
 
-    addPiece(bitmapDrawable, matrix, path);
+    addPiece(bitmapDrawable, initialMatrix, path);
   }
 
 
@@ -715,6 +725,36 @@ public class PuzzleView extends View {
     setPieceRadian(pieceRadian);
 
     invalidate();
+  }
+
+  public void setSelected(int position) {
+    post(new Runnable() {
+      @Override public void run() {
+        if (position >= puzzlePieces.size()) return;
+        previousHandlingPiece = handlingPiece = puzzlePieces.get(position);
+
+        if (onPieceSelectedListener != null) {
+          onPieceSelectedListener.onPieceSelected(handlingPiece, position);
+        }
+        invalidate();
+      }
+    });
+  }
+
+  public PuzzlePiece getHandlingPiece() {
+    return handlingPiece;
+  }
+
+  public int getHandlingPiecePosition() {
+    if (handlingPiece == null) {
+      return -1;
+    }
+    return puzzlePieces.indexOf(handlingPiece);
+  }
+
+  // can be null
+  public boolean hasPieceSelected() {
+    return handlingPiece != null;
   }
 
   public void setAnimateDuration(int duration) {
@@ -856,6 +896,38 @@ public class PuzzleView extends View {
     }
 
     return pieces;
+  }
+
+  public boolean canDrag() {
+    return canDrag;
+  }
+
+  public void setCanDrag(boolean canDrag) {
+    this.canDrag = canDrag;
+  }
+
+  public boolean canMoveLine() {
+    return canMoveLine;
+  }
+
+  public void setCanMoveLine(boolean canMoveLine) {
+    this.canMoveLine = canMoveLine;
+  }
+
+  public boolean canZoom() {
+    return canZoom;
+  }
+
+  public void setCanZoom(boolean canZoom) {
+    this.canZoom = canZoom;
+  }
+
+  public boolean canSwap() {
+    return canSwap;
+  }
+
+  public void setCanSwap(boolean canSwap) {
+    this.canSwap = canSwap;
   }
 
   public void setOnPieceSelectedListener(OnPieceSelectedListener onPieceSelectedListener) {

@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
-import android.support.v4.util.ArrayMap;
 
 import com.xiaopo.flying.anotherlayout.model.Album;
 import com.xiaopo.flying.anotherlayout.model.Photo;
@@ -13,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-
 /**
  * @author wupanjie
  */
@@ -23,6 +19,7 @@ public class PhotoManager {
   private final String TAG = PhotoManager.class.getSimpleName();
   private ContentResolver contentResolver;
   private List<String> bucketIds;
+  private static final List<Photo> photoCache = new ArrayList<>();
 
   public PhotoManager(Context context) {
     contentResolver = context.getContentResolver();
@@ -110,8 +107,19 @@ public class PhotoManager {
     return path;
   }
 
-  public Observable<List<Photo>> fetchAllPhotos() {
-    return Observable.just(getAllPhotos());
+  public List<Photo> getAllPhotosFromCache() {
+    if (photoCache.isEmpty()) {
+      return getAllPhotos();
+    }
+
+    List<Photo> photos = new ArrayList<>();
+    final int size = photoCache.size();
+    for (int i = 0; i < size; i++) {
+      Photo photo = new Photo(photoCache.get(i));
+      photos.add(photo);
+    }
+
+    return photos;
   }
 
   public List<Photo> getAllPhotos() {
@@ -154,6 +162,9 @@ public class PhotoManager {
       long r = rhs.getDataModified();
       return l > r ? -1 : (l == r ? 0 : 1);
     });
+
+    photoCache.clear();
+    photoCache.addAll(photos);
 
     return photos;
   }

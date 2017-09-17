@@ -53,6 +53,9 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
     }
 
     holder.color.setOnClickListener(view -> {
+
+      allColors.get(selectedPosition).setSelected(false);
+
       ViewHolder viewHolder =
           (ViewHolder) recyclerView.findViewHolderForLayoutPosition(selectedPosition);
       if (viewHolder != null) {
@@ -60,7 +63,6 @@ public class ColorItemBinder extends ItemViewBinder<ColorItem, ColorItemBinder.V
       } else {
         getAdapter().notifyItemChanged(selectedPosition);
       }
-      allColors.get(selectedPosition).setSelected(false);
 
       holder.selected.setVisibility(View.VISIBLE);
       item.setSelected(true);

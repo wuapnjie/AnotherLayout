@@ -3,6 +3,7 @@ package com.xiaopo.flying.puzzle.straight;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
+
 import com.xiaopo.flying.puzzle.Line;
 
 import static java.lang.Math.max;

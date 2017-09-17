@@ -1,7 +1,5 @@
 package com.xiaopo.flying.anotherlayout.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * @author wupanjie
  */
