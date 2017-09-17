@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzleView;
 
@@ -24,9 +26,11 @@ import me.drakeet.multitype.ItemViewBinder;
 public class PuzzleLayoutBinder extends ItemViewBinder<Style, PuzzleLayoutBinder.ViewHolder> {
 
   private final int screenWidth;
+  private final OnItemClickListener<Style> onItemClickListener;
 
-  public PuzzleLayoutBinder(int screenWidth) {
+  public PuzzleLayoutBinder(int screenWidth, OnItemClickListener<Style> onItemClickListener) {
     this.screenWidth = screenWidth;
+    this.onItemClickListener = onItemClickListener;
   }
 
   @NonNull
@@ -59,6 +63,14 @@ public class PuzzleLayoutBinder extends ItemViewBinder<Style, PuzzleLayoutBinder
     for (int i = 0; i < holder.puzzleView.getPuzzleLayout().getAreaCount(); i++) {
       holder.puzzleView.addPiece(PlaceHolderDrawable.instance);
     }
+
+    holder.container.setOnClickListener(new DebouncedOnClickListener() {
+      @Override public void doClick(View view) {
+        if (onItemClickListener != null){
+          onItemClickListener.onItemClick(item, holder.getAdapterPosition());
+        }
+      }
+    });
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {

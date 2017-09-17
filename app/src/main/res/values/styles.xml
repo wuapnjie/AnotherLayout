@@ -9,15 +9,14 @@
         <item name="android:textColor">@color/black</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowLightStatusBar"
-            tools:targetApi="m">true
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true
         </item>
-        <item name="android:windowDrawsSystemBarBackgrounds"
-            tools:targetApi="21">true
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="21">true
         </item>
-        <item name="android:statusBarColor"
-            tools:targetApi="21">@android:color/transparent
+        <item name="android:statusBarColor" tools:targetApi="21">@android:color/transparent
         </item>
+
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -25,8 +24,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PhotoSelectDialog" parent="Theme.AppCompat.Light.Dialog" />
 
 </resources>

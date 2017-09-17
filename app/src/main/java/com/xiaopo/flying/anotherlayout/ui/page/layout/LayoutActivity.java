@@ -1,47 +1,46 @@
 package com.xiaopo.flying.anotherlayout.ui.page.layout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
 import com.xiaopo.flying.anotherlayout.kits.WeakHandler;
 import com.xiaopo.flying.anotherlayout.model.database.Stores;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
-import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
+import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.decoration.LinearDividerDecoration;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * @author wupanjie
  */
-public class LayoutActivity extends AnotherActivity
-    implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler {
+public class LayoutActivity extends RxAppCompatActivity
+    implements LoadMoreDelegate.LoadMoreSubject, WeakHandler.IHandler, OnItemClickListener<Style> {
 
   public static final int LIMIT = 10;
   private static final int WHAT_NO_MORE = 10001;
 
-  @BindView(R.id.toolbar)
-  Toolbar toolbar;
-  @BindView(R.id.puzzle_list)
-  RecyclerView puzzleList;
+  @BindView(R.id.toolbar) Toolbar toolbar;
+  @BindView(R.id.puzzle_list) RecyclerView puzzleList;
 
-  private MultiTypeAdapter adapter;
+  private MultiTypeAdapter layoutAdapter;
   private boolean loading;
   private int currentOffset;
 
@@ -57,9 +56,10 @@ public class LayoutActivity extends AnotherActivity
     puzzleList.setLayoutManager(new LinearLayoutManager(this));
 
     final int screenWidth = DipPixelKit.getDeviceWidth(this);
-    adapter = new MultiTypeAdapter(layoutItems);
-    adapter.register(Style.class, new PuzzleLayoutBinder(screenWidth));
-    puzzleList.setAdapter(adapter);
+    layoutAdapter = new MultiTypeAdapter(layoutItems);
+
+    layoutAdapter.register(Style.class, new PuzzleLayoutBinder(screenWidth, this));
+    puzzleList.setAdapter(layoutAdapter);
 
     LinearDividerDecoration decoration = new LinearDividerDecoration(
         getResources(),
@@ -89,7 +89,7 @@ public class LayoutActivity extends AnotherActivity
           }
           final int insert = layoutItems.size();
           layoutItems.addAll(styles);
-          adapter.notifyItemInserted(insert);
+          layoutAdapter.notifyItemInserted(insert);
           currentOffset += LIMIT;
           loading = false;
         });
@@ -110,8 +110,18 @@ public class LayoutActivity extends AnotherActivity
   public void handleMsg(Message msg) {
     switch (msg.what) {
       case WHAT_NO_MORE:
-        Toasts.show(this, R.string.no_more);
+        if (layoutAdapter.getItemCount() == 0) {
+          Toasts.show(this, R.string.no_layout);
+        } else {
+          Toasts.show(this, R.string.no_more);
+        }
         break;
     }
+  }
+
+  @Override public void onItemClick(Style item, int position) {
+    Intent intent = new Intent(this, ProcessActivity.class);
+    intent.putExtra(ProcessActivity.INTENT_KEY_STYLE, item);
+    startActivity(intent);
   }
 }

@@ -58,7 +58,6 @@ final class PicassoEngine implements ImageLoadFunction {
     Picasso.with(context)
         .load("file:///" + path)
         .placeholder(PlaceHolderDrawable.instance)
-        .centerCrop()
         .into(imageView);
   }
 

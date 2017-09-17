@@ -2,10 +2,14 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.xiaopo.flying.anotherlayout.R;
+import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.FileKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
 import com.xiaopo.flying.anotherlayout.kits.Toasts;
@@ -52,13 +56,20 @@ public class ProcessActivity extends AnotherActivity
 
     bitmapPaths = getIntent().getStringArrayListExtra(INTENT_KEY_PATHS);
 
-    final int uiMode = style == null ? ProcessUI.MODE_COMMON : ProcessUI.MODE_STYLE;
-    View contentRootView = findViewById(R.id.root_view);
-    ui = new ProcessUI(this, contentRootView, uiMode);
-
-    ui.initUI();
-
+    int processMode = ProcessUI.PROCESS_MODE_COMMON;
     if (style != null) {
+      if (!TextUtils.isEmpty(style.getPieceInfo())) {
+        processMode = ProcessUI.PROCESS_MODE_STYLE;
+      } else {
+        processMode = ProcessUI.PROCESS_MODE_LAYOUT;
+      }
+    }
+    ViewGroup contentRootView = findViewById(R.id.root_view);
+
+    ui = new ProcessUI(this, contentRootView, processMode);
+    setUI(ui);
+
+    if (processMode == ProcessUI.PROCESS_MODE_STYLE) {
       PuzzleLayout.Info layoutInfo = Parsers.instance().parseLayout(style.getLayoutInfo());
       PieceInfos pieceInfos = Parsers.instance().parsePieces(style.getPieceInfo());
 
@@ -67,12 +78,25 @@ public class ProcessActivity extends AnotherActivity
 
       puzzleLayout = ui.setPuzzleLayoutInfo(layoutInfo);
       loadPhotoWithStyle();
-    } else {
+    } else if (processMode == ProcessUI.PROCESS_MODE_COMMON) {
       puzzleLayout = PuzzleKit.getPuzzleLayout(type, pieceSize, themeId);
       ui.setPuzzleLayout(puzzleLayout);
       loadPhoto();
+    } else {
+      PuzzleLayout.Info layoutInfo = Parsers.instance().parseLayout(style.getLayoutInfo());
+
+      style.setLayout(layoutInfo);
+
+      puzzleLayout = ui.setPuzzleLayoutInfo(layoutInfo);
+      loadPlaceholder();
     }
 
+    ui.initUI();
+
+  }
+
+  private void loadPlaceholder() {
+    ui.showPlaceholder();
   }
 
   private void loadPhotoWithStyle() {
@@ -126,6 +150,7 @@ public class ProcessActivity extends AnotherActivity
                         PieceInfos pieceInfos) {
     Bitmap bitmap = ui.createBitmap();
     FileKit.saveImageAndGetPath(this, bitmap, "another_" + System.currentTimeMillis())
+        .compose(bindToLifecycle())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(uriPair -> {
           pieceInfos.imagePath = uriPair.first.getPath();

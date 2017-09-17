@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:id="@+id/puzzle_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_process">
+
+        <com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView
+            android:id="@+id/puzzle_view"
+            android:transitionName="@string/puzzle_transition"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/handle_bar_height"
+            android:layout_marginTop="@dimen/toolbar_bar_height"
+            android:background="@color/white"
+            app:animation_duration="300"
+            app:handle_bar_color="@color/black"
+            app:line_color="@color/white"
+            app:line_size="4"
+            app:need_draw_line="false"
+            app:need_draw_outer_line="false"
+            app:radian="0"
+            app:selected_line_color="@color/black"
+            tools:layout_height="300dp"
+            tools:targetApi="lollipop" />
+
+    </FrameLayout>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -16,25 +46,48 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/toolbar_bar_height"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
             app:title="@string/prompt_edit">
+
+            <com.xiaopo.flying.anotherlayout.ui.widget.SquareFrameLayout
+                android:id="@+id/btn_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
+
+                <View
+                    android:id="@+id/fake_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp" />
+
+                <TextView
+                    android:id="@+id/icon_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_more_vert_black_24dp"
+                    tools:text="@string/action_layout_done" />
+            </com.xiaopo.flying.anotherlayout.ui.widget.SquareFrameLayout>
+
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_process" />
+    <com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer
+        android:id="@+id/handle_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--app:elevation="8dp"-->
-    <!--app:rippleColor="@android:color/black"-->
-    <!--app:useCompatPadding="true"-->
-    <!--/>-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/photo_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ratio_photo_height"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        tools:visibility="visible" />
 
-</android.support.design.widget.CoordinatorLayout>
+
+</FrameLayout>

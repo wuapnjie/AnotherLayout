@@ -14,13 +14,18 @@ public class Photo implements Parcelable {
   private String bucketId = "";
   private String buckedName = "";
   private boolean isSelected;
+  private int width;
+  private int height;
 
-  public Photo(String path, long dataAdded, long dataModified, String bucketId, String buckedName) {
+  public Photo(String path, long dataAdded, long dataModified, String bucketId, String
+      buckedName, int width, int height) {
     this.path = path;
     this.dataAdded = dataAdded;
     this.dataModified = dataModified;
     this.bucketId = bucketId;
     this.buckedName = buckedName;
+    this.width = width;
+    this.height = height;
   }
 
   public String getBucketId() {
@@ -111,7 +116,9 @@ public class Photo implements Parcelable {
         && photo.dataModified == dataModified
         && photo.bucketId.equals(bucketId)
         && photo.buckedName.equals(buckedName)
-        && photo.isSelected == isSelected;
+        && photo.isSelected == isSelected
+        && photo.width == width
+        && photo.height == height;
   }
 
   @Override public int hashCode() {
@@ -122,6 +129,24 @@ public class Photo implements Parcelable {
     result += bucketId.hashCode();
     result += buckedName.hashCode();
     result += isSelected ? 1 : 0;
+    result += 31 * result + width;
+    result += 31 * result + height;
     return result;
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
   }
 }

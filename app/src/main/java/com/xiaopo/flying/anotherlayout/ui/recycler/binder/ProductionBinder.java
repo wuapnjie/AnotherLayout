@@ -1,6 +1,9 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +16,11 @@ import com.xiaopo.flying.anotherlayout.kits.DebouncedOnClickListener;
 import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.model.PieceInfos;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
+import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,14 +32,9 @@ import me.drakeet.multitype.ItemViewBinder;
 public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.ViewHolder> {
 
   private final int screenSize;
-  private OnItemClickListener<Style> onItemClickListener;
 
   public ProductionBinder(int screenSize) {
     this.screenSize = screenSize;
-  }
-
-  public void setOnItemClickListener(OnItemClickListener<Style> onItemClickListener) {
-    this.onItemClickListener = onItemClickListener;
   }
 
   @NonNull
@@ -74,9 +75,10 @@ public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.Vie
     holder.container.setOnClickListener(new DebouncedOnClickListener() {
       @Override
       public void doClick(View view) {
-        if (onItemClickListener != null) {
-          onItemClickListener.onItemClick(item, holder.getAdapterPosition());
-        }
+        Intent intent = new Intent(view.getContext(), ProcessActivity.class);
+        intent.putExtra(ProcessActivity.INTENT_KEY_STYLE, item);
+
+        view.getContext().startActivity(intent);
       }
     });
   }

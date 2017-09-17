@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+
 /**
  * @author wupanjie
  */
@@ -20,7 +23,6 @@ public class PhotoManager {
   private final String TAG = PhotoManager.class.getSimpleName();
   private ContentResolver contentResolver;
   private List<String> bucketIds;
-  private ArrayMap<String, List<Photo>> photosWithAlbum = new ArrayMap<>();
 
   public PhotoManager(Context context) {
     contentResolver = context.getContentResolver();
@@ -31,7 +33,7 @@ public class PhotoManager {
     bucketIds.clear();
 
     List<Album> data = new ArrayList<>();
-    String projects[] = new String[] {
+    String projects[] = new String[]{
         MediaStore.Images.Media.BUCKET_ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME
     };
     Cursor cursor =
@@ -65,14 +67,15 @@ public class PhotoManager {
     return data;
   }
 
-  public List<Photo> getPhoto(String buckedId,String bucketName) {
+  public List<Photo> getPhoto(String buckedId, String bucketName) {
     List<Photo> photos = new ArrayList<>();
 
     Cursor cursor =
-        contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[] {
+        contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{
                 MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Images.Media.DATE_MODIFIED
-            }, MediaStore.Images.Media.BUCKET_ID + "=?", new String[] { buckedId },
+                MediaStore.Images.Media.DATE_MODIFIED, MediaStore.Images.Media.WIDTH,
+                MediaStore.Images.Media.HEIGHT
+            }, MediaStore.Images.Media.BUCKET_ID + "=?", new String[]{buckedId},
             MediaStore.Images.Media.DATE_MODIFIED);
     if (cursor != null && cursor.moveToFirst()) {
       do {
@@ -82,7 +85,10 @@ public class PhotoManager {
         Long dataModified =
             cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
 
-        Photo photo = new Photo(path, dataAdded, dataModified, buckedId, bucketName);
+        int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
+        int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
+
+        Photo photo = new Photo(path, dataAdded, dataModified, buckedId, bucketName, width, height);
 
         photos.add(photo);
       } while (cursor.moveToNext());
@@ -95,8 +101,8 @@ public class PhotoManager {
   private String getFrontCoverData(String bucketId) {
     String path = "empty";
     Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        new String[] { MediaStore.Images.Media.DATA }, MediaStore.Images.Media.BUCKET_ID + "=?",
-        new String[] { bucketId }, MediaStore.Images.Media.DATE_MODIFIED);
+        new String[]{MediaStore.Images.Media.DATA}, MediaStore.Images.Media.BUCKET_ID + "=?",
+        new String[]{bucketId}, MediaStore.Images.Media.DATE_MODIFIED);
     if (cursor != null && cursor.moveToFirst()) {
       path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
       cursor.close();
@@ -104,13 +110,18 @@ public class PhotoManager {
     return path;
   }
 
+  public Observable<List<Photo>> fetchAllPhotos() {
+    return Observable.just(getAllPhotos());
+  }
+
   public List<Photo> getAllPhotos() {
     List<Photo> photos = new ArrayList<>();
 
-    String projects[] = new String[] {
+    String projects[] = new String[]{
         MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED,
         MediaStore.Images.Media.DATE_MODIFIED, MediaStore.Images.Media.BUCKET_ID,
-        MediaStore.Images.Media.BUCKET_DISPLAY_NAME
+        MediaStore.Images.Media.BUCKET_DISPLAY_NAME, MediaStore.Images.Media.WIDTH,
+        MediaStore.Images.Media.HEIGHT
     };
 
     Cursor cursor =
@@ -128,8 +139,10 @@ public class PhotoManager {
             cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID));
         String buckedName =
             cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+        int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
+        int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
 
-        Photo photo = new Photo(path, dataAdded, dataModified, bucketId, buckedName);
+        Photo photo = new Photo(path, dataAdded, dataModified, bucketId, buckedName, width, height);
 
         photos.add(photo);
       } while (cursor.moveToNext());

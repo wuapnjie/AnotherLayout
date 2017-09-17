@@ -9,7 +9,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.squareup.picasso.Target;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.PuzzleKit;
@@ -29,7 +28,6 @@ import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
 import com.xiaopo.flying.anotherlayout.model.Album;
 import com.xiaopo.flying.anotherlayout.model.Photo;
 import com.xiaopo.flying.anotherlayout.model.PhotoHeader;
-import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.about.AboutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.layout.LayoutActivity;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
@@ -57,12 +55,11 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
-public class MainActivity extends AnotherActivity
+public class MainActivity extends RxAppCompatActivity
     implements WeakHandler.IHandler {
   private static final int MAX_PHOTO_COUNT = 9;
   public static final int CODE_REQUEST_PERMISSION = 110;
@@ -98,8 +95,6 @@ public class MainActivity extends AnotherActivity
   private WeakHandler puzzleHandler;
 
   private Set<Integer> selectedPositions = new TreeSet<>();
-
-  private CompositeDisposable compositeDisposables = new CompositeDisposable();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -157,9 +152,13 @@ public class MainActivity extends AnotherActivity
     });
 
     //about photo list
+    final int screenWidth = DipPixelKit.getDeviceWidth(this);
+    final int availableLength = screenWidth - 3 * DipPixelKit.dip2px(this, 2);
+
     photoList = new RecyclerView(this);
     photoAdapter = new MultiTypeAdapter();
-    PhotoBinder photoBinder = new PhotoBinder(selectedPositions, MAX_PHOTO_COUNT);
+    PhotoBinder photoBinder = new PhotoBinder(
+        selectedPositions, MAX_PHOTO_COUNT, availableLength / 4, availableLength / 4);
     photoBinder.setOnPhotoSelectedListener((photo, position) -> {
       int pos = allPhotosWithAlbum.indexOf(photo);
       albumAdapter.notifyItemChanged(pos);
@@ -179,7 +178,9 @@ public class MainActivity extends AnotherActivity
 
     albumList = new RecyclerView(this);
     albumAdapter = new MultiTypeAdapter();
-    PhotoBinder allPhotosWithAlbumBinder = new PhotoBinder(selectedPositions, MAX_PHOTO_COUNT);
+
+    PhotoBinder allPhotosWithAlbumBinder = new PhotoBinder(
+        selectedPositions, MAX_PHOTO_COUNT, availableLength / 4, availableLength / 4);
     allPhotosWithAlbumBinder.setOnPhotoSelectedListener((photo, position) -> {
       int pos = allPhotos.indexOf(photo);
       photoAdapter.notifyItemChanged(pos);
@@ -339,11 +340,6 @@ public class MainActivity extends AnotherActivity
 
   }
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    compositeDisposables.clear();
-  }
 
   @Override
   public void handleMsg(Message msg) {

@@ -35,4 +35,9 @@
     <string name="no_more">没有更多了</string>
     <string name="my_image">我的作品</string>
     <string name="image_save_success">图片保存成功</string>
+    <string name="no_production">你还没有制作任何作品</string>
+    <string name="no_layout">你还没有保存任何布局</string>
+    <string name="puzzle_transition">puzzle_transition</string>
+    <string name="action_replace_photo">替换图片</string>
+    <string name="action_layout_done">完成</string>
 </resources>

@@ -1,17 +1,18 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.xiaopo.flying.anotherlayout.R;
-import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
 import com.xiaopo.flying.anotherlayout.kits.imageload.ImageEngine;
 import com.xiaopo.flying.anotherlayout.model.Photo;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnPhotoMaxCountListener;
+import com.xiaopo.flying.anotherlayout.ui.recycler.OnPhotoSelectedListener;
 
 import java.util.Set;
 
@@ -24,15 +25,19 @@ import me.drakeet.multitype.ItemViewBinder;
  */
 
 public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
+
   private final Set<Integer> selectedPositions;
   private OnPhotoSelectedListener onPhotoSelectedListener;
   private OnPhotoMaxCountListener onPhotoMaxCountListener;
-  private int resize;
   private final int maxCount;
+  private final int width;
+  private final int height;
 
-  public PhotoBinder(Set<Integer> selectedPositions, int maxCount) {
+  public PhotoBinder(Set<Integer> selectedPositions, int maxCount, int width, int height) {
     this.selectedPositions = selectedPositions;
     this.maxCount = maxCount;
+    this.width = width;
+    this.height = height;
   }
 
   @NonNull
@@ -45,7 +50,7 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
 
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Photo cellData) {
-    holder.bindCellData(cellData, imageResizeWidth(holder.itemView.getContext()));
+    holder.bindCellData(cellData, width, height);
   }
 
   public void setOnPhotoSelectedListener(OnPhotoSelectedListener onPhotoSelectedListener) {
@@ -56,33 +61,34 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
     this.onPhotoMaxCountListener = onPhotoMaxCountListener;
   }
 
-  private int imageResizeWidth(Context context) {
-    if (resize == 0) {
-      final int screenWidth = DipPixelKit.getDeviceWidth(context);
-      final int availableWidth = screenWidth - 3 * DipPixelKit.dip2px(context, 2);
-      resize = availableWidth / 4;
-    }
-    return resize;
-  }
-
   class ViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.iv_photo)
-    ImageView ivPhoto;
-    @BindView(R.id.shadow)
-    View shadow;
+    @BindView(R.id.iv_photo) ImageView ivPhoto;
+    @BindView(R.id.shadow) View shadow;
+    @BindView(R.id.photo_container) FrameLayout photoContainer;
 
     ViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
 
-    void bindCellData(Photo data, int resize) {
+    void bindCellData(Photo data, int width, int height) {
+      if (width == -1) {
+        width = (int) (height * ((float) data.getWidth() / data.getHeight()));
+      } else if (height == -1) {
+        height = (int) (width * ((float) data.getHeight() / data.getWidth()));
+      }
+
+      ViewGroup.LayoutParams layoutParams = photoContainer.getLayoutParams();
+      layoutParams.width = width;
+      layoutParams.height = height;
+      photoContainer.setLayoutParams(layoutParams);
+
       ImageEngine.instance()
           .load(itemView.getContext(),
               data.getPath(),
               ivPhoto,
-              resize,
-              resize);
+              width,
+              height);
 
 
       itemView.setOnClickListener(view -> {
@@ -121,13 +127,5 @@ public class PhotoBinder extends ItemViewBinder<Photo, PhotoBinder.ViewHolder> {
     int position() {
       return getAdapterPosition();
     }
-  }
-
-  public interface OnPhotoSelectedListener {
-    void onPhotoSelected(Photo photo, int position);
-  }
-
-  public interface OnPhotoMaxCountListener {
-    void onPhotoMaxCount();
   }
 }

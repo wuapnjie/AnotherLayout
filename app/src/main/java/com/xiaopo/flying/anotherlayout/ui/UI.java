@@ -9,4 +9,6 @@ public interface UI{
 
   void onDestroy();
 
+  boolean onBackPressed();
+
 }

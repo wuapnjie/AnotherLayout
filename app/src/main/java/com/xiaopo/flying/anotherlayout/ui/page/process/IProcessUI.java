@@ -2,18 +2,20 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.support.annotation.NonNull;
 
 import com.xiaopo.flying.anotherlayout.ui.UI;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
+
 
 /**
  * @author wupanjie
  */
 public interface IProcessUI extends UI{
 
-  void setPuzzleLayout(PuzzleLayout puzzleLayout);
+  void setPuzzleLayout(@NonNull PuzzleLayout puzzleLayout);
 
-  PuzzleLayout setPuzzleLayoutInfo(PuzzleLayout.Info puzzleLayoutInfo);
+  PuzzleLayout setPuzzleLayoutInfo(@NonNull PuzzleLayout.Info puzzleLayoutInfo);
 
   void addPiece(Bitmap piece, String path);
 
@@ -22,5 +24,7 @@ public interface IProcessUI extends UI{
   void showSaveSuccess();
 
   Bitmap createBitmap();
+
+  void showPlaceholder();
 
 }
