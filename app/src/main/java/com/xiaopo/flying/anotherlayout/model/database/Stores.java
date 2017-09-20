@@ -3,6 +3,7 @@ package com.xiaopo.flying.anotherlayout.model.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.squareup.sqlbrite2.BriteDatabase;
@@ -134,5 +135,22 @@ public class Stores {
 
           return styles;
         });
+  }
+
+  public Completable deleteStyles(@NonNull List<Style> styles) {
+    if (styles.isEmpty()) return Completable.complete();
+    BriteDatabase.Transaction transaction = database.newTransaction();
+    try {
+      final int size = styles.size();
+      for (int i = 0; i < size; i++) {
+        database.delete(StyleEntry.TABLE_NAME, "id = ?", "" + styles.get(i).getId());
+      }
+
+      transaction.markSuccessful();
+    }finally {
+      transaction.end();
+    }
+
+    return Completable.complete();
   }
 }

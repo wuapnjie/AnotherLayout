@@ -83,11 +83,11 @@ public class PuzzleAdapter extends RecyclerView.Adapter<PuzzleAdapter.PuzzleView
     this.onItemClickListener = onItemClickListener;
   }
 
-  public static class PuzzleViewHolder extends RecyclerView.ViewHolder {
+  static class PuzzleViewHolder extends RecyclerView.ViewHolder {
 
     SquarePuzzleView puzzleView;
 
-    public PuzzleViewHolder(View itemView) {
+    PuzzleViewHolder(View itemView) {
       super(itemView);
       puzzleView = (SquarePuzzleView) itemView.findViewById(R.id.puzzle);
     }

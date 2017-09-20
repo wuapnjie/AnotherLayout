@@ -39,7 +39,7 @@ public class ProcessActivity extends AnotherActivity
   private List<String> bitmapPaths;
   private Style style;
 
-  private ProcessUI ui;
+  private IProcessUI ui;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

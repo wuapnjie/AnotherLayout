@@ -11,12 +11,13 @@ import android.support.annotation.Nullable;
 /**
  * @author wupanjie
  */
-public class PlaceHolderDrawable extends Drawable {
-  public static Drawable instance = new PlaceHolderDrawable();
+public class PlaceholderDrawable extends Drawable {
+  public static Drawable instance = new PlaceholderDrawable();
+  private final int color = Color.parseColor("#EDEDED");
 
   @Override
   public void draw(@NonNull Canvas canvas) {
-    canvas.drawColor(Color.parseColor("#EDEDED"));
+    canvas.drawColor(color);
   }
 
   @Override

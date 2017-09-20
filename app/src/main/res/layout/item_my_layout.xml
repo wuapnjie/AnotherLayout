@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent"
+    tools:layout_height="300dp">
 
     <com.xiaopo.flying.puzzle.PuzzleView
         android:id="@+id/puzzle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        tools:background="#000"
+        tools:scaleX="0.9"
+        tools:scaleY="0.9" />
 
 </FrameLayout>

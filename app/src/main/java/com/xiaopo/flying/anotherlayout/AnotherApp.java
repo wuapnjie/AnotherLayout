@@ -35,7 +35,7 @@ public class AnotherApp extends Application {
   private int calculateMemoryCacheSize() {
     ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
     int memoryClass = am.getMemoryClass();
-    // Target ~25% of the available heap.
-    return 1024 * 1024 * memoryClass / 4;
+    // Target ~33% of the available heap.
+    return 1024 * 1024 * memoryClass / 3;
   }
 }

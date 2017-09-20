@@ -30,7 +30,7 @@ import com.xiaopo.flying.anotherlayout.kits.imageload.PhotoManager;
 import com.xiaopo.flying.anotherlayout.model.ColorItem;
 import com.xiaopo.flying.anotherlayout.model.HandleItem;
 import com.xiaopo.flying.anotherlayout.model.Photo;
-import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
+import com.xiaopo.flying.anotherlayout.ui.PlaceholderDrawable;
 import com.xiaopo.flying.anotherlayout.ui.recycler.OnPhotoSelectedListener;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ColorItemBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
@@ -125,8 +125,11 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     photoBinder.setSelectMode(PhotoBinder.SELECT_MODE_SINGLE);
     photoAdapter.register(Photo.class, photoBinder);
     photoList.setAdapter(photoAdapter);
-    photoList.setLayoutManager(
-        new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+
+    LinearLayoutManager layoutManager =
+        new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+    layoutManager.setInitialPrefetchItemCount(3);
+    photoList.setLayoutManager(layoutManager);
 
     btnMenu.setOnClickListener(new DebouncedOnClickListener() {
       @Override public void doClick(View view) {
@@ -223,7 +226,7 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
 
     puzzleView.post(() -> {
       for (int i = 0; i < puzzleView.getPuzzleLayout().getAreaCount(); i++) {
-        puzzleView.addPiece(PlaceHolderDrawable.instance);
+        puzzleView.addPiece(PlaceholderDrawable.instance);
       }
     });
 
@@ -393,7 +396,7 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     if (uiMode == UI_MODE_REPLACE) return;
     uiMode = UI_MODE_REPLACE;
 
-    iconMore.setText(R.string.action_layout_done);
+    iconMore.setText(R.string.action_done);
     iconMore.setBackground(null);
 
     handleContainer.setVisibility(View.INVISIBLE);

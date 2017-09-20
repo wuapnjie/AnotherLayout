@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.xiaopo.flying.anotherlayout.ui.PlaceHolderDrawable;
+import com.xiaopo.flying.anotherlayout.ui.PlaceholderDrawable;
 
 import java.io.IOException;
 
@@ -47,7 +47,7 @@ final class PicassoEngine implements ImageLoadFunction {
   public void load(Context context, String path, ImageView imageView, int width, int height) {
     Picasso.with(context)
         .load("file:///" + path)
-        .placeholder(PlaceHolderDrawable.instance)
+        .placeholder(PlaceholderDrawable.instance)
         .resize(width, height)
         .centerCrop()
         .into(imageView);
@@ -57,7 +57,7 @@ final class PicassoEngine implements ImageLoadFunction {
   public void load(Context context, String path, ImageView imageView) {
     Picasso.with(context)
         .load("file:///" + path)
-        .placeholder(PlaceHolderDrawable.instance)
+        .placeholder(PlaceholderDrawable.instance)
         .into(imageView);
   }
 

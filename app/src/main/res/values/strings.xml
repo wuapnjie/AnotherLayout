@@ -39,6 +39,9 @@
     <string name="no_layout">你还没有保存任何布局</string>
     <string name="puzzle_transition">puzzle_transition</string>
     <string name="action_replace_photo">替换图片</string>
-    <string name="action_layout_done">完成</string>
+    <string name="action_done">完成</string>
+    <string name="action_delete">删除</string>
     <string name="select_more_photo">请继续选择%d张图片</string>
+    <string name="action_manage">管理</string>
+    <string name="no_layout_select">你还没有选中任何布局</string>
 </resources>

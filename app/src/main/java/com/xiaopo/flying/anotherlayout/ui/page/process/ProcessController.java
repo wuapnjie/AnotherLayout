@@ -7,7 +7,7 @@ import com.xiaopo.flying.puzzle.PuzzleLayout;
 /**
  * @author wupanjie
  */
-public interface ProcessController extends AppController{
+interface ProcessController extends AppController{
 
   void saveImage(PuzzleLayout.Info layoutInfo,
                  PieceInfos pieceInfo);

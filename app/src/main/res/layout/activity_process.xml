@@ -17,13 +17,13 @@
 
         <com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView
             android:id="@+id/puzzle_view"
-            android:transitionName="@string/puzzle_transition"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/handle_bar_height"
             android:layout_marginTop="@dimen/toolbar_bar_height"
             android:background="@color/white"
+            android:transitionName="@string/puzzle_transition"
             app:animation_duration="300"
             app:handle_bar_color="@color/black"
             app:line_color="@color/white"
@@ -67,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/ic_more_vert_black_24dp"
-                    tools:text="@string/action_layout_done" />
+                    android:textSize="15sp"
+                    tools:text="@string/action_done" />
             </com.xiaopo.flying.anotherlayout.ui.widget.SquareFrameLayout>
 
 

@@ -24,6 +24,8 @@ public class Style implements Parcelable {
   private Optional<PuzzleLayout.Info> layout = Optional.absent();
   private Optional<PieceInfos> pieces = Optional.absent();
 
+  private boolean selected;
+
   public static final Function<Cursor, Style> MAPPER = cursor -> {
     long id = DB.getLong(cursor, StyleEntry.ID);
     long createAt = DB.getLong(cursor, StyleEntry.CREATE_AT);
@@ -125,5 +127,13 @@ public class Style implements Parcelable {
     parcel.writeLong(updateAt);
     parcel.writeString(layoutInfo);
     parcel.writeString(pieceInfo);
+  }
+
+  public boolean isSelected() {
+    return selected;
+  }
+
+  public void setSelected(boolean selected) {
+    this.selected = selected;
   }
 }
