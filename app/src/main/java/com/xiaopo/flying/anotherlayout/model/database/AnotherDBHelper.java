@@ -18,7 +18,6 @@ public class AnotherDBHelper extends SQLiteOpenHelper {
 
   private static final String COMMA_SEP = ",";
 
-  //@formatter:off
   private static final String SQL_CREATE_ENTRIES = "CREATE TABLE "
       + StyleEntry.TABLE_NAME + " ("
       + StyleEntry.ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT,"

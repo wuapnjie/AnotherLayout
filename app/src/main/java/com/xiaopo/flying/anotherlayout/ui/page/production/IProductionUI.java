@@ -14,4 +14,10 @@ public interface IProductionUI extends UI {
   void addAndShowProductions(List<Style> styles);
 
   void notifyNoMore();
+
+  void changeToCommonScene();
+
+  void changeToManageScene();
+
+  void deleteSuccess(List<Style> productions);
 }

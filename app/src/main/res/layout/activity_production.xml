@@ -23,6 +23,21 @@
             app:title="@string/my_image"
             >
 
+            <com.xiaopo.flying.anotherlayout.ui.widget.SquareFrameLayout
+                android:id="@+id/btn_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
+
+                <TextView
+                    android:id="@+id/icon_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="15sp"
+                    android:text="@string/action_manage" />
+            </com.xiaopo.flying.anotherlayout.ui.widget.SquareFrameLayout>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

@@ -16,7 +16,7 @@ import com.xiaopo.flying.anotherlayout.ui.recycler.OnItemClickListener;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzleView;
 
-import java.util.Set;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,12 +31,12 @@ public class PuzzleLayoutBinder extends ItemViewBinder<Style, PuzzleLayoutBinder
 
   private final int screenWidth;
   private int uiMode = UI_MODE_COMMON;
-  private final Set<Integer> selectedPositions;
+  private final TreeSet<Integer> selectedPositions;
 
   private OnItemClickListener<Style> onItemClickListener;
   private OnLayoutSelectedListener onLayoutSelectedListener;
 
-  public PuzzleLayoutBinder(Set<Integer> selectedPositions, int screenWidth) {
+  public PuzzleLayoutBinder(TreeSet<Integer> selectedPositions, int screenWidth) {
     this.selectedPositions = selectedPositions;
     this.screenWidth = screenWidth;
   }

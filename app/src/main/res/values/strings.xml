@@ -44,4 +44,5 @@
     <string name="select_more_photo">请继续选择%d张图片</string>
     <string name="action_manage">管理</string>
     <string name="no_layout_select">你还没有选中任何布局</string>
+    <string name="no_production_select">你还没有选中任何作品</string>
 </resources>

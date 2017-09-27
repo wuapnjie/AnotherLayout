@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
@@ -14,8 +15,11 @@ import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ListFooterBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
+import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,18 +29,28 @@ import me.drakeet.multitype.MultiTypeAdapter;
 /**
  * @author wupanjie
  */
-public class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSubject {
+class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSubject, ProductionBinder.OnProductionSelectedListener {
+  private static final int UI_MODE_COMMON = 1001;
+  private static final int UI_MODE_MANAGE = 1002;
+
   private final ProductionController controller;
 
   @BindView(R.id.toolbar) Toolbar toolbar;
   @BindView(R.id.image_list) RecyclerView imageList;
+  @BindView(R.id.icon_more) TextView iconMore;
+  @BindView(R.id.btn_menu) View btnMenu;
 
-  private MultiTypeAdapter adapter;
+  private MultiTypeAdapter productionAdapter;
+  private ProductionBinder productionBinder;
   private Items productionItems = new Items();
 
   private boolean loading;
+  private int uiMode = UI_MODE_COMMON;
 
-  public ProductionUI(ProductionController controller, View contentView) {
+  private ArrayList<Style> productions = new ArrayList<>();
+  private final TreeSet<Integer> selectedPositions = new TreeSet<>();
+
+  ProductionUI(ProductionController controller, View contentView) {
     this.controller = controller;
 
     ButterKnife.bind(this, contentView);
@@ -44,36 +58,55 @@ public class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSub
 
   @Override public void initUI() {
     final Context context = controller.context();
-    toolbar.setNavigationOnClickListener(v -> onBackPressed());
+    toolbar.setNavigationOnClickListener(v -> controller.onBackPressed());
 
     imageList.setLayoutManager(new LinearLayoutManager(context));
 
     final int screenWidth = DipPixelKit.getDeviceWidth(context);
-    ProductionBinder productionBinder = new ProductionBinder(screenWidth);
+    productionBinder = new ProductionBinder(selectedPositions, screenWidth);
+    productionBinder.setOnProductionSelectedListener(this);
 
-    adapter = new MultiTypeAdapter(productionItems);
-    adapter.register(Style.class, productionBinder);
-    adapter.register(ListFooter.class, new ListFooterBinder());
-    imageList.setAdapter(adapter);
+    productionAdapter = new MultiTypeAdapter(productionItems);
+    productionAdapter.register(Style.class, productionBinder);
+    productionAdapter.register(ListFooter.class, new ListFooterBinder());
+    imageList.setAdapter(productionAdapter);
 
     LoadMoreDelegate loadMoreDelegate = new LoadMoreDelegate(this);
     loadMoreDelegate.attach(imageList);
+
+    btnMenu.setOnClickListener(v -> {
+      if (uiMode == UI_MODE_COMMON) {
+        changeToManageScene();
+      } else {
+        if (!productions.isEmpty() && selectedPositions.isEmpty()) {
+          Toasts.show(context, R.string.no_production_select);
+          return;
+        }
+        ArrayList<Style> needDelete = new ArrayList<>(selectedPositions.size());
+        for (Integer selectedPosition : selectedPositions) {
+          needDelete.add(productions.get(selectedPosition));
+        }
+        if (needDelete.isEmpty()) return;
+        controller.deleteProductions(needDelete);
+      }
+    });
   }
 
   @Override public void addAndShowProductions(List<Style> styles) {
     final int insert = productionItems.size();
     productionItems.addAll(styles);
-    adapter.notifyItemInserted(insert);
+    productions.addAll(styles);
+    productionAdapter.notifyItemInserted(insert);
   }
 
   @Override public void notifyNoMore() {
-    if (adapter.getItemCount() == 0) {
+    if (productionAdapter.getItemCount() == 0) {
       Toasts.show(controller.context(), R.string.no_production);
     } else {
       final int insert = productionItems.size();
       if (productionItems.get(insert - 1) instanceof ListFooter) return;
       productionItems.add(new ListFooter(controller.context().getString(R.string.no_more)));
-      adapter.notifyItemInserted(insert);
+      productionAdapter.notifyItemInserted(insert);
     }
   }
 
@@ -81,7 +114,46 @@ public class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSub
 
   }
 
+  @Override public void changeToCommonScene() {
+    uiMode = UI_MODE_COMMON;
+    iconMore.setText(R.string.action_manage);
+    toolbar.setTitle(R.string.my_layout);
+
+    productionBinder.setUiMode(ProductionBinder.UI_MODE_COMMON);
+    // TODO 除去选中状态，考虑是否保留
+    for (Integer position : selectedPositions) {
+      productions.get(position).setSelected(false);
+    }
+    selectedPositions.clear();
+
+    productionAdapter.notifyDataSetChanged();
+  }
+
+  @Override public void changeToManageScene() {
+    uiMode = UI_MODE_MANAGE;
+    iconMore.setText(R.string.action_delete);
+
+    toolbar.setTitle("" + selectedPositions.size());
+    productionBinder.setUiMode(ProductionBinder.UI_MODE_SELECT);
+    productionAdapter.notifyDataSetChanged();
+  }
+
+  @Override public void deleteSuccess(List<Style> styles) {
+    final int size = styles.size();
+    for (int i = 0; i < size; i++) {
+      productionItems.remove(styles.get(i));
+      productions.remove(styles.get(i));
+    }
+
+    changeToCommonScene();
+  }
+
   @Override public boolean onBackPressed() {
+    if (uiMode == UI_MODE_MANAGE) {
+      uiMode = UI_MODE_COMMON;
+      changeToCommonScene();
+      return true;
+    }
     return false;
   }
 
@@ -95,5 +167,9 @@ public class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSub
 
   @Override public void onLoadMore() {
     controller.fetchMyProductions();
+  }
+
+  @Override public void onProductionSelected(Style layout, boolean selected) {
+    toolbar.setTitle("" + selectedPositions.size());
   }
 }

@@ -2,6 +2,7 @@ package com.xiaopo.flying.anotherlayout.ui.page.production;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,8 @@ import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ListFooterBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,5 +92,12 @@ public class ProductionActivity extends AnotherActivity
 
   @Override public void fetchMyProductions() {
     fetchMyProductions(LIMIT,currentOffset);
+  }
+
+  @Override public void deleteProductions(@NonNull List<Style> productions) {
+    Stores.instance(this)
+        .deleteStyles(productions)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> ui.deleteSuccess(productions));
   }
 }

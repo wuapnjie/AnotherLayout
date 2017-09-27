@@ -110,9 +110,8 @@ public class LayoutUI implements ILayoutUI, OnItemClickListener<Style>, LoadMore
 
     puzzleLayoutBinder.setUiMode(PuzzleLayoutBinder.UI_MODE_COMMON);
     // TODO 除去选中状态，考虑是否保留
-    final int size = layouts.size();
-    for (int i = 0; i < size; i++) {
-      layouts.get(i).setSelected(false);
+    for (Integer position : selectedPositions) {
+      layouts.get(position).setSelected(false);
     }
     selectedPositions.clear();
 

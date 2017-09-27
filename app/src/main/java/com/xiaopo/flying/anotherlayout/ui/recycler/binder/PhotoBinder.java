@@ -1,6 +1,7 @@
 package com.xiaopo.flying.anotherlayout.ui.recycler.binder;
 
 import android.support.annotation.NonNull;
+import android.support.v7.util.AsyncListUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
