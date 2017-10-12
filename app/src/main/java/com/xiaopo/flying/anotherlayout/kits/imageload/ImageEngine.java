@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import java.io.File;
+
 /**
  * @author wupanjie
  */
@@ -59,6 +61,31 @@ public final class ImageEngine implements ImageLoadFunction {
   @Override
   public Bitmap get(Context context, String path) throws Exception {
     return function.get(context, path);
+  }
+
+  @Override public void prefetch(Context context, File file, int width, int height) {
+    function.prefetch(context, file, width, height);
+  }
+
+  @Override public void prefetch(Context context, File file) {
+    function.prefetch(context, file);
+  }
+
+  @Override
+  public void load(Context context, File file, ImageView imageView, int width, int height) {
+    function.load(context, file, imageView, width, height);
+  }
+
+  @Override public void load(Context context, File file, ImageView imageView) {
+    function.load(context, file, imageView);
+  }
+
+  @Override public Bitmap get(Context context, File file, int width, int height) throws Exception {
+    return function.get(context, file, width, height);
+  }
+
+  @Override public Bitmap get(Context context, File file) throws Exception {
+    return function.get(context, file);
   }
 
 }

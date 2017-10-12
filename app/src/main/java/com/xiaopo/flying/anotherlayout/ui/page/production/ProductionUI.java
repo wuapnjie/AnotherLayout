@@ -15,7 +15,6 @@ import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.anotherlayout.ui.recycler.LoadMoreDelegate;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ListFooterBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ProductionBinder;
-import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PuzzleLayoutBinder;
 
 import java.util.ArrayList;
 import java.util.List;

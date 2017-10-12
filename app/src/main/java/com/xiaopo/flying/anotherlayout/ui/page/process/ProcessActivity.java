@@ -19,6 +19,7 @@ import com.xiaopo.flying.anotherlayout.ui.AnotherActivity;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -91,6 +92,8 @@ public class ProcessActivity extends AnotherActivity
       ui.showReplaceScene();
     }
 
+    ui.initHandleBar();
+
   }
 
   private void loadPhotoWithStyle() {
@@ -103,6 +106,7 @@ public class ProcessActivity extends AnotherActivity
         .compose(this.bindToLifecycle())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(results -> {
+          TreeSet<Integer> selectedPositions = new TreeSet<>();
           for (int i = 0; i < puzzleLayout.getAreaCount(); i++) {
             PieceInfo pieceInfo = infos.get(i);
             float[] values = {
@@ -113,7 +117,16 @@ public class ProcessActivity extends AnotherActivity
 
             Matrix matrix = new Matrix();
             matrix.setValues(values);
-            ui.addPiece(results.get(i % count).first, results.get(i % count).second, matrix);
+
+            Bitmap photo = results.get(i % count).first;
+            if (photo != null) {
+              selectedPositions.add(i);
+            }
+            ui.addPiece(photo, results.get(i % count).second, matrix);
+          }
+
+          if (selectedPositions.size() < puzzleLayout.getAreaCount()) {
+            ui.showReplaceScene(selectedPositions);
           }
         });
   }

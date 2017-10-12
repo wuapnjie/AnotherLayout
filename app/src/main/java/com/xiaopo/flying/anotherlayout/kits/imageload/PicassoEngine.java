@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.xiaopo.flying.anotherlayout.ui.PlaceholderDrawable;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -74,6 +75,54 @@ final class PicassoEngine implements ImageLoadFunction {
   public Bitmap get(Context context, String path) throws IOException {
     return Picasso.with(context)
         .load("file:///" + path)
+        .centerCrop()
+        .get();
+  }
+
+  @Override public void prefetch(Context context, File file, int width, int height) {
+    Picasso.with(context)
+        .load(file)
+        .resize(width, height)
+        .centerCrop()
+        .fetch();
+  }
+
+  @Override public void prefetch(Context context, File file) {
+    Picasso.with(context)
+        .load(file)
+        .centerCrop()
+        .fetch();
+  }
+
+  @Override
+  public void load(Context context, File file, ImageView imageView, int width, int height) {
+    Picasso.with(context)
+        .load(file)
+        .placeholder(PlaceholderDrawable.instance)
+        .resize(width, height)
+        .centerCrop()
+        .into(imageView);
+  }
+
+  @Override public void load(Context context, File file, ImageView imageView) {
+    Picasso.with(context)
+        .load(file)
+        .placeholder(PlaceholderDrawable.instance)
+        .centerCrop()
+        .into(imageView);
+  }
+
+  @Override public Bitmap get(Context context, File file, int width, int height) throws Exception {
+    return Picasso.with(context)
+        .load(file)
+        .resize(width, height)
+        .centerCrop()
+        .get();
+  }
+
+  @Override public Bitmap get(Context context, File file) throws Exception {
+    return Picasso.with(context)
+        .load(file)
         .centerCrop()
         .get();
   }

@@ -21,6 +21,7 @@ import com.xiaopo.flying.anotherlayout.ui.PlaceholderSelectedDrawable;
 import com.xiaopo.flying.anotherlayout.ui.page.process.ProcessActivity;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
+import java.io.File;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -79,11 +80,14 @@ public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.Vie
     PieceInfos pieceInfos = item.getPieces().get();
     final int size = pieceInfos.pieces.size();
     for (int i = 0; i < size; i++) {
-      ImageEngine.instance()
-          .prefetch(holder.itemView.getContext(),
-              pieceInfos.pieces.get(i).path,
-              screenSize,
-              screenSize);
+      File file = new File(pieceInfos.pieces.get(i).path);
+      if (file.exists()){
+        ImageEngine.instance()
+            .prefetch(holder.itemView.getContext(),
+                file,
+                screenSize,
+                screenSize);
+      }
     }
 
     ImageEngine.instance()

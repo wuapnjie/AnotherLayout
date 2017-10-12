@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.xiaopo.flying.anotherlayout.R;
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
@@ -51,6 +52,7 @@ import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -98,8 +100,8 @@ public class MainActivity extends RxAppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    // TODO 暂时去掉统计
-//    Fabric.with(this, new Crashlytics());
+
+    Fabric.with(this, new Crashlytics());
 
     // TODO 暂时去掉抽屉
     setContentView(R.layout.drawer_content_main);

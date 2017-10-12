@@ -34,9 +34,9 @@ import com.xiaopo.flying.anotherlayout.ui.PlaceholderDrawable;
 import com.xiaopo.flying.anotherlayout.ui.recycler.OnPhotoSelectedListener;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.ColorItemBinder;
 import com.xiaopo.flying.anotherlayout.ui.recycler.binder.PhotoBinder;
+import com.xiaopo.flying.anotherlayout.ui.widget.DegreeSeekBar;
 import com.xiaopo.flying.anotherlayout.ui.widget.HandleContainer;
 import com.xiaopo.flying.anotherlayout.ui.widget.PhotoPuzzleView;
-import com.xiaopo.flying.pixelcrop.DegreeSeekBar;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
 import com.xiaopo.flying.puzzle.PuzzleView;
@@ -108,12 +108,6 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     puzzleView.setTouchEnable(true);
     puzzleView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-    addHandleItems();
-    handleContainer.setHandleItems(handleItems);
-    if (processMode == PROCESS_MODE_LAYOUT) {
-      handleContainer.setVisibility(View.INVISIBLE);
-    }
-
     final Context context = controller.context();
     photos = new PhotoManager(context).getAllPhotosFromCache();
 
@@ -152,6 +146,14 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
 
   }
 
+  @Override public void initHandleBar() {
+    addHandleItems();
+    handleContainer.setHandleItems(handleItems);
+    if (processMode == PROCESS_MODE_LAYOUT) {
+      handleContainer.setVisibility(View.INVISIBLE);
+    }
+  }
+
   private void showPopupMenu() {
     PopupMenu popupMenu = new PopupMenu(controller.context(), fakeView);
     popupMenu.inflate(R.menu.menu_process);
@@ -170,7 +172,6 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     }
     return false;
   }
-
 
   @Override
   public void setPuzzleLayout(@NonNull PuzzleLayout puzzleLayout) {
@@ -198,10 +199,8 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     puzzleView.setNeedResetPieceMatrix(false);
     this.puzzleLayout = puzzleView.getPuzzleLayout();
 
-    if (processMode == PROCESS_MODE_LAYOUT) {
-      if (puzzleLayoutInfo.padding == 0) {
-        puzzleView.setLineSize(8);
-      }
+    if (puzzleLayoutInfo.padding == 0) {
+      puzzleView.setLineSize(8);
     }
 
     return this.puzzleLayout;
@@ -209,12 +208,20 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
 
   @Override
   public void addPiece(final Bitmap piece, final String path) {
-    puzzleView.post(() -> puzzleView.addPiece(piece, path));
+    if (piece == null) {
+      puzzleView.post(() -> puzzleView.addPiece(PlaceholderDrawable.instance));
+    } else {
+      puzzleView.post(() -> puzzleView.addPiece(piece, path));
+    }
   }
 
   @Override
   public void addPiece(final Bitmap piece, final String path, final Matrix initialMatrix) {
-    puzzleView.post(() -> puzzleView.addPiece(piece, path, initialMatrix));
+    if (piece == null) {
+      puzzleView.post(() -> puzzleView.addPiece(PlaceholderDrawable.instance, initialMatrix));
+    } else {
+      puzzleView.post(() -> puzzleView.addPiece(piece, path, initialMatrix));
+    }
   }
 
   @Override public void showPlaceholder() {
@@ -392,6 +399,12 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     changeToReplaceScene(0);
   }
 
+  @Override public void showReplaceScene(Set<Integer> initialSelectPositions) {
+    processMode = PROCESS_MODE_LAYOUT;
+    selectedPositions.addAll(initialSelectPositions);
+    changeToReplaceScene(0);
+  }
+
   private void changeToReplaceScene(final int duration) {
     if (uiMode == UI_MODE_REPLACE) return;
     uiMode = UI_MODE_REPLACE;
@@ -408,7 +421,15 @@ public class ProcessUI implements IProcessUI, PopupMenu.OnMenuItemClickListener,
     puzzleView.setCanZoom(false);
 
     if (!puzzleView.hasPieceSelected()) {
-      puzzleView.setSelected(0);
+      int position = 0;
+      int size = puzzleView.getPuzzleLayout().getAreaCount();
+      for (int i = 0; i < size; i++) {
+        if (!selectedPositions.contains(i)) {
+          position = i;
+          break;
+        }
+      }
+      puzzleView.setSelected(position);
     } else {
       selectPhoto(puzzleView.getHandlingPiece().getPath());
     }

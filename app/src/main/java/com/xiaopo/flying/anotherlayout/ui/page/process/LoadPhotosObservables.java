@@ -2,6 +2,7 @@ package com.xiaopo.flying.anotherlayout.ui.page.process;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.util.Pair;
 
 import com.xiaopo.flying.anotherlayout.kits.DipPixelKit;
@@ -10,6 +11,7 @@ import com.xiaopo.flying.anotherlayout.model.PieceInfo;
 import com.xiaopo.flying.anotherlayout.model.database.Style;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,15 +41,26 @@ class LoadPhotosObservables {
       for (int i = 0; i < count; i++) {
         final String photoPath = infos.get(i).path;
 
+        File file = new File(photoPath);
+
         // prefetch next photo
         if (i < count - 1) {
-          ImageEngine.instance()
-              .prefetch(context, infos.get(i + 1).path, deviceSize, deviceSize);
+          File next = new File(infos.get(i + 1).path);
+          if (next.exists()) {
+            ImageEngine.instance()
+                .prefetch(context, next, deviceSize, deviceSize);
+          }
+        }
+
+        if (!file.exists()) {
+          Log.d("Photo", "loadWithStyle: file is not existed! --> " + photoPath);
+          results.add(new Pair<>(null, photoPath));
+          continue;
         }
 
         if (!pathBitmaps.containsKey(photoPath)) {
           Bitmap bitmap = ImageEngine.instance()
-              .get(context, photoPath, deviceSize, deviceSize);
+              .get(context, file, deviceSize, deviceSize);
           pathBitmaps.put(photoPath, bitmap);
         }
 

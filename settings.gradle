@@ -1,3 +1,4 @@
-include ':app', ':pixelcrop', ':puzzle'
+include ':app', ':puzzle'
 
 // ':poiphoto'
+// ':pixelcrop'

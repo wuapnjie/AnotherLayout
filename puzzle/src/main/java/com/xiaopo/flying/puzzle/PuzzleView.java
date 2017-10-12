@@ -845,7 +845,12 @@ public class PuzzleView extends View {
       puzzleLayout.setPadding(padding);
       final int size = puzzlePieces.size();
       for (int i = 0; i < size; i++) {
-        puzzlePieces.get(i).moveToFillArea(null);
+        PuzzlePiece puzzlePiece = puzzlePieces.get(i);
+        if (puzzlePiece.canFilledArea()) {
+          puzzlePiece.moveToFillArea(null);
+        }else {
+          puzzlePiece.fillArea(this, true);
+        }
       }
     }
 
