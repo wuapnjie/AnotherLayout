@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'io.fabric'
+apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -17,9 +17,20 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+//            signingConfig signingConfigs.release
+            proguardFile 'proguard-common.pro'
+            proguardFile 'proguard-rules.pro'
+//            proguardFile 'proguard-rules-google-ads.pro'
         }
     }
     compileOptions {
