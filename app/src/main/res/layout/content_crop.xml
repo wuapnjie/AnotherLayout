@@ -11,9 +11,4 @@
     tools:showIn="@layout/activity_crop"
     >
 
-  <com.xiaopo.flying.pixelcrop.PixelCropView
-      android:id="@+id/pixel_crop_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      />
 </RelativeLayout>

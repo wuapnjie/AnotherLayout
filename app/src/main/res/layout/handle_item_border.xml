@@ -7,7 +7,7 @@
     tools:background="@color/black"
     >
 
-    <com.xiaopo.flying.pixelcrop.DegreeSeekBar
+    <com.xiaopo.flying.anotherlayout.ui.widget.DegreeSeekBar
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

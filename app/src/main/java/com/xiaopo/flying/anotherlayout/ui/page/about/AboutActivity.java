@@ -25,7 +25,7 @@ public class AboutActivity extends AbsAboutActivity {
   protected void onCreateHeader(@NonNull ImageView icon, @NonNull TextView slogan, @NonNull TextView version) {
     setNavigationIcon(R.drawable.ic_close_white_24dp);
     icon.setImageResource(R.mipmap.ic_launcher_round);
-    slogan.setText("Another Layout By wupanjie");
+    slogan.setText(R.string.slogan);
     String versionString = "Version " + BuildConfig.VERSION_NAME;
     version.setText(versionString);
   }
@@ -34,13 +34,11 @@ public class AboutActivity extends AbsAboutActivity {
   @Override
   protected void onItemsCreated(@NonNull Items items) {
     items.add(new Category("另一个布局"));
-    items.add(new Card(getString(R.string.card_content)));
+    items.add(new Card(getString(R.string.card_content), "分享"));
 
     items.add(new Category("Developer"));
-    items.add(new Contributor(R.mipmap.ic_launcher, "wupanjie", "Developer & designer",
+    items.add(new Contributor(R.mipmap.avatar, "wupanjie", "Developer & designer",
         "https://github.com/wuapnjie"));
-
-    items.add(new Line());
 
     items.add(new Category("Open Source Licenses"));
     items.add(new License("Picasso", "Square", License.APACHE_2,

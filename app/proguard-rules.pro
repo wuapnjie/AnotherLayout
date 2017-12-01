@@ -18,6 +18,7 @@
 
 # picasso
 -dontwarn com.squareup.okhttp.**
+
 # andpermissiomn
 -keepclassmembers class ** {
     @com.yanzhenjie.permission.PermissionYes <methods>;
