@@ -5,6 +5,16 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     buildToolsVersion BUILD_TOOLS_VERSION
@@ -53,8 +63,8 @@ dependencies {
 
     // reactive
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
-//  implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
+    //  implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
     implementation("com.trello.rxlifecycle2:rxlifecycle-components:$rxlifecycle_version", {
         exclude group: 'com.google.code.findbugs'
         exclude group: 'com.android.support'
@@ -75,14 +85,15 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butter_knife_version"
 
     // module
-//  implementation project(':pixelcrop')
+
+    //  implementation project(':pixelcrop')
     implementation project(':puzzle')
-//  implementation project(':poiphoto')
+
+    //  implementation project(':poiphoto')
 
     // for test
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile "junit:junit:4.12"
-
+    testCompile 'junit:junit:4.12'
 }
