@@ -110,10 +110,15 @@ public class LayoutUI implements ILayoutUI, OnItemClickListener<Style>, LoadMore
 
     puzzleLayoutBinder.setUiMode(PuzzleLayoutBinder.UI_MODE_COMMON);
     // TODO 除去选中状态，考虑是否保留
-    for (Integer position : selectedPositions) {
-      layouts.get(position).setSelected(false);
+    for (Style layout : layouts) {
+      layout.setSelected(false);
     }
     selectedPositions.clear();
+
+    if (layouts.isEmpty()) {
+      layoutItems.clear();
+      puzzleList.setBackground(null);
+    }
 
     layoutAdapter.notifyDataSetChanged();
   }
@@ -155,6 +160,8 @@ public class LayoutUI implements ILayoutUI, OnItemClickListener<Style>, LoadMore
     layoutItems.addAll(layouts);
     layoutAdapter.notifyItemInserted(insert);
     this.layouts.addAll(layouts);
+
+    puzzleList.setBackgroundResource(R.color.white);
   }
 
   @Override public void notifyNoMore() {

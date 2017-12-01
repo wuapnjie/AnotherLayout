@@ -42,8 +42,7 @@ public class ProductionBinder extends ItemViewBinder<Style, ProductionBinder.Vie
   private final TreeSet<Integer> selectedPositions;
   private OnProductionSelectedListener onProductionSelectedListener;
 
-  // TODO change the color
-  private int selectedColor = Colors.c5.getColor();
+  private int selectedColor = Colors.selectedPlaceholder.getColor();
 
   public ProductionBinder(TreeSet<Integer> selectedPositions, int screenSize) {
     this.selectedPositions = selectedPositions;

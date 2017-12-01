@@ -34,10 +34,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".ui.page.about.AboutActivity"/>
+        <activity android:name=".ui.page.about.AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".ui.page.layout.LayoutActivity"/>
-        <activity android:name=".ui.page.production.ProductionActivity" />
+        <activity android:name=".ui.page.layout.LayoutActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.page.production.ProductionActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

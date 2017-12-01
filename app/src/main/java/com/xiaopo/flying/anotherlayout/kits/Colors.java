@@ -64,6 +64,9 @@ public final class Colors {
   public static final ColorItem c44 = new ColorItem(Color.rgb(236, 181, 62));
   public static final ColorItem c45 = new ColorItem(Color.rgb(246, 218, 140));
 
+  public static final ColorItem placeholder = new ColorItem(Color.rgb(101, 184, 225));
+  public static final ColorItem selectedPlaceholder = new ColorItem(Color.rgb(101, 184, 225));
+
   @NonNull
   public static List<ColorItem> all() {
     List<ColorItem> items =

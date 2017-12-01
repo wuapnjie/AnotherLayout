@@ -101,7 +101,7 @@ public class MainActivity extends RxAppCompatActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    Fabric.with(this, new Crashlytics());
+    Fabric.with(this, Crashlytics.getInstance());
 
     // TODO 暂时去掉抽屉
     setContentView(R.layout.drawer_content_main);

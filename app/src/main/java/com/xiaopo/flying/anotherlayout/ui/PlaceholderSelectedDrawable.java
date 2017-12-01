@@ -1,19 +1,20 @@
 package com.xiaopo.flying.anotherlayout.ui;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.xiaopo.flying.anotherlayout.kits.Colors;
+
 /**
  * @author wupanjie
  */
 public class PlaceholderSelectedDrawable extends Drawable {
   public static Drawable instance = new PlaceholderSelectedDrawable();
-  private final int color = Color.rgb(101, 184, 225);
+  private final int color = Colors.placeholder.getColor();
 
   private PlaceholderSelectedDrawable() {
 

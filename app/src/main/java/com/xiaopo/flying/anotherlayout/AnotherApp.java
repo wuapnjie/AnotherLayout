@@ -6,8 +6,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
+
+import io.fabric.sdk.android.Fabric;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * @author wupanjie
@@ -30,6 +35,14 @@ public class AnotherApp extends Application {
             })
             .build();
     Picasso.setSingletonInstance(picasso);
+
+    Fabric.with(this, new Crashlytics());
+
+    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+      @Override public void accept(Throwable throwable) throws Exception {
+        Crashlytics.logException(throwable);
+      }
+    });
   }
 
   private int calculateMemoryCacheSize() {

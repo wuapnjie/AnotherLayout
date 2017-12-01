@@ -120,10 +120,14 @@ class ProductionUI implements IProductionUI, LoadMoreDelegate.LoadMoreSubject, P
 
     productionBinder.setUiMode(ProductionBinder.UI_MODE_COMMON);
     // TODO 除去选中状态，考虑是否保留
-    for (Integer position : selectedPositions) {
-      productions.get(position).setSelected(false);
+    for (Style production : productions) {
+      production.setSelected(false);
     }
     selectedPositions.clear();
+
+    if (productions.isEmpty()){
+      productionItems.clear();
+    }
 
     productionAdapter.notifyDataSetChanged();
   }
