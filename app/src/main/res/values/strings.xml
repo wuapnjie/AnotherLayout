@@ -28,7 +28,9 @@
     <string name="action_save_layout">保存布局</string>
     <string name="about">关于</string>
 
-    <string name="card_content">这是我独立开发的拼图应用AnotherLayout</string>
+    <string name="card_content">
+        这是我独立开发的拼图应用AnotherLayout\n支持多种样式的图片拼接，操作简单，可以保存常用的拼接布局以供下次使用，希望对大家有帮助~
+    </string>
     <string name="my_layout">我的布局</string>
     <string name="save_layout_success">布局保存成功</string>
     <string name="action_save_image">保存图片</string>

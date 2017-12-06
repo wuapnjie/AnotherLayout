@@ -1,5 +1,7 @@
 package com.xiaopo.flying.anotherlayout.ui.page.about;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,12 +16,13 @@ import me.drakeet.support.about.Card;
 import me.drakeet.support.about.Category;
 import me.drakeet.support.about.Contributor;
 import me.drakeet.support.about.License;
-import me.drakeet.support.about.Line;
 
 /**
  * @author wupanjie
  */
 public class AboutActivity extends AbsAboutActivity {
+
+  public static final String EMAIL_URI = "mailto:wupanjie0611@gmail.com";
 
   @Override
   protected void onCreateHeader(@NonNull ImageView icon, @NonNull TextView slogan, @NonNull TextView version) {
@@ -34,7 +37,7 @@ public class AboutActivity extends AbsAboutActivity {
   @Override
   protected void onItemsCreated(@NonNull Items items) {
     items.add(new Category("另一个布局"));
-    items.add(new Card(getString(R.string.card_content), "分享"));
+    items.add(new Card(getString(R.string.card_content), "feedback"));
 
     items.add(new Category("Developer"));
     items.add(new Contributor(R.mipmap.avatar, "wupanjie", "Developer & designer",
@@ -61,4 +64,11 @@ public class AboutActivity extends AbsAboutActivity {
         "https://github.com/drakeet/about-page"));
   }
 
+  @Override protected void onActionClick(View action) {
+    super.onActionClick(action);
+
+    Uri uri = Uri.parse(EMAIL_URI);
+    Intent intent =new  Intent(Intent.ACTION_SENDTO, uri);
+    startActivity(intent);
+  }
 }
